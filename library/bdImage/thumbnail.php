@@ -35,6 +35,10 @@ if (!file_exists($path))
 		case 'jpg':
 		case 'jpeg': $inputType = IMAGETYPE_JPEG; break;
 		case 'png': $inputType = IMAGETYPE_PNG; break;
+		case 'data': // this is our attachment extension
+			$url = XenForo_Helper_File::getInternalDataPath() . $url; // restore the url, it was cutoff in bdImage_BbCode_Formatter_Collector
+			$inputType = IMAGETYPE_PNG;
+			break;
 	}
 	
 	if (class_exists('Imagick'))

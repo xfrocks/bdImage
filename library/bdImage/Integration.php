@@ -2,9 +2,18 @@
 
 class bdImage_Integration
 {
-	public static function getBbCodeImage($bbCode)
+	public static function getBbCodeImage($bbCode, XenForo_DataWriter $dw = null, array $contentData = null)
 	{
 		$formatter = XenForo_BbCode_Formatter_Base::create('bdImage_BbCode_Formatter_Collector');
+		if (!empty($contentData))
+		{
+			$formatter->setContentData($contentData);
+		}
+		if (!empty($dw))
+		{
+			$formatter->setDataWriter($dw);
+		}
+		
 		$parser = new XenForo_BbCode_Parser($formatter);
 		
 		$result = $parser->render($bbCode);

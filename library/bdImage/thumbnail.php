@@ -37,7 +37,27 @@ if (!file_exists($path))
 		case 'png': $inputType = IMAGETYPE_PNG; break;
 		case 'data': // this is our attachment extension
 			$url = XenForo_Helper_File::getInternalDataPath() . $url; // restore the url, it was cutoff in bdImage_BbCode_Formatter_Collector
-			$inputType = IMAGETYPE_PNG;
+			$inputType = IMAGETYPE_JPEG;
+			// we have to read the magic bytes to determine the correct file type
+			$fh = fopen($url, 'rb');
+			if (!empty($fh))
+			{
+				$data = fread($fh, 4);
+				
+				if (!empty($data) AND strlen($data) == 4)
+				{
+					if (strcmp($data, 'GIF8') === 0)
+					{
+						$inputType = IMAGETYPE_GIF;
+					}
+					elseif (strcmp(substr($data, 1, 3), 'PNG') === 0)
+					{
+						$inputType = IMAGETYPE_PNG;
+					}
+				}
+				
+				fclose($fh);
+			}
 			break;
 	}
 	

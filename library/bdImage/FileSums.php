@@ -10,7 +10,7 @@ class bdImage_FileSums
   'library/bdImage/Integration.php' => '52c6dffd0327583e6edf2c560c09e99a',
   'library/bdImage/Listener.php' => 'bc47d3c9c4c028f78d782b7bda434a65',
   'library/bdImage/ThirdParties/Fastimage.php' => '1eadd44686ad479e4932c5072dc3a8bc',
-  'library/bdImage/thumbnail.php' => '840ecf80c94e3667c1abed73018519c1',
+  'library/bdImage/thumbnail.php' => '1dc05d206b893e0f3866666df980beae',
   'library/bdImage/XenForo/DataWriter/Discussion/Thread.php' => '55af3b3cd85cb13934d98b2d3c9e20d7',
   'library/bdImage/XenForo/DataWriter/DiscussionMessage/Post.php' => 'f030a54fc5c4eb871519712d1126a7d8',
 );

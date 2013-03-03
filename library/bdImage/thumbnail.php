@@ -6,7 +6,7 @@ $mode = empty($_REQUEST['mode']) ? '' : $_REQUEST['mode'];
 $hash = empty($_REQUEST['hash']) ? false : $_REQUEST['hash'];
 
 $pathPrefix = 'cache';
-$path = $pathPrefix . '/' . date('Ymd') . '/' . $hash . '.jpg';
+$path = $pathPrefix . '/' . gmdate('Ymd') . '/' . $hash . '.jpg';
 
 $fileDir = dirname(dirname(dirname(__FILE__)));
 require($fileDir . '/library/XenForo/Autoloader.php');
@@ -57,6 +57,20 @@ if (!file_exists($path))
 				fclose($fh);
 			}
 			break;
+	}
+	
+	if (Zend_Uri::check($url))
+	{
+		// this is a remote uri, try to cache it first
+		$originalCachePath = $pathPrefix . '/' . date('Ymd') . '/' . md5($url) . '.orig';
+		if (!file_exists($originalCachePath))
+		{
+			file_put_contents($originalCachePath, file_get_contents($url));
+		}
+		// switch to use the cached original file
+		// doing this will reduce server load when a new image is uploaded and started to appear
+		// in different places with different sizes/modes
+		$url = $originalCachePath;
 	}
 
 	if (class_exists('Imagick'))

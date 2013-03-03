@@ -44,11 +44,10 @@ class bdImage_Integration
 
 	public static function buildThumbnailLink($imageData, $size, $mode = self::MODE_CROP_EQUAL)
 	{
-		// check for thumbnail.php file to make sure it exists
-		$path = sprintf('%s/bdImage/thumbnail.php',
-		XenForo_Helper_File::getExternalDataPath()
-		);
-		if (!file_exists($path))
+		// check for thumbnail.php file to make sure it exists and updated
+		$origPath = sprintf('%s/thumbnail.php', dirname(__FILE__));
+		$path = sprintf('%s/bdImage/thumbnail.php', XenForo_Helper_File::getExternalDataPath());
+		if (!file_exists($path) OR filemtime($path) < filemtime($origPath))
 		{
 			XenForo_Helper_File::createDirectory(dirname($path), true);
 			copy(dirname(__FILE__) . '/thumbnail.php', $path);

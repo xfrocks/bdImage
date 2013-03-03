@@ -2,6 +2,7 @@
 
 $url = empty($_REQUEST['url']) ? false : $_REQUEST['url'];
 $size = intval(empty($_REQUEST['size']) ? 0 : $_REQUEST['size']);
+$mode = empty($_REQUEST['mode']) ? '' : $_REQUEST['mode'];
 $hash = empty($_REQUEST['hash']) ? false : $_REQUEST['hash'];
 
 $pathPrefix = 'cache';
@@ -12,10 +13,7 @@ require($fileDir . '/library/XenForo/Autoloader.php');
 XenForo_Autoloader::getInstance()->setupAutoloader($fileDir . '/library');
 XenForo_Application::initialize($fileDir . '/library', $fileDir);
 
-if (
-	empty($size)
-	|| bdImage_Integration::computeHash($url, $size) != $hash
-)
+if (empty($size) OR bdImage_Integration::computeHash($url, $size, $mode) != $hash)
 {
 	// invalid request, we may issue 401 but this is more of a security feature
 	// so we are issuing 403 response now...
@@ -43,7 +41,7 @@ if (!file_exists($path))
 			if (!empty($fh))
 			{
 				$data = fread($fh, 4);
-				
+
 				if (!empty($data) AND strlen($data) == 4)
 				{
 					if (strcmp($data, 'GIF8') === 0)
@@ -55,12 +53,12 @@ if (!file_exists($path))
 						$inputType = IMAGETYPE_PNG;
 					}
 				}
-				
+
 				fclose($fh);
 			}
 			break;
 	}
-	
+
 	if (class_exists('Imagick'))
 	{
 		$image = XenForo_Image_Imagemagick_Pecl::createFromFileDirect($url, $inputType);
@@ -69,7 +67,7 @@ if (!file_exists($path))
 	{
 		$image = XenForo_Image_Gd::createFromFileDirect($url, $inputType);
 	}
-	
+
 	if (empty($image))
 	{
 		// problem open the url
@@ -77,10 +75,25 @@ if (!file_exists($path))
 		header("HTTP/1.0 500 Internal Server Error");
 		exit;
 	}
-	
-	$image->thumbnailFixedShorterSide($size);
-	$image->crop(0, 0, $size, $size);
-	
+
+	switch ($mode)
+	{
+		case bdImage_Integration::MODE_STRETCH_WIDTH:
+			$targetHeight = $size;
+			$targetWidth = $targetHeight / $image->getHeight() * $image->getWidth();
+			$image->thumbnail($targetWidth, $targetHeight);
+			break;
+		case bdImage_Integration::MODE_STRETCH_HEIGHT:
+			$targetWidth = $size;
+			$targetHeight = $targetWidth / $image->getWidth() * $image->getHeight();
+			$image->thumbnail($targetWidth, $targetHeight);
+			break;
+		default:
+			$image->thumbnailFixedShorterSide($size);
+			$image->crop(0, 0, $size, $size);
+			break;
+	}
+
 	XenForo_Helper_File::createDirectory('./' . dirname($path), true);
 	$image->output(IMAGETYPE_JPEG, $path);
 }

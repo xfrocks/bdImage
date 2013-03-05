@@ -2,6 +2,17 @@
 
 class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_XenForo_DataWriter_DiscussionMessage_Post
 {
+	const OPTION_SKIP_UPDATING_THREAD_IMAGE = 'bdImage_skipUpdatingThreadImage';
+	
+	protected function _getDefaultOptions()
+	{
+		$options = parent::_getDefaultOptions();
+		
+		$options[self::OPTION_SKIP_UPDATING_THREAD_IMAGE] = false;
+		
+		return $options;
+	}
+	
 	public function bdImage_getImage()
 	{
 		$contentData = array(
@@ -15,7 +26,8 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
 	
 	protected function _messagePostSave()
 	{
-		if ($this->isChanged('message') && $this->get('position') == 0)
+		$optionSkip = $this->getOption(self::OPTION_SKIP_UPDATING_THREAD_IMAGE);
+		if ($this->isChanged('message') AND $this->get('position') == 0 AND empty($optionSkip))
 		{
 			$threadDw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread', XenForo_DataWriter::ERROR_SILENT);
 			$threadDw->setExistingData($this->get('thread_id'));

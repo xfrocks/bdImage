@@ -17,6 +17,9 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
 		{
 			$image = $this->_firstMessageDw->bdImage_getImage();
 			$this->set('bdimage_image', $image);
+			
+			// tell the post data writer not to update the thread again
+			$this->_firstMessageDw->setOption(bdImage_XenForo_DataWriter_DiscussionMessage_Post::OPTION_SKIP_UPDATING_THREAD_IMAGE, true);
 		}
 		
 		return parent::_discussionPreSave();

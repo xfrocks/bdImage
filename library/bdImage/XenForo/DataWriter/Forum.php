@@ -29,7 +29,7 @@ class bdImage_XenForo_DataWriter_Forum extends XFCP_bdImage_XenForo_DataWriter_F
 	{
 		$result = parent::updateLastPost();
 		
-		if ($this->get('last_post_id') !== 0)
+		if ($this->get('last_post_id') > 0)
 		{
 			// the parent implementation will call XenForo_Model_Thread::getLastUpdatedThreadInForum itself
 			// but the result is cached so we don't make much impact here by calling it again

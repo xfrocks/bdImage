@@ -27,7 +27,7 @@ class bdImage_XenForo_Model_Post extends XFCP_bdImage_XenForo_Model_Post
 
 	public function getPostsByIds(array $postIds, array $fetchOptions = array())
 	{
-		$posts = parent::getPostsByids($postIDs, $fetchOptions);
+		$posts = parent::getPostsByids($postIds, $fetchOptions);
 
 		if (!empty($this->_bdImage_cachingPosts))
 		{

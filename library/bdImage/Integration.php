@@ -29,13 +29,13 @@ class bdImage_Integration
 		$imageUrls = $formatter->getImageUrls();
 		if (empty($imageUrls))
 		{
-			return false;
+			return '';
 		}
 
 		$imageUrl = array_shift($imageUrls);
 		if (empty($imageUrl))
 		{
-			return false;
+			return '';
 		}
 
 		list($imageWidth, $imageHeight) = self::_getImageSize($imageUrl);
@@ -210,6 +210,7 @@ class bdImage_Integration
 			// no size data has been found, we have to fetch the image to obtain it
 			require_once(dirname(__FILE__) . '/ThirdParties/Fastimage.php');
 			$image = new FastImage($uri);
+			set_time_limit(5);
 			list($width, $height) = $image->getSize();
 		}
 

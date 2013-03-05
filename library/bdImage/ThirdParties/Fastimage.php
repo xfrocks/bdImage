@@ -32,7 +32,8 @@ class FastImage
     $this->uri = $uri;
     // $this->handle = fopen($uri, 'r');
     // sondh
-    $this->handle = fopen($uri, 'rb');
+    $context = stream_context_create(array('http'=>array('timeout' => 2.0)));
+    $this->handle = @fopen($uri, 'rb');
   }
 
 
@@ -187,6 +188,11 @@ class FastImage
 
   private function getChars($n)
   {
+    if (empty($this->handle))
+    {
+      return 'error';
+    }
+  	
     $response = null;
     
     // do we need more data?		

@@ -7,7 +7,9 @@ class bdImage_Listener
 		static $classes = array(
 			'XenForo_DataWriter_Discussion_Thread',
 			'XenForo_DataWriter_DiscussionMessage_Post',
+			'XenForo_DataWriter_Forum',
 			'XenForo_Model_Log',
+			'XenForo_Model_Thread',
 		);
 		
 		if (in_array($class, $classes))

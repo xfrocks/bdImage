@@ -10,6 +10,13 @@ class bdImage_Installer {
 			'showColumnsQuery' => 'SHOW COLUMNS FROM `xf_thread` LIKE \'bdimage_image\'',
 			'alterTableAddColumnQuery' => 'ALTER TABLE `xf_thread` ADD COLUMN `bdimage_image` TEXT',
 			'alterTableDropColumnQuery' => 'ALTER TABLE `xf_thread` DROP COLUMN `bdimage_image`'
+		),
+		array(
+			'table' => 'xf_forum',
+			'field' => 'bdimage_last_post_image',
+			'showColumnsQuery' => 'SHOW COLUMNS FROM `xf_forum` LIKE \'bdimage_last_post_image\'',
+			'alterTableAddColumnQuery' => 'ALTER TABLE `xf_forum` ADD COLUMN `bdimage_last_post_image` TEXT',
+			'alterTableDropColumnQuery' => 'ALTER TABLE `xf_forum` DROP COLUMN `bdimage_last_post_image`'
 		)
 	);
 

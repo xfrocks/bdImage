@@ -4,9 +4,13 @@ class bdImage_DevHelper_Config extends DevHelper_Config_Base {
 	protected $_dataPatches = array(
 		'xf_thread' => array(
 			'bdimage_image' => array('name' => 'bdimage_image', 'type' => 'string')
+		),
+		'xf_forum' => array(
+			'bdimage_last_post_image' => array('name' => 'bdimage_last_post_image', 'type' => 'string')
 		)
 	);
 	protected $_exportPath = '/Users/sondh/Dropbox/XenForo/bdImage';
+	protected $_exportIncludes = array();
 	
 	/**
 	 * Return false to trigger the upgrade!
@@ -28,6 +32,7 @@ class bdImage_DevHelper_Config extends DevHelper_Config_Base {
 					// 'required' => true,
 					// 'allowedValues' => array('value_1', 'value_2'), 
 					// 'default' => 0,
+					// 'autoIncrement' => true,
 				),
 				// other fields go here
 			),

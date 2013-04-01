@@ -48,7 +48,16 @@ class bdImage_Integration
 
 		if (!empty($imageData['url']))
 		{
-			return $imageData['url'];
+			$url = $imageData['url'];
+			
+			if (preg_match('/^\/attachments\/\d\/(\d+)\-[0-9a-f]{32}\.data$/', $url, $matches))
+			{
+				// this is an attachment data pack
+				// use the thumbnail link instead
+				$url = self::buildThumbnailLink($imageData, 200);
+			}
+			
+			return $url;
 		}
 		else
 		{
@@ -70,13 +79,15 @@ class bdImage_Integration
 
 		$imageData = self::_unpackData($imageData);
 
-		return sprintf('%s/bdImage/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s',
+		$thumbnailUrl = sprintf('%s/bdImage/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s',
 		XenForo_Application::$externalDataUrl,
 		rawurlencode($imageData['url']),
 		intval($size),
 		$mode,
 		self::computeHash($imageData['url'], $size, $mode)
 		);
+		
+		return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
 	}
 
 	public static function getImgAttributes($imageData, $size, $mode)
@@ -174,7 +185,14 @@ class bdImage_Integration
 
 	protected static function _unpackData($rawImageData)
 	{
-		$imageData = @json_decode($rawImageData, true);
+		if (is_array($rawImageData))
+		{
+			$imageData = $rawImageData;
+		}
+		else
+		{
+			$imageData = @json_decode($rawImageData, true);
+		}
 		$result = array();
 
 		if (!empty($imageData))

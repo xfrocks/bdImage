@@ -65,6 +65,7 @@ if (!file_exists($path))
 		$originalCachePath = $pathPrefix . '/' . date('Ymd') . '/' . md5($url) . '.orig';
 		if (!file_exists($originalCachePath))
 		{
+			XenForo_Helper_File::createDirectory('./' . dirname($originalCachePath), true);
 			file_put_contents($originalCachePath, file_get_contents($url));
 		}
 		// switch to use the cached original file

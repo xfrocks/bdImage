@@ -7,8 +7,8 @@ class bdImage_FileSums
 		return array (
   'library/bdImage/BbCode/Formatter/Collector.php' => '8e1a51df8109ee145fa7bd8ba9ab2d4f',
   'library/bdImage/Installer.php' => '49262225f5f59eb52f82edfb3497e268',
-  'library/bdImage/Integration.php' => '8cf73c53c0505f81e05a65313b6007c0',
-  'library/bdImage/Listener.php' => 'a7fa9197af03942fa5e63d7ad9c5e0d9',
+  'library/bdImage/Integration.php' => 'a8312c89d1ae70e5e16d88749bab35af',
+  'library/bdImage/Listener.php' => '5d63cacba1d79e5bb16f8f3dad630ae2',
   'library/bdImage/ThirdParties/Fastimage.php' => 'be326f919949dfc594725b3b9d154930',
   'library/bdImage/thumbnail.php' => '970b6b5f2b27bc7d6c5f06bf1a1d6d81',
   'library/bdImage/XenForo/DataWriter/Discussion/Thread.php' => 'efae01ba9cb2b9dfd7cf43369df2dc33',

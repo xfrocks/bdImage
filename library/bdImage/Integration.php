@@ -42,6 +42,20 @@ class bdImage_Integration
 		return self::_packData($imageUrl, $imageWidth, $imageHeight);
 	}
 
+	public static function getImageUrl($imageData)
+	{
+		$imageData = self::_unpackData($imageData);
+
+		if (!empty($imageData['url']))
+		{
+			return $imageData['url'];
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	public static function buildThumbnailLink($imageData, $size, $mode = self::MODE_CROP_EQUAL)
 	{
 		// check for thumbnail.php file to make sure it exists and updated

@@ -52,9 +52,8 @@ class bdImage_Integration
 			
 			if (preg_match('/^\/attachments\/\d\/(\d+)\-[0-9a-f]{32}\.data$/', $url, $matches))
 			{
-				// this is an attachment data pack
-				// use the thumbnail link instead
-				$url = self::buildThumbnailLink($imageData, 200);
+				// this is an attachment data file, ignore
+				return false;
 			}
 			
 			return $url;

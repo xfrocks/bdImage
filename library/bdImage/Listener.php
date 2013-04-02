@@ -5,12 +5,14 @@ class bdImage_Listener
 	public static function load_class($class, array &$extend)
 	{
 		static $classes = array(
+			'XenForo_ControllerPublic_Attachment',
 			'XenForo_DataWriter_Discussion_Thread',
 			'XenForo_DataWriter_DiscussionMessage_Post',
 			'XenForo_DataWriter_Forum',
 			'XenForo_Model_Log',
 			'XenForo_Model_Post',
 			'XenForo_Model_Thread',
+			'XenForo_Route_Prefix_Attachments',
 		);
 		
 		if (in_array($class, $classes))

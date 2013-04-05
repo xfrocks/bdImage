@@ -41,8 +41,15 @@ class bdImage_Integration
 		list($imageWidth, $imageHeight) = self::_getImageSize($imageUrl);
 		return self::_packData($imageUrl, $imageWidth, $imageHeight);
 	}
+	
+	public static function hasImageUrl($imageData)
+	{
+		$imageData = self::_unpackData($imageData);
 
-	public static function getImageUrl($imageData)
+		return !empty($imageData['url']);
+	}
+
+	public static function getViewableImageUrl($imageData)
 	{
 		$imageData = self::_unpackData($imageData);
 

@@ -23,7 +23,8 @@ class bdImage_Listener
 	
 	public static function init_dependencies(XenForo_Dependencies_Abstract $dependencies, array $data)
 	{
-		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_fullsize'] = array('bdImage_Integration', 'getImageUrl');
+		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_isAvailable'] = array('bdImage_Integration', 'hasImageUrl');
+		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_fullsize'] = array('bdImage_Integration', 'getViewableImageUrl');
 		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_thumbnail'] = array('bdImage_Integration', 'buildThumbnailLink');
 		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_width'] = array('bdImage_Integration', 'getImageWidth');
 		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_height'] = array('bdImage_Integration', 'getImageHeight');
@@ -47,6 +48,11 @@ class bdImage_Listener
 					}
 				}
 			}
+		}
+		
+		if ($templateName == 'wf_widget_threads')
+		{
+			bdImage_Injection_WidgetFramework_WidgetRenderer_Threads::wf_widget_threads($templateName, $content, $containerData, $template);
 		}
 	}
 

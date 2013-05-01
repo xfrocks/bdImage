@@ -41,7 +41,7 @@ class bdImage_Listener
 				$thread = $templateParams['thread'];
 				if (!empty($thread['bdimage_image']))
 				{
-					$imageUrl = bdImage_Integration::getImageUrl($thread['bdimage_image']);
+					$imageUrl = bdImage_Integration::getViewableImageUrl($thread['bdimage_image']);
 					if (!empty($imageUrl))
 					{
 						$containerData['head']['openGraph'] .= "<meta property=\"og:image\" content=\"{$imageUrl}\" />";

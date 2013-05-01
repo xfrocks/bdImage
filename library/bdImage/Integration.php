@@ -96,7 +96,7 @@ class bdImage_Integration
 		return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
 	}
 
-	public static function getImgAttributes($imageData, $size, $mode)
+	public static function getImgAttributes($imageData, $size, $mode = self::MODE_CROP_EQUAL)
 	{
 		$width = false;
 		$height = false;

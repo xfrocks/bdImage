@@ -118,6 +118,12 @@ class bdImage_Integration
 					$width = $size;
 					$height = $width / $imageData['width'] * $imageData['height'];
 					break;
+				default:
+					if (is_numeric($mode))
+					{
+						$width = $size;
+						$height = $mode;
+					}
 			}
 		}
 

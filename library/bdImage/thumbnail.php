@@ -58,7 +58,7 @@ if (!file_exists($path))
 			}
 			break;
 	}
-	
+
 	if (Zend_Uri::check($url))
 	{
 		// this is a remote uri, try to cache it first
@@ -104,8 +104,48 @@ if (!file_exists($path))
 			$image->thumbnail($targetWidth, $targetHeight);
 			break;
 		default:
-			$image->thumbnailFixedShorterSide($size);
-			$image->crop(0, 0, $size, $size);
+			if (is_numeric($mode))
+			{
+				// exact crop
+				$origRatio = $image->getWidth() / $image->getHeight();
+				$cropRatio = $size / $mode;
+				$thumWidth = 0;
+				$thumHeight = 0;
+				if ($origRatio > $cropRatio)
+				{
+					$thumHeight = $mode;
+					$thumWidth = $mode * $origRatio;
+				}
+				else
+				{
+					$thumWidth = $size;
+					$thumHeight = $size / $origRatio;
+				}
+
+				if ($thumWidth <= $image->getWidth() AND $thumHeight <= $image->getHeight())
+				{
+					$image->thumbnail($thumWidth, $thumHeight);
+					$image->crop(0, 0, $size, $mode);
+				}
+				else
+				{
+					// thumbnail requested is larger then the image size
+					if ($origRatio > $cropRatio)
+					{
+						$image->crop(0, 0, $image->getHeight() * $cropRatio, $image->getHeight());
+					}
+					else
+					{
+						$image->crop(0, 0, $image->getWidth(), $image->getWidth() / $cropRatio);
+					}
+				}
+			}
+			else
+			{
+				// square crop
+				$image->thumbnailFixedShorterSide($size);
+				$image->crop(0, 0, $size, $size);
+			}
 			break;
 	}
 

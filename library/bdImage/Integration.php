@@ -98,34 +98,22 @@ class bdImage_Integration
 
 		return false;
 	}
+	
+	public static function getCachePath($uri, $hash, $pathPrefix = 'cache')
+	{
+		return $pathPrefix . '/' . gmdate('Ymd') . '/' . $hash . '.jpg';
+	}
+	
+	public static function getOriginalCachePath($uri, $pathPrefix = 'cache')
+	{
+		return $pathPrefix . '/' . date('Ymd') . '/' . md5($uri) . '.orig';
+	}
 
 	public static function hasImageUrl($imageData)
 	{
 		$imageData = self::_unpackData($imageData);
 
 		return !empty($imageData['url']);
-	}
-
-	public static function getViewableImageUrl($imageData)
-	{
-		$imageData = self::_unpackData($imageData);
-
-		if (!empty($imageData['url']))
-		{
-			$url = $imageData['url'];
-
-			if (preg_match('/^\/attachments\/\d\/(\d+)\-[0-9a-f]{32}\.data$/', $url, $matches))
-			{
-				// this is an attachment data file, ignore
-				return false;
-			}
-
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
 	}
 
 	public static function buildThumbnailLink($imageData, $size, $mode = self::MODE_CROP_EQUAL)
@@ -158,8 +146,9 @@ class bdImage_Integration
 		$width = false;
 		$height = false;
 
-		$imageData = self::_unpackData($imageData);
-		if (!empty($imageData['width']) AND !empty($imageData['height']))
+		$imageWidth = self::getImageWidth($imageData);
+		$imageHeight = self::getImageHeight($imageData);
+		if (!empty($imageWidth) AND !empty($imageHeight))
 		{
 			switch ($mode)
 			{
@@ -169,11 +158,11 @@ class bdImage_Integration
 					break;
 				case self::MODE_STRETCH_WIDTH:
 					$height = $size;
-					$width = $height / $imageData['height'] * $imageData['width'];
+					$width = $height / $imageHeight * $imageWidth;
 					break;
 				case self::MODE_STRETCH_HEIGHT:
 					$width = $size;
-					$height = $width / $imageData['width'] * $imageData['height'];
+					$height = $width / $imageWidth * $imageHeight;
 					break;
 				default:
 					if (is_numeric($mode))
@@ -307,7 +296,15 @@ class bdImage_Integration
 			if (!empty($uri))
 			{
 				require_once(dirname(__FILE__) . '/ThirdParties/Fastimage.php');
-				$image = new FastImage($uri);
+				$originalCachePath = self::getOriginalCachePath($uri);
+				if (file_exists($originalCachePath))
+				{
+					$image = new FastImage($originalCachePath);
+				}
+				else 
+				{
+					$image = new FastImage($uri);
+				}
 				set_time_limit(5);
 				list($width, $height) = $image->getSize();
 			}

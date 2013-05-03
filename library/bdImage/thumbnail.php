@@ -5,9 +5,6 @@ $size = intval(empty($_REQUEST['size']) ? 0 : $_REQUEST['size']);
 $mode = empty($_REQUEST['mode']) ? '' : $_REQUEST['mode'];
 $hash = empty($_REQUEST['hash']) ? false : $_REQUEST['hash'];
 
-$pathPrefix = 'cache';
-$path = $pathPrefix . '/' . gmdate('Ymd') . '/' . $hash . '.jpg';
-
 $fileDir = dirname(dirname(dirname(__FILE__)));
 require($fileDir . '/library/XenForo/Autoloader.php');
 XenForo_Autoloader::getInstance()->setupAutoloader($fileDir . '/library');
@@ -21,13 +18,16 @@ if (empty($size) OR bdImage_Integration::computeHash($url, $size, $mode) != $has
 	exit;
 }
 
+$uri = bdImage_Integration::getAccessibleUri($url);
+$path = bdImage_Integration::getCachePath($uri, $hash);
+$originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
+
 if (!file_exists($path))
 {
 	// this is the first time this url has been requested
 	// we will have to fetch the image, then resize as needed
 	$inputType = IMAGETYPE_JPEG; // default to use JPEG
 	$ext = XenForo_Helper_File::getFileExtension($url);
-	$uri = bdImage_Integration::getAccessibleUri($url);
 	switch ($ext)
 	{
 		case 'gif': $inputType = IMAGETYPE_GIF; break;
@@ -63,7 +63,6 @@ if (!file_exists($path))
 	if (Zend_Uri::check($uri))
 	{
 		// this is a remote uri, try to cache it first
-		$originalCachePath = $pathPrefix . '/' . date('Ymd') . '/' . md5($uri) . '.orig';
 		if (!file_exists($originalCachePath))
 		{
 			XenForo_Helper_File::createDirectory('./' . dirname($originalCachePath), true);

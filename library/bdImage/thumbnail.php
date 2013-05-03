@@ -27,6 +27,7 @@ if (!file_exists($path))
 	// we will have to fetch the image, then resize as needed
 	$inputType = IMAGETYPE_JPEG; // default to use JPEG
 	$ext = XenForo_Helper_File::getFileExtension($url);
+	$uri = bdImage_Integration::getAccessibleUri($url);
 	switch ($ext)
 	{
 		case 'gif': $inputType = IMAGETYPE_GIF; break;
@@ -59,28 +60,28 @@ if (!file_exists($path))
 			break;
 	}
 
-	if (Zend_Uri::check($url))
+	if (Zend_Uri::check($uri))
 	{
 		// this is a remote uri, try to cache it first
-		$originalCachePath = $pathPrefix . '/' . date('Ymd') . '/' . md5($url) . '.orig';
+		$originalCachePath = $pathPrefix . '/' . date('Ymd') . '/' . md5($uri) . '.orig';
 		if (!file_exists($originalCachePath))
 		{
 			XenForo_Helper_File::createDirectory('./' . dirname($originalCachePath), true);
-			file_put_contents($originalCachePath, file_get_contents($url));
+			file_put_contents($originalCachePath, file_get_contents($uri));
 		}
 		// switch to use the cached original file
 		// doing this will reduce server load when a new image is uploaded and started to appear
 		// in different places with different sizes/modes
-		$url = $originalCachePath;
+		$uri = $originalCachePath;
 	}
 
 	if (class_exists('Imagick'))
 	{
-		$image = XenForo_Image_Imagemagick_Pecl::createFromFileDirect($url, $inputType);
+		$image = XenForo_Image_Imagemagick_Pecl::createFromFileDirect($uri, $inputType);
 	}
 	else
 	{
-		$image = XenForo_Image_Gd::createFromFileDirect($url, $inputType);
+		$image = XenForo_Image_Gd::createFromFileDirect($uri, $inputType);
 	}
 
 	if (empty($image))

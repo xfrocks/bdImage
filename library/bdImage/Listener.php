@@ -12,7 +12,6 @@ class bdImage_Listener
 			'XenForo_Model_Log',
 			'XenForo_Model_Post',
 			'XenForo_Model_Thread',
-			'XenForo_Route_Prefix_Attachments',
 		);
 		
 		if (in_array($class, $classes))
@@ -23,8 +22,7 @@ class bdImage_Listener
 	
 	public static function init_dependencies(XenForo_Dependencies_Abstract $dependencies, array $data)
 	{
-		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_isAvailable'] = array('bdImage_Integration', 'hasImageUrl');
-		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_fullsize'] = array('bdImage_Integration', 'getViewableImageUrl');
+		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_isavailable'] = array('bdImage_Integration', 'hasImageUrl');
 		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_thumbnail'] = array('bdImage_Integration', 'buildThumbnailLink');
 		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_width'] = array('bdImage_Integration', 'getImageWidth');
 		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_height'] = array('bdImage_Integration', 'getImageHeight');
@@ -33,23 +31,6 @@ class bdImage_Listener
 	
 	public static function template_post_render($templateName, &$content, array &$containerData, XenForo_Template_Abstract $template)
 	{
-		if ($templateName == 'thread_view' AND !empty($containerData['head']['openGraph']))
-		{
-			$templateParams = $template->getParams();
-			if (isset($templateParams['thread']))
-			{
-				$thread = $templateParams['thread'];
-				if (!empty($thread['bdimage_image']))
-				{
-					$imageUrl = bdImage_Integration::getViewableImageUrl($thread['bdimage_image']);
-					if (!empty($imageUrl))
-					{
-						$containerData['head']['openGraph'] .= "<meta property=\"og:image\" content=\"{$imageUrl}\" />";
-					}
-				}
-			}
-		}
-		
 		if ($templateName == 'wf_widget_threads')
 		{
 			bdImage_Injection_WidgetFramework_WidgetRenderer_Threads::wf_widget_threads($templateName, $content, $containerData, $template);

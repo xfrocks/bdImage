@@ -46,7 +46,7 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 
 				foreach ($this->_attachmentIds as $attachmentId)
 				{
-					if (isset($attachments[$attachmentId]))
+					if (isset($attachments[$attachmentId]) AND $attachments[$attachmentId]['width'] > 0)
 					{
 						$dataFilePath = $attachmentModel->getAttachmentDataFilePath($attachments[$attachmentId]);
 

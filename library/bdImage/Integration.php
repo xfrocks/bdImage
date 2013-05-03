@@ -39,9 +39,66 @@ class bdImage_Integration
 		}
 
 		list($imageWidth, $imageHeight) = self::_getImageSize($imageUrl);
-		return self::_packData($imageUrl, $imageWidth, $imageHeight);
+		return self::_packData(self::getSafeImageUrl($imageUrl), $imageWidth, $imageHeight);
 	}
-	
+
+	public static function getSafeImageUrl($uri)
+	{
+		if (empty($uri))
+		{
+			// nothing to do here
+			return $uri;
+		}
+
+		if (Zend_Uri::check($uri))
+		{
+			// uri, return asap
+			return $uri;
+		}
+		else
+		{
+			$realpath = realpath($uri);
+			$rootRealpath = realpath(XenForo_Application::getInstance()->getRootDir());
+
+			if (substr($realpath, 0, strlen($rootRealpath)) == $rootRealpath)
+			{
+				// hide the root path
+				return ltrim(substr($realpath, strlen($rootRealpath)), '/');
+			}
+			else
+			{
+				// unable to hide anything...
+				return $uri;
+			}
+		}
+	}
+
+	public static function getAccessibleUri($url)
+	{
+		if (Zend_Uri::check($url))
+		{
+			return $url;
+		}
+		else
+		{
+			// the url is not a valid uri, could be a path...
+			$realpath = realpath($url);
+			if (file_exists($realpath))
+			{
+				return $realpath;
+			}
+
+			// try relative to XenForo root
+			$realpath = realpath(XenForo_Application::getInstance()->getRootDir() . '/' . $url);
+			if (file_exists($realpath))
+			{
+				return $realpath;
+			}
+		}
+
+		return false;
+	}
+
 	public static function hasImageUrl($imageData)
 	{
 		$imageData = self::_unpackData($imageData);
@@ -56,13 +113,13 @@ class bdImage_Integration
 		if (!empty($imageData['url']))
 		{
 			$url = $imageData['url'];
-			
+
 			if (preg_match('/^\/attachments\/\d\/(\d+)\-[0-9a-f]{32}\.data$/', $url, $matches))
 			{
 				// this is an attachment data file, ignore
 				return false;
 			}
-			
+
 			return $url;
 		}
 		else
@@ -86,13 +143,13 @@ class bdImage_Integration
 		$imageData = self::_unpackData($imageData);
 
 		$thumbnailUrl = sprintf('%s/bdImage/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s',
-		XenForo_Application::$externalDataUrl,
-		rawurlencode($imageData['url']),
-		intval($size),
-		$mode,
-		self::computeHash($imageData['url'], $size, $mode)
+				XenForo_Application::$externalDataUrl,
+				rawurlencode($imageData['url']),
+				intval($size),
+				$mode,
+				self::computeHash($imageData['url'], $size, $mode)
 		);
-		
+
 		return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
 	}
 
@@ -234,15 +291,9 @@ class bdImage_Integration
 	{
 		$imageData = self::_unpackData($imageData);
 
-		$uri = $imageData['url'];
-		if (!Zend_Uri::check($uri))
-		{
-			// the url is not a valid uri, it should be a relative path from internal_data directory
-			$uri = XenForo_Helper_File::getInternalDataPath() . $imageData['url'];
-		}
-
 		$width = false;
 		$height = false;
+
 		if (!empty($imageData['width']) AND !empty($imageData['height']))
 		{
 			$width = $imageData['width'];
@@ -252,10 +303,14 @@ class bdImage_Integration
 		if ((empty($width) OR empty($height)) AND $doFetch)
 		{
 			// no size data has been found, we have to fetch the image to obtain it
-			require_once(dirname(__FILE__) . '/ThirdParties/Fastimage.php');
-			$image = new FastImage($uri);
-			set_time_limit(5);
-			list($width, $height) = $image->getSize();
+			$uri = self::getAccessibleUri($imageData['url']);
+			if (!empty($uri))
+			{
+				require_once(dirname(__FILE__) . '/ThirdParties/Fastimage.php');
+				$image = new FastImage($uri);
+				set_time_limit(5);
+				list($width, $height) = $image->getSize();
+			}
 		}
 
 		if (!empty($width) AND !empty($height))

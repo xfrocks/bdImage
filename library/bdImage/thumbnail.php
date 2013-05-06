@@ -27,7 +27,7 @@ if (!file_exists($path))
 	// this is the first time this url has been requested
 	// we will have to fetch the image, then resize as needed
 	$inputType = IMAGETYPE_JPEG; // default to use JPEG
-	$ext = XenForo_Helper_File::getFileExtension($url);
+	$ext = XenForo_Helper_File::getFileExtension($uri);
 	switch ($ext)
 	{
 		case 'gif': $inputType = IMAGETYPE_GIF; break;
@@ -35,10 +35,9 @@ if (!file_exists($path))
 		case 'jpeg': $inputType = IMAGETYPE_JPEG; break;
 		case 'png': $inputType = IMAGETYPE_PNG; break;
 		case 'data': // this is our attachment extension
-			$url = XenForo_Helper_File::getInternalDataPath() . $url; // restore the url, it was cutoff in bdImage_BbCode_Formatter_Collector
 			$inputType = IMAGETYPE_JPEG;
 			// we have to read the magic bytes to determine the correct file type
-			$fh = fopen($url, 'rb');
+			$fh = fopen($uri, 'rb');
 			if (!empty($fh))
 			{
 				$data = fread($fh, 4);

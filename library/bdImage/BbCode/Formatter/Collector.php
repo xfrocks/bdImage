@@ -52,7 +52,6 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 
 						if (file_exists($dataFilePath))
 						{
-							$dataFilePath = str_replace(XenForo_Helper_File::getInternalDataPath(), '', $dataFilePath); // remove the full path for security reason
 							$this->_imageUrls[] = $dataFilePath;
 						}
 						else

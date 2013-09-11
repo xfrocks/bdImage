@@ -40,6 +40,7 @@ class bdImage_Listener
 	
 	public static function widget_framework_ready(array &$renderers)
 	{
+		$renderers[] = 'bdImage_WidgetRenderer_Threads';
 		$renderers[] = 'bdImage_WidgetRenderer_SliderThreads';
 	}
 

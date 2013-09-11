@@ -4,12 +4,17 @@
   <admin_permissions/>
   <admin_style_properties/>
   <admin_templates>
-    <template title="bdimage_widget_options_threads"><![CDATA[<xen:include template="wf_widget_options_threads" />
+    <template title="bdimage_widget_options_slider_threads"><![CDATA[<xen:include template="wf_widget_options_threads" />
 
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_width}" name="{$namePrefix}thumbnail_width" value="{xen:if 'isset({$options.thumbnail_width})', {$options.thumbnail_width}, 100}" min="1" step="50" />
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_height}" name="{$namePrefix}thumbnail_height" value="{xen:if 'isset({$options.thumbnail_height})', {$options.thumbnail_height}, 100}" min="1" step="50" />
 <xen:spinboxunit label="{xen:phrase bdimage_gap}" name="{$namePrefix}gap" value="{xen:if 'isset({$options.gap})', {$options.gap}, 10}" min="1" step="10" />
 <xen:spinboxunit label="{xen:phrase bdimage_visible_count}" name="{$namePrefix}visible_count" value="{xen:if 'isset({$options.visible_count})', {$options.visible_count}, 1}" min="1" />]]></template>
+    <template title="bdimage_widget_options_threads"><![CDATA[<xen:include template="wf_widget_options_threads" />
+
+<xen:spinboxunit label="{xen:phrase bdimage_thumbnail_width}" name="{$namePrefix}thumbnail_width" value="{xen:if 'isset({$options.thumbnail_width})', {$options.thumbnail_width}, 100}" min="1" step="50" />
+<xen:spinboxunit label="{xen:phrase bdimage_thumbnail_height}" name="{$namePrefix}thumbnail_height" value="{xen:if 'isset({$options.thumbnail_height})', {$options.thumbnail_height}, 100}" min="1" step="50" />
+<xen:spinboxunit label="{xen:phrase bdimage_gap}" name="{$namePrefix}gap" value="{xen:if 'isset({$options.gap})', {$options.gap}, 10}" min="1" step="10" />]]></template>
   </admin_templates>
   <admin_template_modifications/>
   <code_events/>
@@ -40,12 +45,21 @@
   <route_prefixes/>
   <style_properties/>
   <templates>
-    <template title="bdimage_widget_slider.css" version_id="10" version_string="0.9-dev"><![CDATA[.bdImage_Widget_Slider_Container
+    <template title="bdimage_widget.css" version_id="12" version_string="0.9-dev"><![CDATA[.bdImage_Widget_Slider_Container
 {
 	margin-left: auto;
 	margin-right: auto;
 	overflow: hidden;
-}]]></template>
+}
+
+.bdImage_Widget_Items
+{
+}
+{xen:helper clearfix, '.bdImage_Widget_Items'}
+	.bdImage_Widget_Items > li
+	{
+		float: left;
+	}]]></template>
     <template title="bdimage_widget_slider_threads" version_id="12" version_string="0.9-dev"><![CDATA[<xen:if hascontent="true">
 	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
 	<xen:container var="$head.{$cssClass}">
@@ -62,7 +76,7 @@
 </style>
 	</xen:container>
 	
-	<xen:require css="bdimage_widget_slider.css" />
+	<xen:require css="bdimage_widget.css" />
 	<xen:require js="js/bdImage/widget_slider.js" />
 	<xen:require js="js/bdImage/jquery.jcarousel.js" />
 
@@ -70,40 +84,45 @@
         <ul class="bdImage_Widget_Slider_Items">
             <xen:contentcheck>
 				<xen:if is="{$new}">
-					<xen:include template="bdimage_widget_slider_threads_slider">
+					<xen:include template="bdimage_widget_thread_item">
 						<xen:map from="$new" to="$threads" />
 					</xen:include>
 				<xen:elseif is="{$recent}"/>
-					<xen:include template="bdimage_widget_slider_threads_slider">
+					<xen:include template="bdimage_widget_thread_item">
 						<xen:map from="$recent" to="$threads" />
 					</xen:include>
 				<xen:elseif is="{$popular}"/>
-					<xen:include template="bdimage_widget_slider_threads_slider">
+					<xen:include template="bdimage_widget_thread_item">
 						<xen:map from="$popular" to="$threads" />
 					</xen:include>
 				<xen:elseif is="{$mostReplied}"/>
-					<xen:include template="bdimage_widget_slider_threads_slider">
+					<xen:include template="bdimage_widget_thread_item">
 						<xen:map from="$mostReplied" to="$threads" />
 					</xen:include>
 				<xen:elseif is="{$mostLiked}"/>
-					<xen:include template="bdimage_widget_slider_threads_slider">
+					<xen:include template="bdimage_widget_thread_item">
 						<xen:map from="$mostLiked" to="$threads" />
 					</xen:include>
 				<xen:elseif is="{$polls}"/>
-					<xen:include template="bdimage_widget_slider_threads_slider">
+					<xen:include template="bdimage_widget_thread_item">
 						<xen:map from="$polls" to="$threads" />
 					</xen:include>
 				<xen:elseif is="{$threads}" />
-					<xen:include template="bdimage_widget_slider_threads_slider" />
+					<xen:include template="bdimage_widget_thread_item" />
 				</xen:if>
             </xen:contentcheck>
         </ul>
     </div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_slider_threads_slider" version_id="12" version_string="0.9-dev"><![CDATA[<xen:foreach loop="$threads" value="$thread">
+    <template title="bdimage_widget_thread_item" version_id="12" version_string="0.9-dev"><![CDATA[<xen:foreach loop="$threads" value="$thread">
 	<xen:if is="{$thread.bdimage_image}">
 		<li>
-			<a href="{xen:link threads, $thread}">
+			<a href="{xen:link threads, $thread}"
+				<xen:if is="{$bdImageWidgetThread_showToolTip}">
+				class="Tooltip" title="{$thread.title} {xen:phrase by} {$thread.username}"
+				data-offsetx="10" data-offsety="{xen:calc '5 - {$widget.options.thumbnail_height}'}"
+				</xen:if>
+				>
 				<img src="{xen:helper bdImage_thumbnail,
 					$thread.bdimage_image,
 					{$widget.options.thumbnail_width},
@@ -115,6 +134,66 @@
 		</li>
 	</xen:if>
 </xen:foreach>]]></template>
+    <template title="bdimage_widget_threads" version_id="12" version_string="0.9-dev"><![CDATA[<xen:if hascontent="true">
+	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
+	<xen:container var="$head.{$cssClass}">
+<style>
+.{$cssClass}
+{
+	width: {xen:calc '{$widget.options.thumbnail_width}*{$widget.options.visible_count} + {$widget.options.gap}*({$widget.options.visible_count}-1)'}px;
+}
+.{$cssClass} ul.bdImage_Widget_Items > li
+{
+	padding-right: {$widget.options.gap}px;
+	width: {$widget.options.thumbnail_width}px;
+}
+</style>
+	</xen:container>
+	
+	<xen:require css="bdimage_widget.css" />
+
+    <div class="{$cssClass}">
+        <ul class="bdImage_Widget_Items">
+            <xen:contentcheck>
+				<xen:if is="{$new}">
+					<xen:include template="bdimage_widget_thread_item">
+						<xen:map from="$new" to="$threads" />
+						<xen:set var="$bdImageWidgetThread_showToolTip">1</xen:set>
+					</xen:include>
+				<xen:elseif is="{$recent}"/>
+					<xen:include template="bdimage_widget_thread_item">
+						<xen:map from="$recent" to="$threads" />
+						<xen:set var="$bdImageWidgetThread_showToolTip">1</xen:set>
+					</xen:include>
+				<xen:elseif is="{$popular}"/>
+					<xen:include template="bdimage_widget_thread_item">
+						<xen:map from="$popular" to="$threads" />
+						<xen:set var="$bdImageWidgetThread_showToolTip">1</xen:set>
+					</xen:include>
+				<xen:elseif is="{$mostReplied}"/>
+					<xen:include template="bdimage_widget_thread_item">
+						<xen:map from="$mostReplied" to="$threads" />
+						<xen:set var="$bdImageWidgetThread_showToolTip">1</xen:set>
+					</xen:include>
+				<xen:elseif is="{$mostLiked}"/>
+					<xen:include template="bdimage_widget_thread_item">
+						<xen:map from="$mostLiked" to="$threads" />
+						<xen:set var="$bdImageWidgetThread_showToolTip">1</xen:set>
+					</xen:include>
+				<xen:elseif is="{$polls}"/>
+					<xen:include template="bdimage_widget_thread_item">
+						<xen:map from="$polls" to="$threads" />
+						<xen:set var="$bdImageWidgetThread_showToolTip">1</xen:set>
+					</xen:include>
+				<xen:elseif is="{$threads}" />
+					<xen:include template="bdimage_widget_thread_item">
+						<xen:set var="$bdImageWidgetThread_showToolTip">1</xen:set>
+					</xen:include>
+				</xen:if>
+            </xen:contentcheck>
+        </ul>
+    </div>
+</xen:if>]]></template>
   </templates>
   <public_template_modifications/>
   <bb_code_media_sites/>

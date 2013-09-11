@@ -9,8 +9,8 @@ class bdImage_Integration
 	const MODE_CROP_EQUAL = 'ce';
 	const MODE_STRETCH_WIDTH = 'sw';
 	const MODE_STRETCH_HEIGHT = 'sh';
-
-	public static function getBbCodeImage($bbCode, XenForo_DataWriter $dw = null, array $contentData = null)
+	
+	public static function getBbCodeImages($bbCode, array $contentData, $dwOrModel)
 	{
 		$formatter = XenForo_BbCode_Formatter_Base::create('bdImage_BbCode_Formatter_Collector');
 		if (!empty($contentData))
@@ -19,14 +19,19 @@ class bdImage_Integration
 		}
 		if (!empty($dw))
 		{
-			$formatter->setDataWriter($dw);
+			$formatter->setDwOrModel($dwOrModel);
 		}
 
 		$parser = new XenForo_BbCode_Parser($formatter);
 
 		$result = $parser->render($bbCode);
 
-		$imageUrls = $formatter->getImageUrls();
+		return $formatter->getImageUrls();
+	}
+
+	public static function getBbCodeImage($bbCode, array $contentData, $dwOrModel)
+	{
+		$imageUrls = self::getBbCodeImages($bbCode, $contentData, $dwOrModel);
 		if (empty($imageUrls))
 		{
 			return '';
@@ -99,7 +104,7 @@ class bdImage_Integration
 		return false;
 	}
 
-	public static function getCachePath($uri, $hash, $pathPrefix = 'cache')
+	public static function getCachePath($uri, $size, $mode, $hash, $pathPrefix = 'cache')
 	{
 		if (XenForo_Helper_File::getFileExtension($uri) === 'png')
 		{
@@ -109,8 +114,10 @@ class bdImage_Integration
 		{
 			$ext = 'jpg';
 		}
+		
+		$divider = substr(md5($hash), 0, 2);
 
-		return sprintf('%s/%s/%s.%s', $pathPrefix, gmdate('Ymd'), $hash, $ext);
+		return sprintf('%s/%s_%s/%s/%s.%s', $pathPrefix, $size, $mode, $divider, $hash, $ext);
 	}
 
 	public static function getOriginalCachePath($uri, $pathPrefix = 'cache')
@@ -130,7 +137,7 @@ class bdImage_Integration
 		$imageData = self::_unpackData($imageData);
 		$hash = self::computeHash($imageData['url'], $size, $mode);
 
-		$cachePath = bdImage_Integration::getCachePath($imageData['url'], $hash);
+		$cachePath = bdImage_Integration::getCachePath($imageData['url'], $size, $mode, $hash);
 		$fullCachePath = sprintf('%s/bdImage/%s', XenForo_Helper_File::getExternalDataPath(), $cachePath);
 		if (file_exists($fullCachePath))
 		{

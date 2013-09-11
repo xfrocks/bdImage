@@ -5,12 +5,12 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 	protected $_imageUrls = array();
 	protected $_attachmentIds = array();
 
-	protected $_dw = false;
+	protected $_dwOrModel = false;
 	protected $_contentData = false;
 
-	public function setDataWriter(XenForo_DataWriter $dw)
+	public function setDwOrModel($dwOrModel)
 	{
-		$this->_dw = $dw;
+		$this->_dwOrModel = $dwOrModel;
 	}
 
 	public function setContentData(array $contentData)
@@ -29,19 +29,19 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 		if (!empty($this->_attachmentIds))
 		{
 			// found some attachment ids...
-			if (!empty($this->_dw) AND !empty($this->_contentData))
+			if (!empty($this->_contentData))
 			{
-				$attachmentModel = $this->_dw->getModelFromCache('XenForo_Model_Attachment');
+				$attachmentModel = $this->getModelFromCache('XenForo_Model_Attachment');
 				$attachments = array();
 
 				if (!empty($this->_contentData['contentId']))
 				{
-					$attachments +=  $attachmentModel->getAttachmentsByContentId($this->_contentData['contentType'], $this->_contentData['contentId']);
+					$attachments += $attachmentModel->getAttachmentsByContentId($this->_contentData['contentType'], $this->_contentData['contentId']);
 				}
 
 				if (!empty($this->_contentData['attachmentHash']))
 				{
-					$attachments +=  $attachmentModel->getAttachmentsByTempHash($this->_contentData['attachmentHash']);
+					$attachments += $attachmentModel->getAttachmentsByTempHash($this->_contentData['attachmentHash']);
 				}
 
 				foreach ($this->_attachmentIds as $attachmentId)
@@ -59,7 +59,7 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 							// provide support for [bd] Attachment Store
 							$attachmentUrl = XenForo_Link::buildPublicLink('canonical:attachments', $attachments[$attachmentId]);
 						}
-						
+
 						foreach (array_keys($this->_imageUrls) as $imageUrlKey)
 						{
 							if (is_array($this->_imageUrls[$imageUrlKey]) AND $this->_imageUrls[$imageUrlKey][0] == 'attachment' AND $this->_imageUrls[$imageUrlKey][1] == $attachmentId)
@@ -70,8 +70,8 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 					}
 				}
 			}
-				
-			$this->_attachmentIds = array(); // clear
+
+			$this->_attachmentIds = array();
 		}
 
 		return $this->_imageUrls;
@@ -80,15 +80,21 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 	public function getTags()
 	{
 		return array(
-				'img' => array(
-						'hasOption' => false,
-						'plainChildren' => true,
-						'callback' => array($this, 'renderTagImage')
-				),
-				'attach' => array(
-						'plainChildren' => true,
-						'callback' => array($this, 'renderTagAttach')
+			'img' => array(
+				'hasOption' => false,
+				'plainChildren' => true,
+				'callback' => array(
+					$this,
+					'renderTagImage'
 				)
+			),
+			'attach' => array(
+				'plainChildren' => true,
+				'callback' => array(
+					$this,
+					'renderTagAttach'
+				)
+			)
 		);
 	}
 
@@ -117,8 +123,29 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 		$id = intval($this->stringifyTree($tag['children']));
 		if (!empty($id))
 		{
-			$this->_imageUrls[] = array('attachment', $id);
+			$this->_imageUrls[] = array(
+				'attachment',
+				$id
+			);
 			$this->_attachmentIds[] = $id;
 		}
 	}
+
+	public function getModelFromCache($class)
+	{
+		if (empty($this->_dwOrModel))
+		{
+			$this->_dwOrModel = XenForo_Model::create($class);
+			return $this->_dwOrModel;
+		}
+		elseif ($this->_dwOrModel instanceof $class)
+		{
+			return $this->_dwOrModel;
+		}
+		else
+		{
+			return $this->_dwOrModel->getModelFromCache($class);
+		}
+	}
+
 }

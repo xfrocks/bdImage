@@ -21,7 +21,7 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
 			'attachmentHash' => $this->getExtraData(XenForo_DataWriter_DiscussionMessage_Post::DATA_ATTACHMENT_HASH),
 		);
 		
-		return bdImage_Integration::getBbCodeImage($this->get('message'), $this, $contentData);
+		return bdImage_Integration::getBbCodeImage($this->get('message'), $contentData, $this);
 	}
 	
 	protected function _messagePostSave()

@@ -19,7 +19,7 @@ if (empty($size) OR bdImage_Integration::computeHash($url, $size, $mode) != $has
 }
 
 $uri = bdImage_Integration::getAccessibleUri($url);
-$path = bdImage_Integration::getCachePath($uri, $hash);
+$path = bdImage_Integration::getCachePath($uri, $size, $mode, $hash);
 $originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
 
 if (!file_exists($path))

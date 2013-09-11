@@ -28,7 +28,7 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
 					'contentId' => $firstPost['post_id'],
 					'attachmentHash' => false,
 			);
-			$image = bdImage_Integration::getBbCodeImage($firstPost['message'], $this, $contentData);
+			$image = bdImage_Integration::getBbCodeImage($firstPost['message'], $contentData, $this);
 
 			$this->set('bdimage_image', $image);
 		}

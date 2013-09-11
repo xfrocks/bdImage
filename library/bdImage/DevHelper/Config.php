@@ -9,7 +9,7 @@ class bdImage_DevHelper_Config extends DevHelper_Config_Base {
 			'bdimage_last_post_image' => array('name' => 'bdimage_last_post_image', 'type' => 'string')
 		)
 	);
-	protected $_exportPath = '/Users/sondh/Dropbox/XenForo/bdImage';
+	protected $_exportPath = '/Users/sondh/XenForo/bdImage';
 	protected $_exportIncludes = array();
 	
 	/**

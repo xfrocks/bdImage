@@ -2,3 +2,5 @@
 *.devhelper
 library/bdImage/DevHelper/Generated/*
 js/bdImage/widget_slider.js
+js/bdImage/jquery.jcarousel.js
+library/bdImage/FileSums.php

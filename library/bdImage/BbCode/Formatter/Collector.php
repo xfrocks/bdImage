@@ -52,12 +52,20 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 
 						if (file_exists($dataFilePath))
 						{
-							$this->_imageUrls[] = $dataFilePath;
+							$attachmentUrl = $dataFilePath;
 						}
 						else
 						{
 							// provide support for [bd] Attachment Store
-							$this->_imageUrls[] = XenForo_Link::buildPublicLink('canonical:attachments', $attachments[$attachmentId]);
+							$attachmentUrl = XenForo_Link::buildPublicLink('canonical:attachments', $attachments[$attachmentId]);
+						}
+						
+						foreach (array_keys($this->_imageUrls) as $imageUrlKey)
+						{
+							if (is_array($this->_imageUrls[$imageUrlKey]) AND $this->_imageUrls[$imageUrlKey][0] == 'attachment' AND $this->_imageUrls[$imageUrlKey][1] == $attachmentId)
+							{
+								$this->_imageUrls[$imageUrlKey] = $attachmentUrl;
+							}
 						}
 					}
 				}
@@ -109,6 +117,7 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 		$id = intval($this->stringifyTree($tag['children']));
 		if (!empty($id))
 		{
+			$this->_imageUrls[] = array('attachment', $id);
 			$this->_attachmentIds[] = $id;
 		}
 	}

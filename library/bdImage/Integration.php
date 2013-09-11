@@ -98,7 +98,7 @@ class bdImage_Integration
 
 		return false;
 	}
-	
+
 	public static function getCachePath($uri, $hash, $pathPrefix = 'cache')
 	{
 		if (XenForo_Helper_File::getFileExtension($uri) === 'png')
@@ -109,10 +109,10 @@ class bdImage_Integration
 		{
 			$ext = 'jpg';
 		}
-		
+
 		return sprintf('%s/%s/%s.%s', $pathPrefix, gmdate('Ymd'), $hash, $ext);
 	}
-	
+
 	public static function getOriginalCachePath($uri, $pathPrefix = 'cache')
 	{
 		return sprintf('%s/%s/%s.orig', $pathPrefix, gmdate('Ymd'), md5($uri));
@@ -127,25 +127,30 @@ class bdImage_Integration
 
 	public static function buildThumbnailLink($imageData, $size, $mode = self::MODE_CROP_EQUAL)
 	{
-		// check for thumbnail.php file to make sure it exists and updated
-		$origPath = sprintf('%s/thumbnail.php', dirname(__FILE__));
-		$path = sprintf('%s/bdImage/thumbnail.php', XenForo_Helper_File::getExternalDataPath());
-		if (!file_exists($path) OR filemtime($path) < filemtime($origPath))
+		$imageData = self::_unpackData($imageData);
+		$hash = self::computeHash($imageData['url'], $size, $mode);
+
+		$cachePath = bdImage_Integration::getCachePath($imageData['url'], $hash);
+		$fullCachePath = sprintf('%s/bdImage/%s', XenForo_Helper_File::getExternalDataPath(), $cachePath);
+		if (file_exists($fullCachePath))
 		{
-			XenForo_Helper_File::createDirectory(dirname($path), true);
-			copy(dirname(__FILE__) . '/thumbnail.php', $path);
-			XenForo_Helper_File::makeWritableByFtpUser($path);
+			$thumbnailUrl = sprintf('%s/bdImage/%s', XenForo_Application::$externalDataUrl, $cachePath);
 		}
 
-		$imageData = self::_unpackData($imageData);
+		if (empty($thumbnailUrl))
+		{
+			// check for thumbnail.php file to make sure it exists and updated
+			$origPath = sprintf('%s/thumbnail.php', dirname(__FILE__));
+			$path = sprintf('%s/bdImage/thumbnail.php', XenForo_Helper_File::getExternalDataPath());
+			if (!file_exists($path) OR filemtime($path) < filemtime($origPath))
+			{
+				XenForo_Helper_File::createDirectory(dirname($path), true);
+				copy(dirname(__FILE__) . '/thumbnail.php', $path);
+				XenForo_Helper_File::makeWritableByFtpUser($path);
+			}
 
-		$thumbnailUrl = sprintf('%s/bdImage/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s',
-				XenForo_Application::$externalDataUrl,
-				rawurlencode($imageData['url']),
-				intval($size),
-				$mode,
-				self::computeHash($imageData['url'], $size, $mode)
-		);
+			$thumbnailUrl = sprintf('%s/bdImage/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s', XenForo_Application::$externalDataUrl, rawurlencode($imageData['url']), intval($size), $mode, $hash);
+		}
 
 		return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
 	}
@@ -196,7 +201,6 @@ class bdImage_Integration
 	{
 		return md5(md5($imageUrl) . intval($size) . $mode . XenForo_Application::getConfig()->get('globalSalt'));
 	}
-
 
 	public static function getImageWidth($imageData)
 	{
@@ -304,13 +308,13 @@ class bdImage_Integration
 			$uri = self::getAccessibleUri($imageData['url']);
 			if (!empty($uri))
 			{
-				require_once(dirname(__FILE__) . '/ThirdParties/Fastimage.php');
+				require_once (dirname(__FILE__) . '/ThirdParties/Fastimage.php');
 				$originalCachePath = self::getOriginalCachePath($uri);
 				if (file_exists($originalCachePath))
 				{
 					$image = new FastImage($originalCachePath);
 				}
-				else 
+				else
 				{
 					$image = new FastImage($uri);
 				}
@@ -321,11 +325,15 @@ class bdImage_Integration
 
 		if (!empty($width) AND !empty($height))
 		{
-			return array($width, $height);
+			return array(
+				$width,
+				$height
+			);
 		}
 		else
 		{
 			return false;
 		}
 	}
+
 }

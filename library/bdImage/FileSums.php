@@ -5,7 +5,7 @@ class bdImage_FileSums
 	public static function getHashes()
 	{
 		return array (
-  'library/bdImage/BbCode/Formatter/Collector.php' => '62c845d31e03398105aa67be2ae0fd65',
+  'library/bdImage/BbCode/Formatter/Collector.php' => '4dc630102a6682ae0789b14bfa2ba749',
   'library/bdImage/Injection/WidgetFramework/WidgetRenderer/Threads.php' => 'd908a54e81178c9f1005b5d4e4183978',
   'library/bdImage/Installer.php' => '49262225f5f59eb52f82edfb3497e268',
   'library/bdImage/Integration.php' => '8b290efd3393072e28e033dceb1b16e8',

@@ -1,3 +1,4 @@
 .DS_Store
 *.devhelper
 library/bdImage/DevHelper/Generated/*
+js/bdImage/widget_slider.js

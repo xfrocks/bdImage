@@ -149,7 +149,7 @@ if (!file_exists($path))
 	}
 
 	XenForo_Helper_File::createDirectory('./' . dirname($path), true);
-	$image->output(IMAGETYPE_JPEG, $path);
+	$image->output($inputType, $path);
 }
 
 header('Location: ' . $path);

@@ -101,12 +101,21 @@ class bdImage_Integration
 	
 	public static function getCachePath($uri, $hash, $pathPrefix = 'cache')
 	{
-		return $pathPrefix . '/' . gmdate('Ymd') . '/' . $hash . '.jpg';
+		if (XenForo_Helper_File::getFileExtension($uri) === 'png')
+		{
+			$ext = 'png';
+		}
+		else
+		{
+			$ext = 'jpg';
+		}
+		
+		return sprintf('%s/%s/%s.%s', $pathPrefix, gmdate('Ymd'), $hash, $ext);
 	}
 	
 	public static function getOriginalCachePath($uri, $pathPrefix = 'cache')
 	{
-		return $pathPrefix . '/' . date('Ymd') . '/' . md5($uri) . '.orig';
+		return sprintf('%s/%s/%s.orig', $pathPrefix, gmdate('Ymd'), md5($uri));
 	}
 
 	public static function hasImageUrl($imageData)

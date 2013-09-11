@@ -30,14 +30,6 @@ class bdImage_Listener
 		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_widget_slider_cssclass'] = array('bdImage_Template_Helper_WidgetSlider', 'getCssClass');
 	}
 	
-	public static function template_post_render($templateName, &$content, array &$containerData, XenForo_Template_Abstract $template)
-	{
-		if ($templateName == 'wf_widget_threads')
-		{
-			bdImage_Injection_WidgetFramework_WidgetRenderer_Threads::wf_widget_threads($templateName, $content, $containerData, $template);
-		}
-	}
-	
 	public static function widget_framework_ready(array &$renderers)
 	{
 		$renderers[] = 'bdImage_WidgetRenderer_Threads';

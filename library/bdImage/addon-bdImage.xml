@@ -24,7 +24,6 @@
     <listener event_id="load_class_controller" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class" active="1" hint="" description=""/>
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class" active="1" hint="" description=""/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class" active="1" hint="" description=""/>
-    <listener event_id="load_class_route_prefix" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class" active="1" hint="" description=""/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="bdImage_Listener" callback_method="widget_framework_ready" active="1" hint="" description=""/>
   </code_event_listeners>
   <cron/>
@@ -114,26 +113,6 @@
         </ul>
     </div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_thread_item" version_id="12" version_string="0.9-dev"><![CDATA[<xen:foreach loop="$threads" value="$thread">
-	<xen:if is="{$thread.bdimage_image}">
-		<li>
-			<a href="{xen:link threads, $thread}"
-				<xen:if is="{$bdImageWidgetThread_showToolTip}">
-				class="Tooltip" title="{$thread.title} {xen:phrase by} {$thread.username}"
-				data-offsetx="10" data-offsety="{xen:calc '5 - {$widget.options.thumbnail_height}'}"
-				</xen:if>
-				>
-				<img src="{xen:helper bdImage_thumbnail,
-					$thread.bdimage_image,
-					{$widget.options.thumbnail_width},
-					{$widget.options.thumbnail_height}}" {xen:helper bdImage_imgAttribs,
-					$thread.bdimage_image,
-					{$widget.options.thumbnail_width},
-					{$widget.options.thumbnail_height}} />
-			</a>
-		</li>
-	</xen:if>
-</xen:foreach>]]></template>
     <template title="bdimage_widget_threads" version_id="12" version_string="0.9-dev"><![CDATA[<xen:if hascontent="true">
 	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
 	<xen:container var="$head.{$cssClass}">
@@ -194,6 +173,26 @@
         </ul>
     </div>
 </xen:if>]]></template>
+    <template title="bdimage_widget_thread_item" version_id="12" version_string="0.9-dev"><![CDATA[<xen:foreach loop="$threads" value="$thread">
+	<xen:if is="{$thread.bdimage_image}">
+		<li>
+			<a href="{xen:link threads, $thread}"
+				<xen:if is="{$bdImageWidgetThread_showToolTip}">
+				class="Tooltip" title="{$thread.title} {xen:phrase by} {$thread.username}"
+				data-offsetx="10" data-offsety="{xen:calc '5 - {$widget.options.thumbnail_height}'}"
+				</xen:if>
+				>
+				<img src="{xen:helper bdImage_thumbnail,
+					$thread.bdimage_image,
+					{$widget.options.thumbnail_width},
+					{$widget.options.thumbnail_height}}" {xen:helper bdImage_imgAttribs,
+					$thread.bdimage_image,
+					{$widget.options.thumbnail_width},
+					{$widget.options.thumbnail_height}} />
+			</a>
+		</li>
+	</xen:if>
+</xen:foreach>]]></template>
   </templates>
   <public_template_modifications/>
   <bb_code_media_sites/>

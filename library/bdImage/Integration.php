@@ -263,7 +263,7 @@ class bdImage_Integration
 		if (!empty($imageData))
 		{
 			$result = $imageData;
-			
+
 			if (!isset($result['url']))
 			{
 				$result['url'] = false;

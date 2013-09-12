@@ -6,4 +6,5 @@ class bdImage_Option
 	{
 		return XenForo_Application::getOptions()->get(sprintf('bdImage_%s', $key), $subKey);
 	}
+
 }

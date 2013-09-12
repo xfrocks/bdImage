@@ -1,4 +1,5 @@
 <?php
+
 class bdImage_XenForo_Model_Post extends XFCP_bdImage_XenForo_Model_Post
 {
 	protected $_bdImage_posts = array();
@@ -8,7 +9,7 @@ class bdImage_XenForo_Model_Post extends XFCP_bdImage_XenForo_Model_Post
 	{
 		$this->_bdImage_cachingPosts = $enabled;
 	}
-	
+
 	public function bdImage_getCachedPostById($postId)
 	{
 		if (isset($this->_bdImage_posts[$postId]))
@@ -17,10 +18,14 @@ class bdImage_XenForo_Model_Post extends XFCP_bdImage_XenForo_Model_Post
 		}
 		else
 		{
-			// this should not happen, we should throw an exception to fix conflict with some other add-on
+			// this should not happen, we should throw an exception to fix conflict with some
+			// other add-on
 			$exceptionMessage = 'bdImage_XenForo_Model_Post::bdImage_getCachedPostById could not find the first post. ';
 			$exceptionMessage .= 'Please contact pony at xfrocks dot com. ';
-			$exceptionMessage .= var_export(array('postId' => $postId, 'posts' => array_keys($this->_bdImage_posts)), true);
+			$exceptionMessage .= var_export(array(
+				'postId' => $postId,
+				'posts' => array_keys($this->_bdImage_posts)
+			), true);
 			throw new XenForo_Exception($exceptionMessage);
 		}
 	}
@@ -54,4 +59,5 @@ class bdImage_XenForo_Model_Post extends XFCP_bdImage_XenForo_Model_Post
 
 		return $posts;
 	}
+
 }

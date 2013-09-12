@@ -6,4 +6,5 @@ class bdImage_Template_Helper_WidgetSlider
 	{
 		return 'bdImage_Widget_Slider-' . $widget['widget_id'];
 	}
+
 }

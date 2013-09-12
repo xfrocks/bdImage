@@ -14,7 +14,6 @@ class bdImage_Listener
 			'XenForo_DataWriter_Discussion_Thread',
 			'XenForo_DataWriter_DiscussionMessage_Post',
 			'XenForo_DataWriter_Forum',
-			'XenForo_Model_Log',
 			'XenForo_Model_Post',
 			'XenForo_Model_Thread',
 		);
@@ -27,7 +26,10 @@ class bdImage_Listener
 
 	public static function init_dependencies(XenForo_Dependencies_Abstract $dependencies, array $data)
 	{
-		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_getoption'] = array('bdImage_Option', 'get');
+		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_getoption'] = array(
+			'bdImage_Option',
+			'get'
+		);
 
 		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_image'] = array(
 			'bdImage_Integration',

@@ -1,4 +1,5 @@
 <?php
+
 class bdImage_XenForo_Model_Thread extends XFCP_bdImage_XenForo_Model_Thread
 {
 	protected $_bdImage_lastUpdatedThreadInForumResults = array();

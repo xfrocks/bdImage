@@ -6,7 +6,7 @@ $mode = empty($_REQUEST['mode']) ? '' : $_REQUEST['mode'];
 $hash = empty($_REQUEST['hash']) ? false : $_REQUEST['hash'];
 
 $fileDir = dirname(dirname(dirname(__FILE__)));
-require($fileDir . '/library/XenForo/Autoloader.php');
+require ($fileDir . '/library/XenForo/Autoloader.php');
 XenForo_Autoloader::getInstance()->setupAutoloader($fileDir . '/library');
 XenForo_Application::initialize($fileDir . '/library', $fileDir);
 
@@ -15,7 +15,7 @@ if (empty($size) OR bdImage_Integration::computeHash($url, $size, $mode) != $has
 	// invalid request, we may issue 401 but this is more of a security feature
 	// so we are issuing 403 response now...
 	header("HTTP/1.0 403 Forbidden");
-	exit;
+	exit ;
 }
 
 $uri = bdImage_Integration::getAccessibleUri($url);
@@ -26,15 +26,23 @@ if (!file_exists($path))
 {
 	// this is the first time this url has been requested
 	// we will have to fetch the image, then resize as needed
-	$inputType = IMAGETYPE_JPEG; // default to use JPEG
+	$inputType = IMAGETYPE_JPEG;
+	// default to use JPEG
 	$ext = XenForo_Helper_File::getFileExtension($uri);
 	switch ($ext)
 	{
-		case 'gif': $inputType = IMAGETYPE_GIF; break;
+		case 'gif':
+			$inputType = IMAGETYPE_GIF;
+			break;
 		case 'jpg':
-		case 'jpeg': $inputType = IMAGETYPE_JPEG; break;
-		case 'png': $inputType = IMAGETYPE_PNG; break;
-		case 'data': // this is our attachment extension
+		case 'jpeg':
+			$inputType = IMAGETYPE_JPEG;
+			break;
+		case 'png':
+			$inputType = IMAGETYPE_PNG;
+			break;
+		case 'data':
+			// this is our attachment extension
 			$inputType = IMAGETYPE_JPEG;
 			// we have to read the magic bytes to determine the correct file type
 			$fh = fopen($uri, 'rb');
@@ -68,7 +76,8 @@ if (!file_exists($path))
 			file_put_contents($originalCachePath, file_get_contents($uri));
 		}
 		// switch to use the cached original file
-		// doing this will reduce server load when a new image is uploaded and started to appear
+		// doing this will reduce server load when a new image is uploaded and started to
+		// appear
 		// in different places with different sizes/modes
 		$uri = $originalCachePath;
 	}
@@ -87,7 +96,7 @@ if (!file_exists($path))
 		// problem open the url
 		// issue a 500 response
 		header("HTTP/1.0 500 Internal Server Error");
-		exit;
+		exit ;
 	}
 
 	switch ($mode)
@@ -153,4 +162,4 @@ if (!file_exists($path))
 }
 
 header('Location: ' . $path);
-exit;
+exit ;

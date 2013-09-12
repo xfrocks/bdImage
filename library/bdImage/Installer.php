@@ -7,50 +7,72 @@ class bdImage_Installer {
 		array(
 			'table' => 'xf_thread',
 			'field' => 'bdimage_image',
+			'showTablesQuery' => 'SHOW TABLES LIKE \'xf_thread\'',
 			'showColumnsQuery' => 'SHOW COLUMNS FROM `xf_thread` LIKE \'bdimage_image\'',
 			'alterTableAddColumnQuery' => 'ALTER TABLE `xf_thread` ADD COLUMN `bdimage_image` TEXT',
-			'alterTableDropColumnQuery' => 'ALTER TABLE `xf_thread` DROP COLUMN `bdimage_image`'
+			'alterTableDropColumnQuery' => 'ALTER TABLE `xf_thread` DROP COLUMN `bdimage_image`',
 		),
 		array(
 			'table' => 'xf_forum',
 			'field' => 'bdimage_last_post_image',
+			'showTablesQuery' => 'SHOW TABLES LIKE \'xf_forum\'',
 			'showColumnsQuery' => 'SHOW COLUMNS FROM `xf_forum` LIKE \'bdimage_last_post_image\'',
 			'alterTableAddColumnQuery' => 'ALTER TABLE `xf_forum` ADD COLUMN `bdimage_last_post_image` TEXT',
-			'alterTableDropColumnQuery' => 'ALTER TABLE `xf_forum` DROP COLUMN `bdimage_last_post_image`'
-		)
+			'alterTableDropColumnQuery' => 'ALTER TABLE `xf_forum` DROP COLUMN `bdimage_last_post_image`',
+		),
 	);
 
-	public static function install() {
+	public static function install($existingAddOn, $addOnData)
+	{
 		$db = XenForo_Application::get('db');
 
-		foreach (self::$_tables as $table) {
+		foreach (self::$_tables as $table)
+		{
 			$db->query($table['createQuery']);
 		}
-		
-		foreach (self::$_patches as $patch) {
+
+		foreach (self::$_patches as $patch)
+		{
+			$tableExisted = $db->fetchOne($patch['showTablesQuery']);
+			if (empty($tableExisted))
+			{
+				continue;
+			}
+
 			$existed = $db->fetchOne($patch['showColumnsQuery']);
-			if (empty($existed)) {
+			if (empty($existed))
+			{
 				$db->query($patch['alterTableAddColumnQuery']);
 			}
 		}
 		
-		self::installCustomized();
+		self::installCustomized($existingAddOn, $addOnData);
 	}
-	
-	public static function uninstall() {
+
+	public static function uninstall()
+	{
 		$db = XenForo_Application::get('db');
-		
-		foreach (self::$_patches as $patch) {
+
+		foreach (self::$_patches as $patch)
+		{
+			$tableExisted = $db->fetchOne($patch['showTablesQuery']);
+			if (empty($tableExisted))
+			{
+				continue;
+			}
+
 			$existed = $db->fetchOne($patch['showColumnsQuery']);
-			if (!empty($existed)) {
+			if (!empty($existed))
+			{
 				$db->query($patch['alterTableDropColumnQuery']);
 			}
 		}
-		
-		foreach (self::$_tables as $table) {
+
+		foreach (self::$_tables as $table)
+		{
 			$db->query($table['dropQuery']);
 		}
-		
+
 		self::uninstallCustomized();
 	}
 

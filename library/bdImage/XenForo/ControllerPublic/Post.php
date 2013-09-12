@@ -38,7 +38,7 @@ class bdImage_XenForo_ControllerPublic_Post extends XFCP_bdImage_XenForo_Control
 		{
 			$threadDw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread', XenForo_DataWriter::ERROR_SILENT);
 			$threadDw->setExistingData($postDw->get('thread_id'));
-			
+
 			if (!empty($picked))
 			{
 				$threadDw->set('bdimage_image', bdImage_Integration::getImageFromUri($picked, array('_locked' => true)));
@@ -47,7 +47,7 @@ class bdImage_XenForo_ControllerPublic_Post extends XFCP_bdImage_XenForo_Control
 			{
 				$threadDw->set('bdimage_image', '');
 			}
-			
+
 			$threadDw->save();
 		}
 	}

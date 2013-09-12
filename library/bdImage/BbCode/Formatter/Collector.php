@@ -26,7 +26,7 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 
 	public function getImageUrls()
 	{
-		if (!empty($this->_attachmentIds))
+		if (!empty($this->_attachmentIds) OR !empty($this->_contentData['allAttachments']))
 		{
 			// found some attachment ids...
 			if (!empty($this->_contentData))
@@ -42,6 +42,11 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 				if (!empty($this->_contentData['attachmentHash']))
 				{
 					$attachments += $attachmentModel->getAttachmentsByTempHash($this->_contentData['attachmentHash']);
+				}
+
+				if (!empty($this->_contentData['allAttachments']))
+				{
+					$this->_attachmentIds = array_keys($attachments);
 				}
 
 				foreach ($this->_attachmentIds as $attachmentId)
@@ -60,12 +65,18 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 							$attachmentUrl = XenForo_Link::buildPublicLink('canonical:attachments', $attachments[$attachmentId]);
 						}
 
+						$imageUrlKeyFound = false;
 						foreach (array_keys($this->_imageUrls) as $imageUrlKey)
 						{
 							if (is_array($this->_imageUrls[$imageUrlKey]) AND $this->_imageUrls[$imageUrlKey][0] == 'attachment' AND $this->_imageUrls[$imageUrlKey][1] == $attachmentId)
 							{
 								$this->_imageUrls[$imageUrlKey] = $attachmentUrl;
+								$imageUrlKeyFound = true;
 							}
+						}
+						if (!$imageUrlKeyFound)
+						{
+							$this->_imageUrls[] = $attachmentUrl;
 						}
 					}
 				}

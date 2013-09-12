@@ -9,7 +9,7 @@ class bdImage_Integration
 	const MODE_CROP_EQUAL = 'ce';
 	const MODE_STRETCH_WIDTH = 'sw';
 	const MODE_STRETCH_HEIGHT = 'sh';
-	
+
 	public static function getBbCodeImages($bbCode, array $contentData, $dwOrModel)
 	{
 		$formatter = XenForo_BbCode_Formatter_Base::create('bdImage_BbCode_Formatter_Collector');
@@ -31,20 +31,26 @@ class bdImage_Integration
 
 	public static function getBbCodeImage($bbCode, array $contentData, $dwOrModel)
 	{
-		$imageUrls = self::getBbCodeImages($bbCode, $contentData, $dwOrModel);
-		if (empty($imageUrls))
+		$images = self::getBbCodeImages($bbCode, $contentData, $dwOrModel);
+		if (empty($images))
 		{
 			return '';
 		}
 
-		$imageUrl = array_shift($imageUrls);
-		if (empty($imageUrl))
+		$image = array_shift($images);
+		if (empty($image))
 		{
 			return '';
 		}
 
-		list($imageWidth, $imageHeight) = self::_getImageSize($imageUrl);
-		return self::_packData(self::getSafeImageUrl($imageUrl), $imageWidth, $imageHeight);
+		list($imageWidth, $imageHeight) = self::_getImageSize($image);
+		return self::_packData(self::getSafeImageUrl($image), $imageWidth, $imageHeight);
+	}
+
+	public static function getImageFromUri($uri, array $extraData = array())
+	{
+		list($imageWidth, $imageHeight) = self::_getImageSize($uri);
+		return self::_packData(self::getSafeImageUrl($uri), $imageWidth, $imageHeight, $extraData);
 	}
 
 	public static function getSafeImageUrl($uri)
@@ -80,25 +86,28 @@ class bdImage_Integration
 
 	public static function getAccessibleUri($url)
 	{
+		if (empty($url))
+		{
+			return false;
+		}
+
 		if (Zend_Uri::check($url))
 		{
 			return $url;
 		}
-		else
-		{
-			// the url is not a valid uri, could be a path...
-			$realpath = realpath($url);
-			if (file_exists($realpath))
-			{
-				return $realpath;
-			}
 
-			// try relative to XenForo root
-			$realpath = realpath(XenForo_Application::getInstance()->getRootDir() . '/' . $url);
-			if (file_exists($realpath))
-			{
-				return $realpath;
-			}
+		// the url is not a valid uri, could be a path...
+		$realpath = realpath($url);
+		if (file_exists($realpath))
+		{
+			return $realpath;
+		}
+
+		// try relative to XenForo root
+		$realpath = realpath(XenForo_Application::getInstance()->getRootDir() . '/' . $url);
+		if (file_exists($realpath))
+		{
+			return $realpath;
 		}
 
 		return false;
@@ -114,7 +123,7 @@ class bdImage_Integration
 		{
 			$ext = 'jpg';
 		}
-		
+
 		$divider = substr(md5($hash), 0, 2);
 
 		return sprintf('%s/%s_%s/%s/%s.%s', $pathPrefix, $size, $mode, $divider, $hash, $ext);
@@ -125,16 +134,16 @@ class bdImage_Integration
 		return sprintf('%s/%s/%s.orig', $pathPrefix, gmdate('Ymd'), md5($uri));
 	}
 
-	public static function hasImageUrl($imageData)
+	public static function getImage($imageData)
 	{
-		$imageData = self::_unpackData($imageData);
+		$imageData = self::unpackData($imageData);
 
-		return !empty($imageData['url']);
+		return $imageData['url'];
 	}
 
 	public static function buildThumbnailLink($imageData, $size, $mode = self::MODE_CROP_EQUAL)
 	{
-		$imageData = self::_unpackData($imageData);
+		$imageData = self::unpackData($imageData);
 		$hash = self::computeHash($imageData['url'], $size, $mode);
 
 		$cachePath = bdImage_Integration::getCachePath($imageData['url'], $size, $mode, $hash);
@@ -239,29 +248,7 @@ class bdImage_Integration
 		return false;
 	}
 
-	protected static function _packData($url, $width, $height)
-	{
-		$data = array('url' => $url);
-
-		if (!empty($width) AND !empty($height))
-		{
-			$data['width'] = $width;
-			$data['height'] = $height;
-		}
-
-		if (count($data) == 1)
-		{
-			// no need to pack data
-			return $data['url'];
-		}
-		else
-		{
-			// use JSON to pack it
-			return json_encode($data);
-		}
-	}
-
-	protected static function _unpackData($rawImageData)
+	public static function unpackData($rawImageData)
 	{
 		if (is_array($rawImageData))
 		{
@@ -275,16 +262,7 @@ class bdImage_Integration
 
 		if (!empty($imageData))
 		{
-			if (!empty($imageData['url']))
-			{
-				$result['url'] = $imageData['url'];
-			}
-
-			if (!empty($imageData['width']) AND !empty($imageData['height']))
-			{
-				$result['width'] = $imageData['width'];
-				$result['height'] = $imageData['height'];
-			}
+			$result = $imageData;
 		}
 		else
 		{
@@ -296,9 +274,34 @@ class bdImage_Integration
 		return $result;
 	}
 
+	protected static function _packData($url, $width, $height, array $extraData = array())
+	{
+		$data = array('url' => $url);
+
+		if (!empty($width) AND !empty($height))
+		{
+			$data['width'] = $width;
+			$data['height'] = $height;
+		}
+
+		// should we check for overriden values?
+		$data = array_merge($data, $extraData);
+
+		if (count($data) == 1)
+		{
+			// no need to pack data
+			return $data['url'];
+		}
+		else
+		{
+			// use JSON to pack it
+			return json_encode($data);
+		}
+	}
+
 	protected static function _getImageSize($imageData, $doFetch = true)
 	{
-		$imageData = self::_unpackData($imageData);
+		$imageData = self::unpackData($imageData);
 
 		$width = false;
 		$height = false;

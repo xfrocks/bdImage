@@ -37,6 +37,7 @@
   </permissions>
   <phrases>
     <phrase title="bdimage_gap" version_id="10" version_string="0.9-dev"><![CDATA[Gap (between thumbnails)]]></phrase>
+    <phrase title="bdimage_thread_image" version_id="13" version_string="0.9.4"><![CDATA[Thread Image]]></phrase>
     <phrase title="bdimage_thumbnail_height" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Height]]></phrase>
     <phrase title="bdimage_thumbnail_width" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Width]]></phrase>
     <phrase title="bdimage_visible_count" version_id="10" version_string="0.9-dev"><![CDATA[Visible Thumbnails]]></phrase>
@@ -44,6 +45,77 @@
   <route_prefixes/>
   <style_properties/>
   <templates>
+    <template title="bdimage_picker" version_id="13" version_string="0.9.4"><![CDATA[<xen:if is="{$images}">
+
+	<div>
+		<ul>
+			<xen:set var="$currentImageFound">0</xen:set>
+
+			<xen:foreach loop="$images" value="$image">
+				<xen:set var="$safeUrl">{xen:helper bdImage_safeUrl, $image}</xen:set>
+				<xen:if is="{$safeUrl} == {$currentImage}">
+					<xen:set var="$currentImageFound">1</xen:set>
+				</xen:if>
+
+				<li><label>
+
+					<input type="radio" name="bdimage_image" value="{$safeUrl}"
+						   style="height: 48px"
+						   {xen:checked '{$safeUrl} == {$currentImage}'}/>
+					<img src="{xen:helper bdImage_thumbnail, $image, 48, 48}" width="48" height="48" />
+
+				</label></li>
+			</xen:foreach>
+
+			<li>
+				<label>
+					<input type="radio" name="bdimage_image" value="other" class="Disabler" id="ctrl_bdimage_image_other" {xen:checked '{$currentImageFound} == 0'}/>
+					{xen:phrase other}
+				</label><br/>
+				<br/>
+				<div id="ctrl_bdimage_image_other_Disabler">
+					<input type="text" name="bdimage_other" value="{xen:if '{$currentImageFound} == 0', '{$currentImage}'}" class="textCtrl" />
+				</div>
+			</li>
+		</ul>
+	</div>
+
+<xen:else />
+
+	<input type="hidden" name="bdimage_image" value="other" />
+	<input type="text" name="bdimage_other" value="{$currentImage}" class="textCtrl" />
+
+</xen:if>
+
+<input type="hidden" name="bdimage_picker" value="1" />
+<input type="hidden" name="bdimage_current_image" value="{$currentImage}" />
+
+<xen:edithint template="bdimage_picker_simple" />]]></template>
+    <template title="bdimage_picker_simple" version_id="13" version_string="0.9.4"><![CDATA[<xen:if is="{$images}">
+
+	<select {xen:if '{$id}', 'id="{$id}"'} name="bdimage_image" class="textCtrl">
+		<xen:set var="$currentImageFound">0</xen:set>
+		<xen:foreach loop="$images" value="$image">
+			<xen:set var="$safeUrl">{xen:helper bdImage_safeUrl, $image}</xen:set>
+			<xen:if is="{$safeUrl} == {$currentImage}">
+				<xen:set var="$currentImageFound">1</xen:set>
+			</xen:if>
+
+			<option value="{$safeUrl}" {xen:selected '{$safeUrl} == {$currentImage}'}>{xen:helper bdImage_filename, $safeUrl}</option>
+		</xen:foreach>
+
+		<xen:if is="{$currentImageFound} == 0">
+			<option value="{$currentImage}" selected="selected">{xen:helper bdImage_filename, $currentImage}</option>
+		</xen:if>
+	</select>
+
+	<input type="hidden" name="bdimage_picker" value="1" />
+	<input type="hidden" name="bdimage_current_image" value="{$currentImage}" />
+
+</xen:if>
+
+	
+]]></template>
     <template title="bdimage_widget.css" version_id="12" version_string="0.9-dev"><![CDATA[.bdImage_Widget_Slider_Container
 {
 	margin-left: auto;
@@ -194,6 +266,63 @@
 	</xen:if>
 </xen:foreach>]]></template>
   </templates>
-  <public_template_modifications/>
+  <public_template_modifications>
+    <modification template="post_edit" modification_key="bdimage_post_edit_picker" description="Insert thread image picker into post_edit form." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<xen:if is="{\$attachmentParams}">(.|\r|\n)+</xen:if>#]]></find>
+      <replace><![CDATA[<xen:if is="{$post.post_id} == {$thread.first_post_id}">
+
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase bdimage_thread_image}:</dt>
+		<dd>
+			<xen:include template="bdimage_picker">
+				<xen:map from="$bdImage_images" to="$images" />
+				<xen:set var="$currentImage">{xen:helper bdImage_image, $thread.bdimage_image}</xen:set>
+			</xen:include>
+		</dd>
+	</dl>
+
+</xen:if>
+
+$0]]></replace>
+    </modification>
+    <modification template="thread_edit" modification_key="bdimage_thread_edit_picker" description="Insert image picker into thread_edit form." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<dl class="ctrlUnit submitUnit">]]></find>
+      <replace><![CDATA[<xen:if hascontent="true">
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_bdimage_image">{xen:phrase image}:</label></dt>
+		<dd>
+			<xen:contentcheck>
+			<xen:include template="bdimage_picker">
+				<xen:map from="$bdImage_images" to="$images" />
+				<xen:set var="$currentImage">{xen:helper bdImage_image, $thread.bdimage_image}</xen:set>
+			</xen:include>
+			</xen:contentcheck>
+		</dd>
+	</dl>
+</xen:if>
+
+$0]]></replace>
+    </modification>
+    <modification template="thread_list_item_edit" modification_key="bdimage_thread_list_item_edit_picker" description="Insert image picker into thread_list_item_edit form." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<div class="buttons editBlock">]]></find>
+      <replace><![CDATA[<xen:if hascontent="true">
+	<div class="bdImage_imageEdit editBlock">
+		<label>
+			{xen:phrase image}:
+
+			<xen:contentcheck>
+			<xen:include template="bdimage_picker_simple">
+				<xen:map from="$bdImage_images" to="$images" />
+				<xen:set var="$currentImage">{xen:helper bdImage_image, $thread.bdimage_image}</xen:set>
+			</xen:include>
+			</xen:contentcheck>
+		</label>
+	</div>
+</xen:if>
+
+
+$0]]></replace>
+    </modification>
+  </public_template_modifications>
   <bb_code_media_sites/>
 </addon>

@@ -29,7 +29,17 @@
   <cron/>
   <email_templates/>
   <email_template_modifications/>
-  <optiongroups/>
+  <optiongroups>
+    <group group_id="bdImage" display_order="9999" debug_only="0"/>
+    <option option_id="bdImage_template" edit_format="checkbox" data_type="array" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>thread_list_item_thread_image = {xen:phrase bdimage_template_thread_list_item_thread_image}
+node_forum_last_thread_image = {xen:phrase bdimage_template_node_forum_last_thread_image}
+search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_image}</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="bdImage" display_order="2000"/>
+    </option>
+  </optiongroups>
   <permissions>
     <permission_groups/>
     <permissions/>
@@ -37,14 +47,28 @@
   </permissions>
   <phrases>
     <phrase title="bdimage_gap" version_id="10" version_string="0.9-dev"><![CDATA[Gap (between thumbnails)]]></phrase>
+    <phrase title="bdimage_template_node_forum_last_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Last Thread Image in Forum List]]></phrase>
+    <phrase title="bdimage_template_search_result_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in search result]]></phrase>
+    <phrase title="bdimage_template_thread_list_item_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in Thread List]]></phrase>
     <phrase title="bdimage_thread_image" version_id="13" version_string="0.9.4"><![CDATA[Thread Image]]></phrase>
     <phrase title="bdimage_thumbnail_height" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Height]]></phrase>
     <phrase title="bdimage_thumbnail_width" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Width]]></phrase>
     <phrase title="bdimage_visible_count" version_id="10" version_string="0.9-dev"><![CDATA[Visible Thumbnails]]></phrase>
+    <phrase title="option_bdImage_template" version_id="14" version_string="0.9.5"><![CDATA[Template Modification]]></phrase>
+    <phrase title="option_bdImage_template_explain" version_id="14" version_string="0.9.5"><![CDATA[Tick the template modification you wish to apply.]]></phrase>
+    <phrase title="option_group_bdImage" version_id="14" version_string="0.9.5"><![CDATA[[bd] Image]]></phrase>
+    <phrase title="option_group_bdImage_description" version_id="14" version_string="0.9.5"><![CDATA[]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>
   <templates>
+    <template title="bdimage.css" version_id="14" version_string="0.9.5"><![CDATA[.bdImage_lastThreadImage
+{
+	float: left;
+	margin-right: 5px;
+	width: 30px;
+	height: 30px;
+}]]></template>
     <template title="bdimage_picker" version_id="13" version_string="0.9.4"><![CDATA[<xen:if is="{$images}">
 
 	<div>
@@ -267,6 +291,17 @@
 </xen:foreach>]]></template>
   </templates>
   <public_template_modifications>
+    <modification template="node_forum_level_2" modification_key="bdimage_node_forum_last_thread_image" description="Template Modification: Last Thread Image in Forum List." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:elseif is="{$forum.lastPost.date}" />]]></find>
+      <replace><![CDATA[$0
+
+<xen:if is="{xen:helper bdImage_getOption, template, node_forum_last_thread_image} AND !!{xen:helper bdImage_image, $forum.bdimage_last_post_image}">
+
+	<xen:require css="bdimage.css" />
+	<img src="{xen:helper bdImage_thumbnail, $forum.bdimage_last_post_image, 48, 48}" class="bdImage_lastThreadImage" />
+
+</xen:if>]]></replace>
+    </modification>
     <modification template="post_edit" modification_key="bdimage_post_edit_picker" description="Insert thread image picker into post_edit form." execution_order="10" enabled="1" action="preg_replace">
       <find><![CDATA[#<xen:if is="{\$attachmentParams}">(.|\r|\n)+</xen:if>#]]></find>
       <replace><![CDATA[<xen:if is="{$post.post_id} == {$thread.first_post_id}">
@@ -284,6 +319,18 @@
 </xen:if>
 
 $0]]></replace>
+    </modification>
+    <modification template="search_result_thread" modification_key="bdimage_search_result_thread_image" description="Template Modification: Thread Image in search result." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:avatar user="$thread" size="s" img="true" />]]></find>
+      <replace><![CDATA[<xen:if is="{xen:helper bdImage_getOption, template, search_result_thread_image} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
+
+	<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
+		<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
+	</a>
+
+<xen:else />
+	$0
+</xen:if>]]></replace>
     </modification>
     <modification template="thread_edit" modification_key="bdimage_thread_edit_picker" description="Insert image picker into thread_edit form." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<dl class="ctrlUnit submitUnit">]]></find>
@@ -322,6 +369,20 @@ $0]]></replace>
 
 
 $0]]></replace>
+    </modification>
+    <modification template="thread_list_item" modification_key="bdimage_thread_list_item_thread_image" description="Template Modification: Thread Image in Thread List." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<span class="avatarContainer">[^<]+)(<xen:avatar.+/>)#]]></find>
+      <replace><![CDATA[$1
+
+<xen:if is="{xen:helper bdImage_getOption, template, thread_list_item_thread_image} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
+
+	<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
+		<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
+	</a>
+
+<xen:else />
+	$2
+</xen:if>]]></replace>
     </modification>
   </public_template_modifications>
   <bb_code_media_sites/>

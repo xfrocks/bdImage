@@ -27,6 +27,8 @@ class bdImage_Listener
 
 	public static function init_dependencies(XenForo_Dependencies_Abstract $dependencies, array $data)
 	{
+		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_getoption'] = array('bdImage_Option', 'get');
+
 		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_image'] = array(
 			'bdImage_Integration',
 			'getImage'

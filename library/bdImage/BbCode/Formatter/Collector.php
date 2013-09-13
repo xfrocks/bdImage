@@ -85,7 +85,38 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 			$this->_attachmentIds = array();
 		}
 
-		return $this->_imageUrls;
+		$imageUrls = array();
+
+		foreach ($this->_imageUrls as $imageUrl)
+		{
+			if (is_string($imageUrl))
+			{
+				$imageUrls[] = $imageUrl;
+			}
+			else
+			{
+				$type = array_shift($imageUrl);
+				$data = $imageUrl;
+				$imageUrl = false;
+
+				switch ($type)
+				{
+					case 'media':
+						if ($data[0] == 'youtube')
+						{
+							$imageUrl = sprintf('http://img.youtube.com/vi/%s/default.jpg', $data[1]);
+						}
+						break;
+				}
+
+				if (!empty($imageUrl))
+				{
+					$imageUrls[] = $imageUrl;
+				}
+			}
+		}
+
+		return $imageUrls;
 	}
 
 	public function getTags()
@@ -105,7 +136,24 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 					$this,
 					'renderTagAttach'
 				)
-			)
+			),
+			'media' => array(
+				'hasOption' => true,
+				'plainChildren' => true,
+				'callback' => array(
+					$this,
+					'renderTagMedia'
+				)
+			),
+
+			'quote' => array(
+				'plainChildren' => true,
+				'trimLeadingLinesAfter' => 2,
+				'callback' => array(
+					$this,
+					'renderTagQuote'
+				)
+			),
 		);
 	}
 
@@ -140,6 +188,20 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 			);
 			$this->_attachmentIds[] = $id;
 		}
+	}
+
+	public function renderTagMedia(array $tag, array $rendererStates)
+	{
+		$mediaKey = trim($this->stringifyTree($tag['children']));
+		$mediaSiteId = strtolower($tag['option']);
+
+		$this->_imageUrls[] = array(
+			'media',
+			$mediaSiteId,
+			$mediaKey
+		);
+
+		return '';
 	}
 
 	public function getModelFromCache($class)

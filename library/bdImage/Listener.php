@@ -62,9 +62,21 @@ class bdImage_Listener
 		);
 	}
 
+	public static function template_hook($hookName, &$contents, array $hookParams, XenForo_Template_Abstract $template)
+	{
+		if ($hookName == 'wf_widget_options_threads_layout')
+		{
+			if (strpos($hookParams['options_loaded'], 'bdImage_') === 0)
+			{
+				$contents = '';
+			}
+		}
+	}
+
 	public static function widget_framework_ready(array &$renderers)
 	{
 		$renderers[] = 'bdImage_WidgetRenderer_Threads';
+		$renderers[] = 'bdImage_WidgetRenderer_ThreadsTwo';
 		$renderers[] = 'bdImage_WidgetRenderer_SliderThreads';
 	}
 

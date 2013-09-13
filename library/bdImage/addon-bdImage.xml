@@ -8,6 +8,8 @@
 
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_width}" name="{$namePrefix}thumbnail_width" value="{xen:if 'isset({$options.thumbnail_width})', {$options.thumbnail_width}, 100}" min="1" step="50" />
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_height}" name="{$namePrefix}thumbnail_height" value="{xen:if 'isset({$options.thumbnail_height})', {$options.thumbnail_height}, 100}" min="1" step="50" />
+<xen:spinboxunit label="{xen:phrase title}" name="{$namePrefix}title" value="{xen:if 'isset({$options.title})', {$options.title}, 50}" min="0" step="25" />
+
 <xen:spinboxunit label="{xen:phrase bdimage_gap}" name="{$namePrefix}gap" value="{xen:if 'isset({$options.gap})', {$options.gap}, 10}" min="1" step="10" />
 <xen:spinboxunit label="{xen:phrase bdimage_visible_count}" name="{$namePrefix}visible_count" value="{xen:if 'isset({$options.visible_count})', {$options.visible_count}, 1}" min="1" />]]></template>
     <template title="bdimage_widget_options_threads"><![CDATA[<xen:include template="wf_widget_options_threads" />
@@ -15,6 +17,20 @@
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_width}" name="{$namePrefix}thumbnail_width" value="{xen:if 'isset({$options.thumbnail_width})', {$options.thumbnail_width}, 100}" min="1" step="50" />
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_height}" name="{$namePrefix}thumbnail_height" value="{xen:if 'isset({$options.thumbnail_height})', {$options.thumbnail_height}, 100}" min="1" step="50" />
 <xen:spinboxunit label="{xen:phrase bdimage_gap}" name="{$namePrefix}gap" value="{xen:if 'isset({$options.gap})', {$options.gap}, 10}" min="1" step="10" />]]></template>
+    <template title="bdimage_widget_options_threads_two"><![CDATA[<xen:include template="wf_widget_options_threads" />
+
+<xen:spinboxunit label="{xen:phrase bdimage_feature_width}" name="{$namePrefix}feature_width" value="{xen:if 'isset({$options.feature_width})', {$options.feature_width}, 300}" min="1" step="100" />
+<xen:spinboxunit label="{xen:phrase bdimage_feature_height}" name="{$namePrefix}feature_height" value="{xen:if 'isset({$options.feature_height})', {$options.feature_height}, 200}" min="1" step="100" />
+<xen:spinboxunit label="{xen:phrase bdimage_feature_body}" name="{$namePrefix}feature_body" value="{xen:if 'isset({$options.feature_body})', {$options.feature_body}, 0}" min="0" step="50" />
+
+<xen:spinboxunit label="{xen:phrase bdimage_small_size}" name="{$namePrefix}small_size" value="{xen:if 'isset({$options.small_size})', {$options.small_size}, 0}" min="0" step="50" />
+<xen:spinboxunit label="{xen:phrase bdimage_small_title}" name="{$namePrefix}small_title" value="{xen:if 'isset({$options.small_title})', {$options.small_title}, 50}" min="1" step="25" />
+<xen:spinboxunit label="{xen:phrase bdimage_small_column_width}" name="{$namePrefix}small_column_width" value="{xen:if 'isset({$options.small_column_width})', {$options.small_column_width}, 150}" min="1" step="50" explain="{xen:phrase bdimage_small_column_explain}" />
+
+<xen:spinboxunit label="{xen:phrase bdimage_column_gap}" name="{$namePrefix}column_gap" value="{xen:if 'isset({$options.column_gap})', {$options.column_gap}, 10}" min="1" step="10" />
+<xen:spinboxunit label="{xen:phrase bdimage_row_gap}" name="{$namePrefix}row_gap" value="{xen:if 'isset({$options.row_gap})', {$options.row_gap}, 3}" min="1" step="5" />
+
+]]></template>
   </admin_templates>
   <admin_template_modifications/>
   <code_events/>
@@ -24,6 +40,7 @@
     <listener event_id="load_class_controller" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class" active="1" hint="" description=""/>
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class" active="1" hint="" description=""/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class" active="1" hint="" description=""/>
+    <listener event_id="template_hook" execute_order="10" callback_class="bdImage_Listener" callback_method="template_hook" active="1" hint="" description=""/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="bdImage_Listener" callback_method="widget_framework_ready" active="1" hint="" description=""/>
   </code_event_listeners>
   <cron/>
@@ -46,7 +63,16 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
     <interface_groups/>
   </permissions>
   <phrases>
+    <phrase title="bdimage_column_gap" version_id="14" version_string="0.9.5"><![CDATA[Column Gap]]></phrase>
+    <phrase title="bdimage_feature_body" version_id="14" version_string="0.9.5"><![CDATA[Display first post message of the feature thread]]></phrase>
+    <phrase title="bdimage_feature_height" version_id="14" version_string="0.9.5"><![CDATA[Feature Image Height]]></phrase>
+    <phrase title="bdimage_feature_width" version_id="14" version_string="0.9.5"><![CDATA[Feature Image Width]]></phrase>
     <phrase title="bdimage_gap" version_id="10" version_string="0.9-dev"><![CDATA[Gap (between thumbnails)]]></phrase>
+    <phrase title="bdimage_row_gap" version_id="14" version_string="0.9.5"><![CDATA[Row Gap]]></phrase>
+    <phrase title="bdimage_small_column_explain" version_id="14" version_string="0.9.5"><![CDATA[Set the size of the second column to control how it show up next to the feature thread. To disable thumbnail for this column, choose 0 as the thumbnail size.]]></phrase>
+    <phrase title="bdimage_small_column_width" version_id="14" version_string="0.9.5"><![CDATA[Second Column Width]]></phrase>
+    <phrase title="bdimage_small_size" version_id="14" version_string="0.9.5"><![CDATA[Second Column Thumbnail Width]]></phrase>
+    <phrase title="bdimage_small_title" version_id="14" version_string="0.9.5"><![CDATA[Second Column Title]]></phrase>
     <phrase title="bdimage_template_node_forum_last_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Last Thread Image in Forum List]]></phrase>
     <phrase title="bdimage_template_search_result_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in search result]]></phrase>
     <phrase title="bdimage_template_thread_list_item_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in Thread List]]></phrase>
@@ -140,7 +166,7 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
 
 	
 ]]></template>
-    <template title="bdimage_widget.css" version_id="12" version_string="0.9-dev"><![CDATA[.bdImage_Widget_Slider_Container
+    <template title="bdimage_widget.css" version_id="14" version_string="0.9.5"><![CDATA[.bdImage_Widget_Slider_Container
 {
 	margin-left: auto;
 	margin-right: auto;
@@ -154,8 +180,61 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
 	.bdImage_Widget_Items > li
 	{
 		float: left;
+	}
+
+.bdImage_WidgetRenderer_ThreadsTwo
+	{
+		display: block;
+	}
+	
+	.bdImage_WidgetRenderer_ThreadsTwo .bdImage_Feature
+	{
+		display: block;
+		float: left;
+		overflow: hidden;
+	}
+
+		.bdImage_WidgetRenderer_ThreadsTwo .bdImage_Feature .text .title
+		{
+			width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.bdImage_WidgetRenderer_ThreadsTwo .bdImage_Feature .text .body
+		{
+			text-align: justify;
+		}
+	
+	.bdImage_WidgetRenderer_ThreadsTwo .bdImage_Small
+	{
+		display: block;
+		float: none;
+		overflow: hidden;
+	}
+			
+	.bdImage_WidgetRenderer_ThreadsTwo .bdImage_Small.bdImage_SmallWithThumbnail .thumbnail
+	{
+		display: block;
+		float: left;
+	}
+	
+	.{$cssClass} .bdImage_Small.bdImage_SmallWithThumbnail .text
+	{
+		display: block;
+		float: none;
+	}
+	{xen:helper clearfix, '.{$cssClass} .bdImage_Small.bdImage_SmallWithThumbnail li'}
+	
+	.bdImage_WidgetRenderer_ThreadsTwo .bdImage_Small li
+	{
+		border-bottom: 1px dashed {xen:property primaryLighterStill};
+		display: block;
+		float: none;
+		overflow: hidden;
 	}]]></template>
-    <template title="bdimage_widget_slider_threads" version_id="12" version_string="0.9-dev"><![CDATA[<xen:if hascontent="true">
+    <template title="bdimage_widget_slider_threads" version_id="14" version_string="0.9.5"><![CDATA[<xen:if hascontent="true">
 	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
 	<xen:container var="$head.{$cssClass}">
 <style>
@@ -178,32 +257,10 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
     <div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads_Container {$cssClass}">
         <ul class="bdImage_Widget_Slider_Items">
             <xen:contentcheck>
-				<xen:if is="{$new}">
+				<xen:if is="{$threads}">
 					<xen:include template="bdimage_widget_thread_item">
-						<xen:map from="$new" to="$threads" />
+						<xen:set var="$bdImageWidgetThread_showTitle">{$widget.options.title}</xen:set>
 					</xen:include>
-				<xen:elseif is="{$recent}"/>
-					<xen:include template="bdimage_widget_thread_item">
-						<xen:map from="$recent" to="$threads" />
-					</xen:include>
-				<xen:elseif is="{$popular}"/>
-					<xen:include template="bdimage_widget_thread_item">
-						<xen:map from="$popular" to="$threads" />
-					</xen:include>
-				<xen:elseif is="{$mostReplied}"/>
-					<xen:include template="bdimage_widget_thread_item">
-						<xen:map from="$mostReplied" to="$threads" />
-					</xen:include>
-				<xen:elseif is="{$mostLiked}"/>
-					<xen:include template="bdimage_widget_thread_item">
-						<xen:map from="$mostLiked" to="$threads" />
-					</xen:include>
-				<xen:elseif is="{$polls}"/>
-					<xen:include template="bdimage_widget_thread_item">
-						<xen:map from="$polls" to="$threads" />
-					</xen:include>
-				<xen:elseif is="{$threads}" />
-					<xen:include template="bdimage_widget_thread_item" />
 				</xen:if>
             </xen:contentcheck>
         </ul>
@@ -269,7 +326,94 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
         </ul>
     </div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_thread_item" version_id="12" version_string="0.9-dev"><![CDATA[<xen:foreach loop="$threads" value="$thread">
+    <template title="bdimage_widget_threads_two" version_id="14" version_string="0.9.5"><![CDATA[<xen:set var="$cssClass">bdImage_WidgetRenderer_ThreadsTwo-{$widget.widget_id}</xen:set>
+<xen:container var="$head.{$cssClass}">
+<style>
+	.{$cssClass}
+	{
+		width: {xen:calc '{$widget.options.feature_width} + {$widget.options.column_gap} + {$widget.options.small_column_width}'}px;
+	}
+
+	.{$cssClass} .bdImage_Feature
+	{
+		width: {$widget.options.feature_width}px;
+	}
+
+	.{$cssClass} .bdImage_Small
+	{
+		margin-left: {xen:calc '{$widget.options.feature_width} + {$widget.options.column_gap}'}px;
+		width: {$widget.options.small_column_width}px;
+	}
+			
+	<xen:if is="{$widget.options.small_size}">
+			.{$cssClass} .bdImage_Small .text
+			{
+				margin-left: {xen:calc '{$widget.options.small_size} + {$widget.options.column_gap}'}px;
+				width: {xen:calc '{$widget.options.small_column_width} - {$widget.options.small_size} - {$widget.options.column_gap}'}px;
+				height: {$widget.options.small_size}px;
+			}
+			{xen:helper clearfix, '.{$cssClass} .bdImage_Small li'}
+	</xen:if>
+	
+	.{$cssClass} .bdImage_Small li
+	{
+		width: {$widget.options.small_column_width}px;
+		min-height: {xen:calc '{$widget.options.feature_height} / ({$widget.options.limit} - 1) - {$widget.options.row_gap}'}px;
+	}
+</style>
+</xen:container>
+
+<xen:require css="bdimage_widget.css" />
+
+<div class="bdImage_WidgetRenderer_ThreadsTwo {$cssClass}">
+	<xen:foreach loop="$threads" i="$i" value="$firstThread"><xen:if is="{$i} == 1">
+	<div class="bdImage_Feature">
+		<div class="thumbnail">
+			<a href="{xen:link threads, $firstThread}">
+				<img src="{xen:helper bdImage_thumbnail,
+					$firstThread.bdimage_image,
+					{$widget.options.feature_width},
+					{$widget.options.feature_height}}" {xen:helper bdImage_imgAttribs,
+					$firstThread.bdimage_image,
+					{$widget.options.feature_width},
+					{$widget.options.feature_height}} />
+			</a>
+		</div>
+		<div class="text">
+			<p class="title"><a href="{xen:link threads, $firstThread}">{$firstThread.title}</a></p>
+
+			<xen:if is="{$widget.options.feature_body} AND {$firstThread.message}">
+				<p class="body">{xen:helper snippet, $firstThread.message, {$widget.options.feature_body}}</p>
+			</xen:if>
+		</div>
+	</div>
+	</xen:if></xen:foreach>
+	<div class="bdImage_Small {xen:if '{$widget.options.small_size}', 'bdImage_SmallWithThumbnail'}">
+		<ul>
+		<xen:foreach loop="$threads" i="$i" value="$thread">
+			<xen:if is="{$i} > 1">
+				<li>
+					<xen:if is="{$widget.options.small_size}">
+						<div class="thumbnail">
+							<a href="{xen:link threads, $thread}">
+								<img src="{xen:helper bdImage_thumbnail,
+									$thread.bdimage_image,
+									{$widget.options.small_size},
+									{$widget.options.small_size}}" {xen:helper bdImage_imgAttribs,
+									$thread.bdimage_image,
+									{$widget.options.small_size},
+									{$widget.options.small_size}} />
+							</a>
+						</div>
+					</xen:if>
+					<div class="text"><a href="{xen:link threads, $thread}">{xen:helper snippet, $thread.title, $widget.options.small_title}</a></div>
+				</li>
+			</xen:if>
+		</xen:foreach>
+		</ul>
+	</div>
+</div>]]></template>
+    <template title="bdimage_widget_thread_item" version_id="14" version_string="0.9.5"><![CDATA[<xen:foreach loop="$threads" value="$thread">
 	<xen:if is="{$thread.bdimage_image}">
 		<li>
 			<a href="{xen:link threads, $thread}"
@@ -286,6 +430,10 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
 					{$widget.options.thumbnail_width},
 					{$widget.options.thumbnail_height}} />
 			</a>
+
+			<xen:if is="{$bdImageWidgetThread_showTitle}">
+				<a href="{xen:link threads, $thread}">{xen:helper snippet, $thread.title, $bdImageWidgetThread_showTitle}</a>
+			</xen:if>
 		</li>
 	</xen:if>
 </xen:foreach>]]></template>

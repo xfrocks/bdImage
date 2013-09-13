@@ -1,19 +1,21 @@
 <?php
 
-class bdImage_WidgetRenderer_SliderThreads extends WidgetFramework_WidgetRenderer_Threads
+class bdImage_WidgetRenderer_ThreadsTwo extends WidgetFramework_WidgetRenderer_Threads
 {
 	protected function _getConfiguration()
 	{
 		$config = parent::_getConfiguration();
 
-		$config['name'] = '[bd] Image: Slider Threads';
+		$config['name'] = '[bd] Image: Thread Images (2 columns)';
 		$config['options'] += array(
-			'thumbnail_width' => XenForo_Input::UINT,
-			'thumbnail_height' => XenForo_Input::UINT,
-			'title' => XenForo_Input::UINT,
-
-			'gap' => XenForo_Input::UINT,
-			'visible_count' => XenForo_Input::UINT,
+			'feature_width' => XenForo_Input::UINT,
+			'feature_height' => XenForo_Input::UINT,
+			'feature_body' => XenForo_Input::UINT,
+			'small_size' => XenForo_Input::UINT,
+			'small_title' => XenForo_Input::UINT,
+			'small_column_width' => XenForo_Input::UINT,
+			'column_gap' => XenForo_Input::UINT,
+			'row_gap' => XenForo_Input::UINT,
 		);
 
 		return $config;
@@ -21,7 +23,7 @@ class bdImage_WidgetRenderer_SliderThreads extends WidgetFramework_WidgetRendere
 
 	protected function _getOptionsTemplate()
 	{
-		return 'bdimage_widget_options_slider_threads';
+		return 'bdimage_widget_options_threads_two';
 	}
 
 	protected function _validateOptionValue($optionKey, &$optionValue)
@@ -30,18 +32,21 @@ class bdImage_WidgetRenderer_SliderThreads extends WidgetFramework_WidgetRendere
 		{
 			switch ($optionKey)
 			{
-				case 'thumbnail_width':
-				case 'thumbnail_height':
-					$optionValue = 100;
+				case 'feature_width':
+					$optionValue = 300;
 					break;
-				case 'title':
+				case 'feature_height':
+					$optionValue = 200;
+					break;
+				case 'small_title':
 					$optionValue = 50;
 					break;
-				case 'gap':
+				case 'column_gap':
 					$optionValue = 10;
 					break;
-				case 'visible_count':
-					$optionValue = 1;
+				case 'row_gap':
+					$optionValue = 3;
+					break;
 			}
 		}
 
@@ -50,7 +55,7 @@ class bdImage_WidgetRenderer_SliderThreads extends WidgetFramework_WidgetRendere
 
 	protected function _getRenderTemplate(array $widget, $positionCode, array $params)
 	{
-		return 'bdimage_widget_slider_threads';
+		return 'bdimage_widget_threads_two';
 	}
 
 	protected function _render(array $widget, $positionCode, array $params, XenForo_Template_Abstract $renderTemplateObject)
@@ -60,6 +65,11 @@ class bdImage_WidgetRenderer_SliderThreads extends WidgetFramework_WidgetRendere
 		/* @var $threadModel XenForo_Model_Thread */
 		$threadModel = $core->getModelFromCache('XenForo_Model_Thread');
 		$threadModel->bdImage_addThreadCondition(true);
+
+		if (!empty($widget['options']['feature_body']))
+		{
+			$widget['options']['layout'] = 'full';
+		}
 
 		$response = parent::_render($widget, $positionCode, $params, $renderTemplateObject);
 

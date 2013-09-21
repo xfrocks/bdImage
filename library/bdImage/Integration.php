@@ -10,7 +10,7 @@ class bdImage_Integration
 	const MODE_STRETCH_WIDTH = 'sw';
 	const MODE_STRETCH_HEIGHT = 'sh';
 
-	public static function getBbCodeImages($bbCode, array $contentData, $dwOrModel)
+	public static function getBbCodeImages($bbCode, array $contentData = array(), $dwOrModel = null)
 	{
 		$formatter = XenForo_BbCode_Formatter_Base::create('bdImage_BbCode_Formatter_Collector');
 		if (!empty($contentData))
@@ -29,7 +29,7 @@ class bdImage_Integration
 		return $formatter->getImageUrls();
 	}
 
-	public static function getBbCodeImage($bbCode, array $contentData, $dwOrModel)
+	public static function getBbCodeImage($bbCode, array $contentData = array(), $dwOrModel = null)
 	{
 		$images = self::getBbCodeImages($bbCode, $contentData, $dwOrModel);
 		if (empty($images))

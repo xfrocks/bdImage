@@ -333,7 +333,10 @@ class bdImage_Integration
 				{
 					$image = new FastImage($uri);
 				}
-				set_time_limit(5);
+
+				// TODO: option?
+				// set_time_limit(5);
+
 				list($width, $height) = $image->getSize();
 			}
 		}

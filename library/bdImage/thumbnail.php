@@ -82,14 +82,7 @@ if (!file_exists($path))
 		$uri = $originalCachePath;
 	}
 
-	if (class_exists('Imagick'))
-	{
-		$image = XenForo_Image_Imagemagick_Pecl::createFromFileDirect($uri, $inputType);
-	}
-	else
-	{
-		$image = XenForo_Image_Gd::createFromFileDirect($uri, $inputType);
-	}
+	$image = XenForo_Image_Abstract::createFromFile($uri, $inputType);
 
 	if (empty($image))
 	{

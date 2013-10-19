@@ -14,6 +14,8 @@ class bdImage_Listener
 			'XenForo_DataWriter_Discussion_Thread',
 			'XenForo_DataWriter_DiscussionMessage_Post',
 			'XenForo_DataWriter_Forum',
+			'XenForo_Image_Gd',
+			'XenForo_Image_Imagemagick_Pecl',
 			'XenForo_Model_Post',
 			'XenForo_Model_Thread',
 		);

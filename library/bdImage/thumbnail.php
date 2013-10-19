@@ -10,6 +10,11 @@ require ($fileDir . '/library/XenForo/Autoloader.php');
 XenForo_Autoloader::getInstance()->setupAutoloader($fileDir . '/library');
 XenForo_Application::initialize($fileDir . '/library', $fileDir);
 
+XenForo_CodeEvent::setListeners(array('load_class' => array('_' => array( array(
+				'bdImage_Listener',
+				'load_class'
+			)))));
+
 if (empty($size) OR bdImage_Integration::computeHash($url, $size, $mode) != $hash)
 {
 	// invalid request, we may issue 401 but this is more of a security feature
@@ -148,6 +153,14 @@ if (!file_exists($path))
 				$image->crop(0, 0, $size, $size);
 			}
 			break;
+	}
+
+	if (is_callable(array(
+		$image,
+		'bdImage_outputProgressiveJpeg'
+	)))
+	{
+		$image->bdImage_outputProgressiveJpeg(true);
 	}
 
 	XenForo_Helper_File::createDirectory('./' . dirname($path), true);

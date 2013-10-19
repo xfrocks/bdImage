@@ -164,12 +164,49 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
 
 	
 ]]></template>
-    <template title="bdimage_widget.css" version_id="14" version_string="0.9.5"><![CDATA[.bdImage_Widget_Slider_Container
+    <template title="bdimage_widget.css" version_id="16" version_string="0.9.6b"><![CDATA[.bdImage_Widget_Slider_Container
 {
-	margin-left: auto;
-	margin-right: auto;
 	overflow: hidden;
 }
+
+	.bdImage_Widget_Slider_Container .jcarousel-clip
+	{
+		margin: 0 auto;
+		overflow: hidden;
+	}
+
+	.bdImage_Widget_Slider_Container .jcarousel-prev-horizontal,
+	.bdImage_Widget_Slider_Container .jcarousel-prev-horizontal:after
+	{
+		position: absolute;
+		left: 5px;
+		width: 32px;
+		height: 32px;
+		cursor: pointer;
+		background: transparent;
+	}
+	.bdImage_Widget_Slider_Container .jcarousel-next-horizontal,
+	.bdImage_Widget_Slider_Container .jcarousel-next-horizontal:after
+	{
+		position: absolute;
+		right: 5px;
+		width: 32px;
+		height: 32px;
+		cursor: pointer;
+		background: transparent;
+	}
+
+	.bdImage_Widget_Slider_Container .jcarousel-prev-horizontal:after
+	{
+		content: '←';
+		line-height: 15px;
+		font-size: 30px;
+	}
+	.bdImage_Widget_Slider_Container .jcarousel-next-horizontal:after
+	{
+		content: '→';
+		font-size: 30px;
+	}
 
 .bdImage_Widget_Items
 {
@@ -232,13 +269,17 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
 		float: none;
 		overflow: hidden;
 	}]]></template>
-    <template title="bdimage_widget_slider_threads" version_id="14" version_string="0.9.5"><![CDATA[<xen:if hascontent="true">
+    <template title="bdimage_widget_slider_threads" version_id="16" version_string="0.9.6b"><![CDATA[<xen:if hascontent="true">
 	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
 	<xen:container var="$head.{$cssClass}">
 <style>
-.{$cssClass}
+.{$cssClass} .jcarousel-clip
 {
 	width: {xen:calc '{$widget.options.thumbnail_width}*{$widget.options.visible_count} + {$widget.options.gap}*({$widget.options.visible_count}-1)'}px;
+}
+.{$cssClass} .jcarousel-prev-horizontal,
+.{$cssClass} .jcarousel-next-horizontal {
+	top: {xen:if '{$widget.options.title}', {xen:calc '{$widget.options.thumbnail_height} - 32'}, {xen:calc '({$widget.options.thumbnail_height} - 32) / 2'}}px;
 }
 .{$cssClass} ul.bdImage_Widget_Slider_Items > li
 {
@@ -427,7 +468,7 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
 		</ul>
 	</div>
 </div>]]></template>
-    <template title="bdimage_widget_thread_item" version_id="14" version_string="0.9.5"><![CDATA[<xen:foreach loop="$threads" value="$thread">
+    <template title="bdimage_widget_thread_item" version_id="16" version_string="0.9.6b"><![CDATA[<xen:foreach loop="$threads" value="$thread">
 	<xen:if is="{$thread.bdimage_image}">
 		<li>
 			<a href="{xen:link threads, $thread}"
@@ -446,7 +487,9 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
 			</a>
 
 			<xen:if is="{$bdImageWidgetThread_showTitle}">
-				<a href="{xen:link threads, $thread}">{xen:helper snippet, $thread.title, $bdImageWidgetThread_showTitle}</a>
+				<a href="{xen:link threads, $thread}">
+					{xen:helper snippet, $thread.title, $bdImageWidgetThread_showTitle}
+				</a>
 			</xen:if>
 		</li>
 	</xen:if>

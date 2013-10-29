@@ -28,6 +28,8 @@ class bdImage_Listener
 
 	public static function init_dependencies(XenForo_Dependencies_Abstract $dependencies, array $data)
 	{
+		define('BDIMAGE_IS_WORKING', 1);
+		
 		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_getoption'] = array(
 			'bdImage_Option',
 			'get'

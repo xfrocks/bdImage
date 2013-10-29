@@ -144,6 +144,12 @@ class bdImage_Integration
 	public static function buildThumbnailLink($imageData, $size, $mode = self::MODE_CROP_EQUAL)
 	{
 		$imageData = self::unpackData($imageData);
+
+		if (!defined('BDIMAGE_IS_WORKING'))
+		{
+			return $imageData['url'];
+		}
+
 		$hash = self::computeHash($imageData['url'], $size, $mode);
 
 		$cachePath = bdImage_Integration::getCachePath($imageData['url'], $size, $mode, $hash);

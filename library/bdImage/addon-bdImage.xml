@@ -86,17 +86,31 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
   <route_prefixes/>
   <style_properties/>
   <templates>
-    <template title="bdimage.css" version_id="14" version_string="0.9.5"><![CDATA[.bdImage_lastThreadImage
+    <template title="bdimage.css" version_id="17" version_string="0.9.7"><![CDATA[.bdImage_lastThreadImage
 {
 	float: left;
 	margin-right: 5px;
 	width: 30px;
 	height: 30px;
-}]]></template>
-    <template title="bdimage_picker" version_id="13" version_string="0.9.4"><![CDATA[<xen:if is="{$images}">
+}
+
+ul.bdImage_Picker
+{
+}
+	ul.bdImage_Picker > li
+	{
+		display: inline-block;
+	}
+	ul.bdImage_Picker > li.other
+	{
+		display: block;
+	}]]></template>
+    <template title="bdimage_picker" version_id="17" version_string="0.9.7"><![CDATA[<xen:if is="{$images}">
+
+	<xen:require css="bdimage.css" />
 
 	<div>
-		<ul>
+		<ul class="bdImage_Picker">
 			<xen:set var="$currentImageFound">0</xen:set>
 
 			<xen:foreach loop="$images" value="$image">
@@ -115,7 +129,7 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
 				</label></li>
 			</xen:foreach>
 
-			<li>
+			<li class="other">
 				<label>
 					<input type="radio" name="bdimage_image" value="other" class="Disabler" id="ctrl_bdimage_image_other" {xen:checked '{$currentImageFound} == 0'}/>
 					{xen:phrase other}
@@ -139,9 +153,9 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
 <input type="hidden" name="bdimage_current_image" value="{$currentImage}" />
 
 <xen:edithint template="bdimage_picker_simple" />]]></template>
-    <template title="bdimage_picker_simple" version_id="13" version_string="0.9.4"><![CDATA[<xen:if is="{$images}">
+    <template title="bdimage_picker_simple" version_id="17" version_string="0.9.7"><![CDATA[<xen:if is="{$images}">
 
-	<select {xen:if '{$id}', 'id="{$id}"'} name="bdimage_image" class="textCtrl">
+	<select {xen:if '{$id}', 'id="{$id}"'} name="bdimage_image" class="textCtrl bdImage_Picker">
 		<xen:set var="$currentImageFound">0</xen:set>
 		<xen:foreach loop="$images" value="$image">
 			<xen:set var="$safeUrl">{xen:helper bdImage_safeUrl, $image}</xen:set>

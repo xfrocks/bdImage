@@ -100,7 +100,7 @@ class bdImage_WidgetRenderer_AttachmentsGrid extends WidgetFramework_WidgetRende
 					attachment.*, ' . XenForo_Model_Attachment::$dataColumns . '
 				FROM `xf_post` AS post
 				INNER JOIN `xf_thread` AS thread
-					ON (thread.thread_id = post.post_id)
+					ON (thread.thread_id = post.thread_id)
 				LEFT JOIN `xf_attachment` AS attachment
 					ON (attachment.content_type = \'post\' AND attachment.content_id = post.post_id)
 				LEFT JOIN `xf_attachment_data` AS data
@@ -146,6 +146,10 @@ class bdImage_WidgetRenderer_AttachmentsGrid extends WidgetFramework_WidgetRende
 		{
 			// not enough posts, do not work
 			return '';
+		}
+		elseif (count($posts) > $requiredPostsCount)
+		{
+			$posts = array_slice($posts, 0, $requiredPostsCount, true);
 		}
 
 		foreach ($posts as &$post)

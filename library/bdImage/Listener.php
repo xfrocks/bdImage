@@ -83,6 +83,7 @@ class bdImage_Listener
 		$renderers[] = 'bdImage_WidgetRenderer_ThreadsTwo';
 		$renderers[] = 'bdImage_WidgetRenderer_SliderThreads';
 		$renderers[] = 'bdImage_WidgetRenderer_AttachmentsGrid';
+		$renderers[] = 'bdImage_WidgetRenderer_ThreadsGrid';
 	}
 
 	public static function file_health_check(XenForo_ControllerAdmin_Abstract $controller, array &$hashes)

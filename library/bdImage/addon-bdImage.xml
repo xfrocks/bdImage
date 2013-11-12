@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="bdImage" title="[bd] Image" version_string="0.10.0-dev" version_id="19" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="bdImage" title="[bd] Image" version_string="0.10.0-dev" version_id="20" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -33,6 +33,14 @@
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_width}" name="{$namePrefix}thumbnail_width" value="{xen:if 'isset({$options.thumbnail_width})', {$options.thumbnail_width}, 100}" min="1" step="50" />
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_height}" name="{$namePrefix}thumbnail_height" value="{xen:if 'isset({$options.thumbnail_height})', {$options.thumbnail_height}, 100}" min="1" step="50" />
 <xen:spinboxunit label="{xen:phrase bdimage_gap}" name="{$namePrefix}gap" value="{xen:if 'isset({$options.gap})', {$options.gap}, 10}" min="1" step="10" />]]></template>
+    <template title="bdimage_widget_options_threads_grid"><![CDATA[<xen:include template="wf_widget_options_threads" />
+
+<xen:spinboxunit label="{xen:phrase bdimage_columns}:" name="{$namePrefix}grid_columns" value="{xen:if '!empty({$options.grid_columns})', $options.grid_columns, 5}" />
+
+<xen:spinboxunit label="{xen:phrase bdimage_thumbnail_width}" name="{$namePrefix}thumbnail_width" value="{xen:if 'isset({$options.thumbnail_width})', {$options.thumbnail_width}, 50}" min="1" step="25" />
+<xen:spinboxunit label="{xen:phrase bdimage_thumbnail_height}" name="{$namePrefix}thumbnail_height" value="{xen:if 'isset({$options.thumbnail_height})', {$options.thumbnail_height}, 50}" min="1" step="25" />
+<xen:spinboxunit label="{xen:phrase bdimage_gap}" name="{$namePrefix}gap" value="{xen:if 'isset({$options.gap})', {$options.gap}, 5}" min="1" step="5" />
+]]></template>
     <template title="bdimage_widget_options_threads_two"><![CDATA[<xen:include template="wf_widget_options_threads" />
 
 <xen:spinboxunit label="{xen:phrase bdimage_feature_width}" name="{$namePrefix}feature_width" value="{xen:if 'isset({$options.feature_width})', {$options.feature_width}, 300}" min="1" step="100" />
@@ -123,6 +131,61 @@ ul.bdImage_Picker
 	{
 		display: block;
 	}]]></template>
+    <template title="bdimage_grid_inline_css" version_id="19" version_string="0.10.0-dev"><![CDATA[<xen:set var="$gridWidth">{xen:calc '({$widget.options.thumbnail_width} + {$widget.options.gap}) * {$widget.options.grid_columns}'}</xen:set>
+<xen:set var="$maxWidthInSidebar">{xen:calc '{xen:property sidebar.width} - {xen:property secondaryContent.padding-left} - {xen:property secondaryContent.padding-right}'}</xen:set>
+<xen:container var="$head.{$cssClass}">
+<style>
+.{$cssClass}
+{
+	width: {$gridWidth}px;
+}
+	.{$cssClass} li
+	{
+		margin-right: {$widget.options.gap}px;
+	}
+
+	.{$cssClass} img
+	{
+		width: {$widget.options.thumbnail_width}px;
+		height: {$widget.options.thumbnail_height}px;
+	}
+
+<xen:if is="{$widget.options.thumbnail_width} > {$maxWidthInSidebar}">
+	.sidebar .{$cssClass}
+	{
+		width: {xen:calc '({$maxWidthInSidebar} + {$widget.options.gap}) * {$widget.options.grid_columns}'}px;
+	}
+	
+	.sidebar .{$cssClass} img
+	{
+		width: {$maxWidthInSidebar}px;
+		height: {xen:calc 'floor({$maxWidthInSidebar} / {$widget.options.thumbnail_width} * {$widget.options.thumbnail_height})'}px;
+	}
+</xen:if>
+
+<xen:if is="{xen:property enableResponsive}">
+@media (max-width:{xen:property maxResponsiveWideWidth})
+{
+	.non-sidebar-widget .{$cssClass}
+	{
+		width: 100%;
+	}
+		.non-sidebar-widget .{$cssClass} li
+		{
+			margin-right: 0;
+			width: {xen:calc '100 / {$widget.options.grid_columns}'}%;
+		}
+		.non-sidebar-widget .{$cssClass} img
+		{
+			width: 100%;
+			height: auto;
+		}
+
+}
+</xen:if>
+
+</style>
+</xen:container>]]></template>
     <template title="bdimage_picker" version_id="17" version_string="0.9.7"><![CDATA[<xen:if is="{$images}">
 
 	<xen:require css="bdimage.css" />
@@ -196,7 +259,7 @@ ul.bdImage_Picker
 
 	
 ]]></template>
-    <template title="bdimage_widget.css" version_id="18" version_string="0.9.7b"><![CDATA[.bdImage_Widget_Slider_Container
+    <template title="bdimage_widget.css" version_id="19" version_string="0.10.0-dev"><![CDATA[.bdImage_Widget_Slider_Container
 {
 	overflow: hidden;
 }
@@ -302,93 +365,35 @@ ul.bdImage_Picker
 		overflow: hidden;
 	}
 
-.bdImage_WidgetRenderer_AttachmentsGrid
+.bdImage_Widget_Grid_Container
 {
+	overflow: hidden;
+	overflow-x: scroll;
 	width: 100%;
 }
-	.bdImage_WidgetRenderer_AttachmentsGrid .scroller
-	{
-		overflow: hidden;
-		overflow-x: scroll;
-		width: 100%;
-	}
-	.bdImage_WidgetRenderer_AttachmentsGrid ul
-	{
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-	{xen:helper clearfix, '.bdImage_WidgetRenderer_AttachmentsGrid ul'}
-	.bdImage_WidgetRenderer_AttachmentsGrid li
+ul.bdImage_Widget_Grid
+{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+{xen:helper clearfix, 'ul.bdImage_Widget_Grid'}
+	.bdImage_Widget_Grid li
 	{
 		float: left;
 	}
-	.bdImage_WidgetRenderer_AttachmentsGrid a
+	.bdImage_Widget_Grid a
 	{
 		display: block;
 	}
 ]]></template>
-    <template title="bdimage_widget_attachments_grid" version_id="18" version_string="0.9.7b"><![CDATA[<xen:if hascontent="true">
+    <template title="bdimage_widget_attachments_grid" version_id="19" version_string="0.10.0-dev"><![CDATA[<xen:if hascontent="true">
 	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
-	<xen:set var="$gridWidth">{xen:calc '({$widget.options.thumbnail_width} + {$widget.options.gap}) * {$widget.options.grid_columns}'}</xen:set>
-	<xen:set var="$maxWidthInSidebar">{xen:calc '{xen:property sidebar.width} - {xen:property secondaryContent.padding-left} - {xen:property secondaryContent.padding-right}'}</xen:set>
-	<xen:container var="$head.{$cssClass}">
-<style>
-.{$cssClass}
-{
-	width: {$gridWidth}px;
-}
-	.{$cssClass} li
-	{
-		margin-right: {$widget.options.gap}px;
-	}
-
-	.{$cssClass} img
-	{
-		width: {$widget.options.thumbnail_width}px;
-		height: {$widget.options.thumbnail_height}px;
-	}
-
-<xen:if is="{$widget.options.thumbnail_width} > {$maxWidthInSidebar}">
-	.sidebar .{$cssClass}
-	{
-		width: {xen:calc '({$maxWidthInSidebar} + {$widget.options.gap}) * {$widget.options.grid_columns}'}px;
-	}
-	
-	.sidebar .{$cssClass} img
-	{
-		width: {$maxWidthInSidebar}px;
-		height: {xen:calc 'floor({$maxWidthInSidebar} / {$widget.options.thumbnail_width} * {$widget.options.thumbnail_height})'}px;
-	}
-</xen:if>
-
-<xen:if is="{xen:property enableResponsive}">
-@media (max-width:{xen:property maxResponsiveWideWidth})
-{
-	.non-sidebar-widget .{$cssClass}
-	{
-		width: 100%;
-	}
-		.non-sidebar-widget .{$cssClass} li
-		{
-			margin-right: 0;
-			width: {xen:calc '100 / {$widget.options.grid_columns}'}%;
-		}
-		.non-sidebar-widget .{$cssClass} img
-		{
-			width: 100%;
-			height: auto;
-		}
-
-}
-</xen:if>
-
-</style>
-	</xen:container>
+	<xen:include template="bdimage_grid_inline_css" />
 	<xen:require css="bdimage_widget.css" />
 
-	<div class="scroller">
-		<ul class="{$cssClass}">
+	<div class="bdImage_Widget_Grid_Container">
+		<ul class="bdImage_Widget_Grid {$cssClass}">
 			<xen:contentcheck>
 				<xen:foreach loop="$posts" value="$post">
 					<li>
@@ -515,6 +520,28 @@ ul.bdImage_Picker
             </xen:contentcheck>
         </ul>
     </div>
+</xen:if>]]></template>
+    <template title="bdimage_widget_threads_grid" version_id="19" version_string="0.10.0-dev"><![CDATA[<xen:if hascontent="true">
+	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
+	<xen:include template="bdimage_grid_inline_css" />
+	<xen:require css="bdimage_widget.css" />
+
+	<div class="bdImage_Widget_Grid_Container">
+		<ul class="bdImage_Widget_Grid {$cssClass}">
+			<xen:contentcheck>
+				<xen:foreach loop="$threads" value="$thread">
+					<li>
+						<a href="{xen:link threads, $thread}" title="{$thread.title}" class="Tooltip">
+							<img src="{xen:helper bdImage_thumbnail,
+								$thread.bdimage_image,
+								{$widget.options.thumbnail_width},
+								{$widget.options.thumbnail_height}}" />
+						</a>
+					</li>
+				</xen:foreach>
+			</xen:contentcheck>
+		</ul>
+	</div>
 </xen:if>]]></template>
     <template title="bdimage_widget_threads_two" version_id="14" version_string="0.9.5"><![CDATA[<xen:set var="$cssClass">bdImage_WidgetRenderer_ThreadsTwo-{$widget.widget_id}</xen:set>
 <xen:container var="$head.{$cssClass}">

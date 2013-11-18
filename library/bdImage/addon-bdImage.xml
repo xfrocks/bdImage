@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="bdImage" title="[bd] Image" version_string="0.10.0-dev" version_id="20" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="bdImage" title="[bd] Image" version_string="0.11-dev" version_id="21" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -70,6 +70,12 @@
   <email_template_modifications/>
   <optiongroups>
     <group group_id="bdImage" display_order="9999" debug_only="0"/>
+    <option option_id="bdImage_allAttachments" edit_format="onoff" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdImage" display_order="1000"/>
+    </option>
     <option option_id="bdImage_template" edit_format="checkbox" data_type="array" can_backup="1">
       <default_value></default_value>
       <edit_format_params>thread_list_item_thread_image = {xen:phrase bdimage_template_thread_list_item_thread_image}
@@ -104,8 +110,10 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
     <phrase title="bdimage_thumbnail_height" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Height]]></phrase>
     <phrase title="bdimage_thumbnail_width" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Width]]></phrase>
     <phrase title="bdimage_visible_count" version_id="10" version_string="0.9-dev"><![CDATA[Visible Thumbnails]]></phrase>
+    <phrase title="option_bdImage_allAttachments" version_id="20" version_string="0.10.0-dev"><![CDATA[Consider All Attachments for Image]]></phrase>
+    <phrase title="option_bdImage_allAttachments_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[By default, only attachments that are included in the message are considered to be the feature image of a piece of content. Enable this option to check for all attachments.]]></phrase>
     <phrase title="option_bdImage_template" version_id="14" version_string="0.9.5"><![CDATA[Template Modification]]></phrase>
-    <phrase title="option_bdImage_template_explain" version_id="14" version_string="0.9.5"><![CDATA[Tick the template modification you wish to apply.]]></phrase>
+    <phrase title="option_bdImage_template_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[Tick the modifications you wish to apply automatically.]]></phrase>
     <phrase title="option_group_bdImage" version_id="14" version_string="0.9.5"><![CDATA[[bd] Image]]></phrase>
     <phrase title="option_group_bdImage_description" version_id="14" version_string="0.9.5"><![CDATA[]]></phrase>
   </phrases>

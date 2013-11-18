@@ -19,6 +19,7 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
 			'contentType' => 'post',
 			'contentId' => $this->get('post_id'),
 			'attachmentHash' => $this->getExtraData(XenForo_DataWriter_DiscussionMessage_Post::DATA_ATTACHMENT_HASH),
+			'allAttachments' => !!bdImage_Option::get('allAttachments'),
 		);
 
 		return bdImage_Integration::getBbCodeImage($this->get('message'), $contentData, $this);

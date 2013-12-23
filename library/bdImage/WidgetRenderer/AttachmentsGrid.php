@@ -86,6 +86,11 @@ class bdImage_WidgetRenderer_AttachmentsGrid extends WidgetFramework_WidgetRende
 				$forumIdsWithAttachmentView[] = $forumId;
 			}
 		}
+		if (empty($forumIdsWithAttachmentView))
+		{
+			// no forum with attachment view permission?! Nothing to do here
+			return '';
+		}
 
 		$db = XenForo_Application::getDb();
 		$days = 1;

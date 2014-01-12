@@ -267,7 +267,7 @@ ul.bdImage_Picker
 
 	
 ]]></template>
-    <template title="bdimage_widget.css" version_id="19" version_string="0.10.0-dev"><![CDATA[.bdImage_Widget_Slider_Container
+    <template title="bdimage_widget.css" version_id="23" version_string="1.0.0b"><![CDATA[.bdImage_Widget_Slider_Container
 {
 	overflow: hidden;
 }
@@ -372,6 +372,7 @@ ul.bdImage_Picker
 		float: none;
 		overflow: hidden;
 	}
+	.bdImage_WidgetRenderer_ThreadsTwo .bdImage_Small li:last-child { border-bottom: 0; }
 
 .bdImage_Widget_Grid_Container
 {
@@ -551,13 +552,14 @@ ul.bdImage_Widget_Grid
 		</ul>
 	</div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_threads_two" version_id="14" version_string="0.9.5"><![CDATA[<xen:set var="$cssClass">bdImage_WidgetRenderer_ThreadsTwo-{$widget.widget_id}</xen:set>
+    <template title="bdimage_widget_threads_two" version_id="23" version_string="1.0.0b"><![CDATA[<xen:set var="$cssClass">bdImage_WidgetRenderer_ThreadsTwo-{$widget.widget_id}</xen:set>
 <xen:container var="$head.{$cssClass}">
 <style>
 	.{$cssClass}
 	{
-		width: {xen:calc '{$widget.options.feature_width} + {$widget.options.column_gap} + {$widget.options.small_column_width}'}px;
+		min-width: {xen:calc '{$widget.options.feature_width} + {$widget.options.column_gap} + {$widget.options.small_column_width}'}px;
 	}
+	{xen:helper clearfix, '.{$cssClass}'}
 
 	.{$cssClass} .bdImage_Feature
 	{
@@ -567,14 +569,14 @@ ul.bdImage_Widget_Grid
 	.{$cssClass} .bdImage_Small
 	{
 		margin-left: {xen:calc '{$widget.options.feature_width} + {$widget.options.column_gap}'}px;
-		width: {$widget.options.small_column_width}px;
+		min-width: {$widget.options.small_column_width}px;
 	}
 			
 	<xen:if is="{$widget.options.small_size}">
 			.{$cssClass} .bdImage_Small .text
 			{
-				margin-left: {xen:calc '{$widget.options.small_size} + {$widget.options.column_gap}'}px;
-				width: {xen:calc '{$widget.options.small_column_width} - {$widget.options.small_size} - {$widget.options.column_gap}'}px;
+				margin-left: {xen:calc '{$widget.options.small_size} + {$widget.options.column_gap} / 2'}px;
+				min-width: {xen:calc '{$widget.options.small_column_width} - {$widget.options.small_size} - {$widget.options.column_gap}'}px;
 				height: {$widget.options.small_size}px;
 			}
 			{xen:helper clearfix, '.{$cssClass} .bdImage_Small li'}
@@ -582,8 +584,14 @@ ul.bdImage_Widget_Grid
 	
 	.{$cssClass} .bdImage_Small li
 	{
-		width: {$widget.options.small_column_width}px;
-		min-height: {xen:calc '{$widget.options.feature_height} / ({$widget.options.limit} - 1) - {$widget.options.row_gap}'}px;
+		margin-bottom: 5px;
+		min-width: {$widget.options.small_column_width}px;
+		
+		<xen:if is="{$widget.options.small_size}">
+			<xen:comment>need anything here?</xen:comment>
+		<xen:else />
+			min-height: {xen:calc '{$widget.options.feature_height} / ({$widget.options.limit} - 1) - {$widget.options.row_gap}'}px;
+		</xen:if>
 	}
 </style>
 </xen:container>

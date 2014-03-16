@@ -204,6 +204,12 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 		return '';
 	}
 
+	protected function _generateProxyLink($proxyType, $url)
+	{
+		// added support for XenForo 1.3 proxy link/image system
+		return $url;
+	}
+
 	public function getModelFromCache($class)
 	{
 		if (empty($this->_dwOrModel))

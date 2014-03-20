@@ -28,6 +28,19 @@
 
 <xen:spinboxunit label="{xen:phrase bdimage_gap}" name="{$namePrefix}gap" value="{xen:if 'isset({$options.gap})', {$options.gap}, 10}" min="1" step="10" />
 <xen:spinboxunit label="{xen:phrase bdimage_visible_count}" name="{$namePrefix}visible_count" value="{xen:if 'isset({$options.visible_count})', {$options.visible_count}, 1}" min="1" />]]></template>
+    <template title="bdimage_widget_options_slider_threads_2"><![CDATA[<xen:include template="wf_widget_options_threads" />
+
+<xen:spinboxunit label="{xen:phrase bdimage_thumbnail_width}" name="{$namePrefix}thumbnail_width" value="{xen:if 'isset({$options.thumbnail_width})', {$options.thumbnail_width}, 400}" min="1" step="50" />
+<xen:spinboxunit label="{xen:phrase bdimage_thumbnail_height}" name="{$namePrefix}thumbnail_height" value="{xen:if 'isset({$options.thumbnail_height})', {$options.thumbnail_height}, 300}" min="1" step="50" />
+<xen:spinboxunit label="{xen:phrase title}" name="{$namePrefix}title" value="{xen:if 'isset({$options.title})', {$options.title}, 50}" min="0" step="25" />
+
+<input type="hidden" name="{$namePrefix}auto" value="0" />
+<input type="hidden" name="{$namePrefix}pager" value="0" />
+<xen:checkboxunit label="" name="{$namePrefix}title">
+	<xen:option name="{$namePrefix}auto" value="1" selected="{xen:if 'isset({$options.auto})', {$options.auto}, 0}">{xen:phrase bdimage_auto_play}</xen:option>
+	<xen:option name="{$namePrefix}pager" value="1" selected="{xen:if 'isset({$options.pager})', {$options.pager}, 0}">{xen:phrase bdimage_show_pager}</xen:option>
+</xen:checkboxunit>
+]]></template>
     <template title="bdimage_widget_options_threads"><![CDATA[<xen:include template="wf_widget_options_threads" />
 
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_width}" name="{$namePrefix}thumbnail_width" value="{xen:if 'isset({$options.thumbnail_width})', {$options.thumbnail_width}, 100}" min="1" step="50" />
@@ -62,7 +75,8 @@
     <listener event_id="file_health_check" execute_order="10" callback_class="bdImage_Listener" callback_method="file_health_check" active="1" hint="" description=""/>
     <listener event_id="init_dependencies" execute_order="10" callback_class="bdImage_Listener" callback_method="init_dependencies" active="1" hint="" description=""/>
     <listener event_id="load_class" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class" active="1" hint="" description=""/>
-    <listener event_id="template_hook" execute_order="10" callback_class="bdImage_Listener" callback_method="template_hook" active="1" hint="" description=""/>
+    <listener event_id="template_hook" execute_order="10" callback_class="bdImage_Listener" callback_method="template_hook" active="1" hint="wf_widget_options_threads_layout" description="wf_widget_options_threads_layout"/>
+    <listener event_id="template_post_render" execute_order="10" callback_class="bdImage_Listener" callback_method="template_post_render" active="1" hint="PAGE_CONTAINER" description="PAGE_CONTAINER"/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="bdImage_Listener" callback_method="widget_framework_ready" active="1" hint="" description=""/>
   </code_event_listeners>
   <cron/>
@@ -91,6 +105,7 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
     <interface_groups/>
   </permissions>
   <phrases>
+    <phrase title="bdimage_auto_play" version_id="24" version_string="1.0.1"><![CDATA[Auto Play]]></phrase>
     <phrase title="bdimage_columns" version_id="18" version_string="0.9.7b"><![CDATA[Columns]]></phrase>
     <phrase title="bdimage_column_gap" version_id="14" version_string="0.9.5"><![CDATA[Column Gap]]></phrase>
     <phrase title="bdimage_feature_body" version_id="14" version_string="0.9.5"><![CDATA[Display first post message of the feature thread]]></phrase>
@@ -99,6 +114,7 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
     <phrase title="bdimage_gap" version_id="10" version_string="0.9-dev"><![CDATA[Gap (between thumbnails)]]></phrase>
     <phrase title="bdimage_rows" version_id="18" version_string="0.9.7b"><![CDATA[Rows]]></phrase>
     <phrase title="bdimage_row_gap" version_id="14" version_string="0.9.5"><![CDATA[Row Gap]]></phrase>
+    <phrase title="bdimage_show_pager" version_id="24" version_string="1.0.1"><![CDATA[Show Pager]]></phrase>
     <phrase title="bdimage_small_column_explain" version_id="14" version_string="0.9.5"><![CDATA[Set the size of the second column to control how it show up next to the feature thread. To disable thumbnail for this column, choose 0 as the thumbnail size.]]></phrase>
     <phrase title="bdimage_small_column_width" version_id="14" version_string="0.9.5"><![CDATA[Second Column Width]]></phrase>
     <phrase title="bdimage_small_size" version_id="14" version_string="0.9.5"><![CDATA[Second Column Thumbnail Width]]></phrase>
@@ -267,7 +283,7 @@ ul.bdImage_Picker
 
 	
 ]]></template>
-    <template title="bdimage_widget.css" version_id="23" version_string="1.0.0b"><![CDATA[.bdImage_Widget_Slider_Container
+    <template title="bdimage_widget.css" version_id="24" version_string="1.0.1"><![CDATA[.bdImage_Widget_Slider_Container
 {
 	overflow: hidden;
 }
@@ -309,6 +325,16 @@ ul.bdImage_Picker
 	{
 		content: '→';
 		font-size: 30px;
+	}
+
+	.bdImage_Widget_Slider_Container .bx-wrapper .bx-viewport
+	{
+		border: 0;
+	}
+
+	.bdImage_Widget_Slider_Container .bx-wrapper img
+	{
+		width: 100%;
 	}
 
 .bdImage_Widget_Items
@@ -449,6 +475,47 @@ ul.bdImage_Widget_Grid
 					<xen:include template="bdimage_widget_thread_item">
 						<xen:set var="$bdImageWidgetThread_showTitle">{$widget.options.title}</xen:set>
 					</xen:include>
+				</xen:if>
+            </xen:contentcheck>
+        </ul>
+    </div>
+</xen:if>]]></template>
+    <template title="bdimage_widget_slider_threads_2" version_id="24" version_string="1.0.1"><![CDATA[<xen:if hascontent="true">
+	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
+	<xen:container var="$head.{$cssClass}">
+<style>
+.{$cssClass} .bx-wrapper img
+{
+	max-width: {$widget.options.thumbnail_width}px;
+}
+</style>
+	</xen:container>
+
+	<xen:require css="bdimage_widget.css" />
+	<xen:require js="js/bdImage/widget_slider.js" />
+	<xen:require js="js/bdImage/jquery.bxslider/jquery.bxslider.js" />
+
+    <div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads2_Container {$cssClass}"
+		 style="max-width: {$widget.options.thumbnail_width}px;"
+		 data-lib="bxslider"
+		 data-auto="{xen:if '{$widget.options.auto}', 'yes', 'no'}"
+		 data-pager="{xen:if '{$widget.options.pager}', 'yes', 'no'}">
+        <ul class="bdImage_Widget_Slider_Items">
+            <xen:contentcheck>
+				<xen:if is="{$threads}">
+					<xen:foreach loop="$threads" value="$thread">
+						<xen:if is="{$thread.bdimage_image}">
+							<li>
+								<a href="{xen:link threads, $thread}">
+									<img src="{xen:helper bdImage_thumbnail,
+										$thread.bdimage_image,
+										{$widget.options.thumbnail_width},
+										{$widget.options.thumbnail_height}}"
+										{xen:if '{$widget.options.title}', 'title="{xen:helper snippet, $thread.title, $widget.options.title}"'} />
+								</a>
+							</li>
+						</xen:if>
+					</xen:foreach>
 				</xen:if>
             </xen:contentcheck>
         </ul>

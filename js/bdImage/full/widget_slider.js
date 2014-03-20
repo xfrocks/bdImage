@@ -8,23 +8,39 @@
 	{
 		__construct: function($container)
 		{
-			$container.find('ul').jcarousel(
+			var lib = $container.data('lib');
+
+			if (lib == 'bxslider')
 			{
-				animation: 'slow',
-				auto: 3,
-				scroll: 1,
-				wrap: 'circular',
-				initCallback: function(carousel)
+				$container.find('ul').bxSlider(
 				{
-					carousel.clip.hover(function()
+					auto: XenForo.isPositive($container.data('auto')),
+					autoHover: true,
+					captions: true,
+					mode: 'fade',
+					pager: XenForo.isPositive($container.data('pager'))
+				});
+			}
+			else
+			{
+				$container.find('ul').jcarousel(
+				{
+					animation: 'slow',
+					auto: 3,
+					scroll: 1,
+					wrap: 'circular',
+					initCallback: function(carousel)
 					{
-						carousel.stopAuto();
-					}, function()
-					{
-						carousel.startAuto();
-					});
-				}
-			});
+						carousel.clip.hover(function()
+						{
+							carousel.stopAuto();
+						}, function()
+						{
+							carousel.startAuto();
+						});
+					}
+				});
+			}
 		}
 	};
 
@@ -32,4 +48,4 @@
 
 	XenForo.register('.bdImage_Widget_Slider_Container', 'XenForo.bdImage_Widget_Slider_Container');
 
-}(jQuery, this, document); 
+}(jQuery, this, document);

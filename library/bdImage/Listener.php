@@ -29,7 +29,7 @@ class bdImage_Listener
 	public static function init_dependencies(XenForo_Dependencies_Abstract $dependencies, array $data)
 	{
 		define('BDIMAGE_IS_WORKING', 1);
-		
+
 		XenForo_Template_Helper_Core::$helperCallbacks['bdimage_getoption'] = array(
 			'bdImage_Option',
 			'get'
@@ -77,6 +77,26 @@ class bdImage_Listener
 		}
 	}
 
+	public static function template_post_render($templateName, &$content, array &$containerData, XenForo_Template_Abstract $template)
+	{
+		if ($templateName === 'PAGE_CONTAINER')
+		{
+			$js = implode('', $template->getRequiredExternals('js'));
+
+			if (strpos($js, 'bdImage/jquery.bxslider/jquery.bxslider.js') !== false)
+			{
+				$search = '</head>';
+				$link = call_user_func_array('sprintf', array(
+					'<link rel="stylesheet" href="%2$s/bdImage/jquery.bxslider/jquery.bxslider.css?_v=%1$s" />',
+					XenForo_Application::$jsVersion,
+					XenForo_Application::$javaScriptUrl,
+				));
+
+				$content = str_replace($search, $link . $search, $content);
+			}
+		}
+	}
+
 	public static function widget_framework_ready(array &$renderers)
 	{
 		$renderers[] = 'bdImage_WidgetRenderer_Threads';
@@ -84,6 +104,7 @@ class bdImage_Listener
 		$renderers[] = 'bdImage_WidgetRenderer_SliderThreads';
 		$renderers[] = 'bdImage_WidgetRenderer_AttachmentsGrid';
 		$renderers[] = 'bdImage_WidgetRenderer_ThreadsGrid';
+		$renderers[] = 'bdImage_WidgetRenderer_SliderThreads2';
 	}
 
 	public static function file_health_check(XenForo_ControllerAdmin_Abstract $controller, array &$hashes)

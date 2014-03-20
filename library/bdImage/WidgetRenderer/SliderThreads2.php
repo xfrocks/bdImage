@@ -1,27 +1,29 @@
 <?php
 
-class bdImage_WidgetRenderer_SliderThreads extends WidgetFramework_WidgetRenderer_Threads
+class bdImage_WidgetRenderer_SliderThreads2 extends WidgetFramework_WidgetRenderer_Threads
 {
 	protected function _getConfiguration()
 	{
 		$config = parent::_getConfiguration();
 
-		$config['name'] = '[bd] Image: Thread Images Carousel';
+		$config['name'] = '[bd] Image: Thread Images bxSlider';
 		$config['options'] += array(
 			'thumbnail_width' => XenForo_Input::UINT,
 			'thumbnail_height' => XenForo_Input::UINT,
 			'title' => XenForo_Input::UINT,
 
-			'gap' => XenForo_Input::UINT,
-			'visible_count' => XenForo_Input::UINT,
+			'auto' => XenForo_Input::UINT,
+			'pager' => XenForo_Input::UINT,
 		);
+
+		$config['useWrapper'] = false;
 
 		return $config;
 	}
 
 	protected function _getOptionsTemplate()
 	{
-		return 'bdimage_widget_options_slider_threads';
+		return 'bdimage_widget_options_slider_threads_2';
 	}
 
 	protected function _validateOptionValue($optionKey, &$optionValue)
@@ -31,17 +33,23 @@ class bdImage_WidgetRenderer_SliderThreads extends WidgetFramework_WidgetRendere
 			switch ($optionKey)
 			{
 				case 'thumbnail_width':
+					$optionValue = 400;
+					break;
 				case 'thumbnail_height':
-					$optionValue = 100;
+					$optionValue = 300;
 					break;
 				case 'title':
 					$optionValue = 50;
 					break;
-				case 'gap':
-					$optionValue = 10;
+				case 'auto':
+					$optionValue = 0;
 					break;
-				case 'visible_count':
-					$optionValue = 1;
+				case 'pager':
+					if (strval($optionValue) === '')
+					{
+						$optionValue = 1;
+					}
+					break;
 			}
 		}
 
@@ -50,7 +58,7 @@ class bdImage_WidgetRenderer_SliderThreads extends WidgetFramework_WidgetRendere
 
 	protected function _getRenderTemplate(array $widget, $positionCode, array $params)
 	{
-		return 'bdimage_widget_slider_threads';
+		return 'bdimage_widget_slider_threads_2';
 	}
 
 	protected function _render(array $widget, $positionCode, array $params, XenForo_Template_Abstract $renderTemplateObject)

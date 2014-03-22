@@ -75,30 +75,6 @@ if (!bdImage_Helper_File::existsAndNotEmpty($path))
 		case 'png':
 			$inputType = IMAGETYPE_PNG;
 			break;
-		case 'data':
-			// this is our attachment extension
-			$inputType = IMAGETYPE_JPEG;
-			// we have to read the magic bytes to determine the correct file type
-			$fh = fopen($uri, 'rb');
-			if (!empty($fh))
-			{
-				$data = fread($fh, 4);
-
-				if (!empty($data) AND strlen($data) == 4)
-				{
-					if (strcmp($data, 'GIF8') === 0)
-					{
-						$inputType = IMAGETYPE_GIF;
-					}
-					elseif (strcmp(substr($data, 1, 3), 'PNG') === 0)
-					{
-						$inputType = IMAGETYPE_PNG;
-					}
-				}
-
-				fclose($fh);
-			}
-			break;
 	}
 
 	if (Zend_Uri::check($uri))
@@ -117,6 +93,37 @@ if (!bdImage_Helper_File::existsAndNotEmpty($path))
 	}
 
 	$image = XenForo_Image_Abstract::createFromFile($uri, $inputType);
+
+	if (empty($image))
+	{
+		// try to read the magic bytes to determine the correct file type
+		$fh = fopen($uri, 'rb');
+		if (!empty($fh))
+		{
+			$data = fread($fh, 4);
+
+			if (!empty($data) AND strlen($data) == 4)
+			{
+				if (strcmp($data, 'GIF8') === 0)
+				{
+					$inputTypeRead = IMAGETYPE_GIF;
+				}
+				elseif (strcmp(substr($data, 1, 3), 'PNG') === 0)
+				{
+					$inputTypeRead = IMAGETYPE_PNG;
+				}
+			}
+
+			fclose($fh);
+		}
+
+		if ($inputTypeRead != $inputType)
+		{
+			// read some other input type, now try to read the image again...
+			$inputType = $inputTypeRead;
+			$image = XenForo_Image_Abstract::createFromFile($uri, $inputType);
+		}
+	}
 
 	if (empty($image))
 	{

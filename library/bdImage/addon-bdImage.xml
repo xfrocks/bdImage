@@ -283,7 +283,7 @@ ul.bdImage_Picker
 
 	
 ]]></template>
-    <template title="bdimage_widget.css" version_id="24" version_string="1.0.1"><![CDATA[.bdImage_Widget_Slider_Container
+    <template title="bdimage_widget.css" version_id="26" version_string="1.0.1-dev"><![CDATA[.bdImage_Widget_Slider_Container
 {
 	overflow: hidden;
 }
@@ -324,6 +324,7 @@ ul.bdImage_Picker
 	.bdImage_Widget_Slider_Container .jcarousel-next-horizontal:after
 	{
 		content: '→';
+		line-height: 15px;
 		font-size: 30px;
 	}
 

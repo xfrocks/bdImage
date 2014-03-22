@@ -81,7 +81,12 @@ class bdImage_Listener
 	{
 		if ($templateName === 'PAGE_CONTAINER')
 		{
-			$js = implode('', $template->getRequiredExternals('js'));
+			$js = $template->getRequiredExternals('js');
+			if (is_array($js))
+			{
+				$js = implode('', $js);
+			}
+			$js = strval($js);
 
 			if (strpos($js, 'bdImage/jquery.bxslider/jquery.bxslider.js') !== false)
 			{

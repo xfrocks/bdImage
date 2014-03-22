@@ -522,13 +522,14 @@ ul.bdImage_Widget_Grid
         </ul>
     </div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_threads" version_id="16" version_string="0.9.6b"><![CDATA[<xen:if hascontent="true">
+    <template title="bdimage_widget_threads" version_id="26" version_string="1.0.1-dev"><![CDATA[<xen:if hascontent="true">
 	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
 	<xen:container var="$head.{$cssClass}">
 <style>
 .{$cssClass}
 {
-	overflow: hidden;
+	overflow-x: scroll;
+	overflow-y: hidden;
 	width: 100%;
 }
 	.{$cssClass} ul.bdImage_Widget_Items > li

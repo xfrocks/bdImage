@@ -35,10 +35,8 @@ require ($fileDir . '/library/XenForo/Autoloader.php');
 XenForo_Autoloader::getInstance()->setupAutoloader($fileDir . '/library');
 XenForo_Application::initialize($fileDir . '/library', $fileDir);
 
-XenForo_CodeEvent::setListeners(array('load_class' => array('_' => array( array(
-				'bdImage_Listener',
-				'load_class'
-			)))));
+$dependencies = new XenForo_Dependencies_Public();
+$dependencies->preLoadData();
 
 $requestPaths = XenForo_Application::get('requestPaths');
 $requestPaths['basePath'] = preg_replace('#bdImage/?$#', '', $requestPaths['basePath']);
@@ -58,7 +56,7 @@ $path = bdImage_Integration::getCachePath($uri, $size, $mode, $hash);
 $url = bdImage_Integration::getCacheUrl($uri, $size, $mode, $hash);
 $originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
 
-if (!file_exists($path))
+if (!bdImage_Helper_File::existsAndNotEmpty($path))
 {
 	// this is the first time this url has been requested
 	// we will have to fetch the image, then resize as needed
@@ -106,7 +104,7 @@ if (!file_exists($path))
 	if (Zend_Uri::check($uri))
 	{
 		// this is a remote uri, try to cache it first
-		if (!file_exists($originalCachePath))
+		if (!bdImage_Helper_File::existsAndNotEmpty($originalCachePath))
 		{
 			XenForo_Helper_File::createDirectory(dirname($originalCachePath), true);
 			file_put_contents($originalCachePath, file_get_contents($uri));
@@ -195,7 +193,13 @@ if (!file_exists($path))
 	}
 
 	XenForo_Helper_File::createDirectory(dirname($path), true);
-	$image->output($inputType, $path);
+
+	$tempFile = tempnam(XenForo_Helper_File::getTempDir(), 'xf');
+	$image->output($inputType, $tempFile);
+
+	// have to do this to support stream wrapper ([bd] Data Storage)
+	// TODO: try to use copy or rename?!
+	file_put_contents($path, file_get_contents($tempFile));
 }
 
 header('Location: ' . $url, true, 302);

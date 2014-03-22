@@ -55,7 +55,7 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 					{
 						$dataFilePath = $attachmentModel->getAttachmentDataFilePath($attachments[$attachmentId]);
 
-						if (file_exists($dataFilePath))
+						if (bdImage_Helper_File::existsAndNotEmpty($dataFilePath))
 						{
 							$attachmentUrl = $dataFilePath;
 						}

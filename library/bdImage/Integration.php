@@ -97,17 +97,17 @@ class bdImage_Integration
 		}
 
 		// the url is not a valid uri, could be a path...
-		$realpath = realpath($url);
-		if (file_exists($realpath))
+		$path = $url;
+		if (bdImage_Helper_File::existsAndNotEmpty($path))
 		{
-			return $realpath;
+			return $path;
 		}
 
 		// try relative to XenForo root
-		$realpath = realpath(XenForo_Application::getInstance()->getRootDir() . '/' . $url);
-		if (file_exists($realpath))
+		$path = XenForo_Application::getInstance()->getRootDir() . '/' . $path;
+		if (bdImage_Helper_File::existsAndNotEmpty($path))
 		{
-			return $realpath;
+			return realpath($path);
 		}
 
 		return false;
@@ -171,7 +171,7 @@ class bdImage_Integration
 		$hash = self::computeHash($imageData['url'], $size, $mode);
 
 		$cachePath = bdImage_Integration::getCachePath($imageData['url'], $size, $mode, $hash);
-		if (file_exists($cachePath))
+		if (bdImage_Helper_File::existsAndNotEmpty($cachePath))
 		{
 			$thumbnailUrl = bdImage_Integration::getCacheUrl($imageData['url'], $size, $mode, $hash);
 		}
@@ -339,7 +339,7 @@ class bdImage_Integration
 			{
 				require_once (dirname(__FILE__) . '/ThirdParties/Fastimage.php');
 				$originalCachePath = self::getOriginalCachePath($uri);
-				if (file_exists($originalCachePath))
+				if (bdImage_Helper_File::existsAndNotEmpty($originalCachePath))
 				{
 					$image = new FastImage($originalCachePath);
 				}

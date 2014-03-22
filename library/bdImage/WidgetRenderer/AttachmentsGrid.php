@@ -16,6 +16,8 @@ class bdImage_WidgetRenderer_AttachmentsGrid extends WidgetFramework_WidgetRende
 				'forums' => XenForo_Input::ARRAY_SIMPLE,
 				'as_guest' => XenForo_Input::UINT,
 			),
+			'useCache' => true,
+			'cacheSeconds' => 300, // cache for 5 minutes
 		);
 
 		return $config;

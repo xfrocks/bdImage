@@ -5,7 +5,32 @@ $size = intval(empty($_REQUEST['size']) ? 0 : $_REQUEST['size']);
 $mode = empty($_REQUEST['mode']) ? '' : $_REQUEST['mode'];
 $hash = empty($_REQUEST['hash']) ? false : $_REQUEST['hash'];
 
-$fileDir = dirname(dirname(dirname(__FILE__)));
+// we have to figure out XenForo path
+// dirname(dirname(__FILE__)) should work most of the time
+// as it was the way XenForo's index.php does
+// however, sometimes it may not work...
+// so we have to be creative
+$parentOfDirOfFile = dirname(dirname(__FILE__));
+$scriptFilename = (isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '');
+$pathToCheck = '/library/XenForo/Autoloader.php';
+$fileDir = false;
+if (file_exists($parentOfDirOfFile . $pathToCheck))
+{
+	$fileDir = $parentOfDirOfFile;
+}
+if ($fileDir === false AND !empty($scriptFilename))
+{
+	$parentOfDirOfScriptFilename = dirname(dirname($scriptFilename));
+	if (file_exists($parentOfDirOfScriptFilename . $pathToCheck))
+	{
+		$fileDir = $parentOfDirOfScriptFilename;
+	}
+}
+if ($fileDir === false)
+{
+	die('XenForo path could not be figured out...');
+}
+
 require ($fileDir . '/library/XenForo/Autoloader.php');
 XenForo_Autoloader::getInstance()->setupAutoloader($fileDir . '/library');
 XenForo_Application::initialize($fileDir . '/library', $fileDir);
@@ -14,6 +39,11 @@ XenForo_CodeEvent::setListeners(array('load_class' => array('_' => array( array(
 				'bdImage_Listener',
 				'load_class'
 			)))));
+
+$requestPaths = XenForo_Application::get('requestPaths');
+$requestPaths['basePath'] = preg_replace('#bdImage/?$#', '', $requestPaths['basePath']);
+$requestPaths['fullBasePath'] = preg_replace('#bdImage/?$#', '', $requestPaths['fullBasePath']);
+XenForo_Application::set('requestPaths', $requestPaths);
 
 if (empty($size) OR bdImage_Integration::computeHash($url, $size, $mode) != $hash)
 {
@@ -25,6 +55,7 @@ if (empty($size) OR bdImage_Integration::computeHash($url, $size, $mode) != $has
 
 $uri = bdImage_Integration::getAccessibleUri($url);
 $path = bdImage_Integration::getCachePath($uri, $size, $mode, $hash);
+$url = bdImage_Integration::getCacheUrl($uri, $size, $mode, $hash);
 $originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
 
 if (!file_exists($path))
@@ -77,13 +108,13 @@ if (!file_exists($path))
 		// this is a remote uri, try to cache it first
 		if (!file_exists($originalCachePath))
 		{
-			XenForo_Helper_File::createDirectory('./' . dirname($originalCachePath), true);
+			XenForo_Helper_File::createDirectory(dirname($originalCachePath), true);
 			file_put_contents($originalCachePath, file_get_contents($uri));
 		}
+
 		// switch to use the cached original file
 		// doing this will reduce server load when a new image is uploaded and started to
-		// appear
-		// in different places with different sizes/modes
+		// appear in different places with different sizes/modes
 		$uri = $originalCachePath;
 	}
 
@@ -163,9 +194,9 @@ if (!file_exists($path))
 		$image->bdImage_outputProgressiveJpeg(true);
 	}
 
-	XenForo_Helper_File::createDirectory('./' . dirname($path), true);
+	XenForo_Helper_File::createDirectory(dirname($path), true);
 	$image->output($inputType, $path);
 }
 
-header('Location: ' . $path);
+header('Location: ' . $url, true, 302);
 exit ;

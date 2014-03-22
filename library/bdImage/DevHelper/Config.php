@@ -11,7 +11,7 @@ class bdImage_DevHelper_Config extends DevHelper_Config_Base
 		),
 	);
 	protected $_exportPath = '/Users/sondh/XenForo/bdImage';
-	protected $_exportIncludes = array();
+	protected $_exportIncludes = array('bdImage/thumbnail.php');
 
 	/**
 	 * Return false to trigger the upgrade!

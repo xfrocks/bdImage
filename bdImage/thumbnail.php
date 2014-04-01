@@ -52,6 +52,12 @@ if (empty($size) OR bdImage_Integration::computeHash($url, $size, $mode) != $has
 }
 
 $uri = bdImage_Integration::getAccessibleUri($url);
+if (empty($uri))
+{
+	header("HTTP/1.0 404 Not Found");
+	exit ;
+}
+
 $path = bdImage_Integration::getCachePath($uri, $size, $mode, $hash);
 $url = bdImage_Integration::getCacheUrl($uri, $size, $mode, $hash);
 $originalCachePath = bdImage_Integration::getOriginalCachePath($uri);

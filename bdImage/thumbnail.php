@@ -103,6 +103,7 @@ if (!bdImage_Helper_File::existsAndNotEmpty($path))
 	if (empty($image))
 	{
 		// try to read the magic bytes to determine the correct file type
+		$inputTypeRead = $inputType;
 		$fh = fopen($uri, 'rb');
 		if (!empty($fh))
 		{

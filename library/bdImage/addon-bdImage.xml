@@ -75,11 +75,13 @@
     <listener event_id="file_health_check" execute_order="10" callback_class="bdImage_Listener" callback_method="file_health_check" active="1" hint="" description=""/>
     <listener event_id="init_dependencies" execute_order="10" callback_class="bdImage_Listener" callback_method="init_dependencies" active="1" hint="" description=""/>
     <listener event_id="load_class" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class" active="1" hint="" description=""/>
-    <listener event_id="template_hook" execute_order="10" callback_class="bdImage_Listener" callback_method="template_hook" active="1" hint="wf_widget_options_threads_layout" description="wf_widget_options_threads_layout"/>
     <listener event_id="template_post_render" execute_order="10" callback_class="bdImage_Listener" callback_method="template_post_render" active="1" hint="PAGE_CONTAINER" description="PAGE_CONTAINER"/>
+    <listener event_id="template_hook" execute_order="10" callback_class="bdImage_Listener" callback_method="template_hook" active="1" hint="" description=""/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="bdImage_Listener" callback_method="widget_framework_ready" active="1" hint="" description=""/>
   </code_event_listeners>
-  <cron/>
+  <cron>
+    <entry entry_id="bdImage_pruneFiles" cron_class="bdImage_CronEntry_CleanUp" cron_method="pruneFiles" active="1"><![CDATA[{"day_type":"dow","dow":["0"],"hours":["5"],"minutes":["6"]}]]></entry>
+  </cron>
   <email_templates/>
   <email_template_modifications/>
   <optiongroups>
@@ -89,6 +91,13 @@
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="bdImage" display_order="1000"/>
+    </option>
+    <option option_id="bdImage_fileTtlDays" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>28</default_value>
+      <edit_format_params>min=0
+step=14</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdImage" display_order="3000"/>
     </option>
     <option option_id="bdImage_template" edit_format="checkbox" data_type="array" can_backup="1">
       <default_value></default_value>
@@ -126,8 +135,11 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
     <phrase title="bdimage_thumbnail_height" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Height]]></phrase>
     <phrase title="bdimage_thumbnail_width" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Width]]></phrase>
     <phrase title="bdimage_visible_count" version_id="10" version_string="0.9-dev"><![CDATA[Visible Thumbnails]]></phrase>
+    <phrase title="cron_entry_bdImage_pruneFiles" version_id="23" version_string="1.0.0b"><![CDATA[[bd] Image: Prune Files]]></phrase>
     <phrase title="option_bdImage_allAttachments" version_id="20" version_string="0.10.0-dev"><![CDATA[Consider All Attachments for Image]]></phrase>
     <phrase title="option_bdImage_allAttachments_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[By default, only attachments that are included in the message are considered to be the feature image of a piece of content. Enable this option to check for all attachments.]]></phrase>
+    <phrase title="option_bdImage_fileTtlDays" version_id="23" version_string="1.0.0b"><![CDATA[File TTL]]></phrase>
+    <phrase title="option_bdImage_fileTtlDays_explain" version_id="23" version_string="1.0.0b"><![CDATA[Enter number of days to keep files.]]></phrase>
     <phrase title="option_bdImage_template" version_id="14" version_string="0.9.5"><![CDATA[Template Modification]]></phrase>
     <phrase title="option_bdImage_template_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[Tick the modifications you wish to apply automatically.]]></phrase>
     <phrase title="option_group_bdImage" version_id="14" version_string="0.9.5"><![CDATA[[bd] Image]]></phrase>

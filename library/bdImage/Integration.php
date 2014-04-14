@@ -236,7 +236,7 @@ class bdImage_Integration
 	{
 		if (!isset(self::$_imageSizes[$imageData]))
 		{
-			self::$_imageSizes[$imageData] = self::_getImageSize($imageData, false);
+			self::$_imageSizes[$imageData] = self::_getImageSize($imageData);
 		}
 
 		if (is_array(self::$_imageSizes[$imageData]))
@@ -251,7 +251,7 @@ class bdImage_Integration
 	{
 		if (!isset(self::$_imageSizes[$imageData]))
 		{
-			self::$_imageSizes[$imageData] = self::_getImageSize($imageData, false);
+			self::$_imageSizes[$imageData] = self::_getImageSize($imageData);
 		}
 
 		if (is_array(self::$_imageSizes[$imageData]))

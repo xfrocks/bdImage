@@ -146,17 +146,39 @@ wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_
     <phrase title="option_bdImage_template_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[Tick the modifications you wish to apply automatically.]]></phrase>
     <phrase title="option_group_bdImage" version_id="14" version_string="0.9.5"><![CDATA[[bd] Image]]></phrase>
     <phrase title="option_group_bdImage_description" version_id="14" version_string="0.9.5"><![CDATA[]]></phrase>
+    <phrase title="style_property_bdImage_wfThreadsFull_imageHeight_description_master" version_id="28" version_string="1.0.2b"><![CDATA[Enter the image height for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch height.]]></phrase>
+    <phrase title="style_property_bdImage_wfThreadsFull_imageHeight_master" version_id="28" version_string="1.0.2b"><![CDATA[Threads Full - Image Height]]></phrase>
+    <phrase title="style_property_bdImage_wfThreadsFull_imageWidth_description_master" version_id="28" version_string="1.0.2b"><![CDATA[Enter the image width for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch width.]]></phrase>
+    <phrase title="style_property_bdImage_wfThreadsFull_imageWidth_master" version_id="28" version_string="1.0.2b"><![CDATA[Threads Full - Image Width]]></phrase>
+    <phrase title="style_property_group_bdImage_master" version_id="28" version_string="1.0.2b"><![CDATA[[bd] Image]]></phrase>
+    <phrase title="style_property_group_bdImage_master_desc" version_id="28" version_string="1.0.2b"><![CDATA[]]></phrase>
   </phrases>
   <route_prefixes/>
-  <style_properties/>
+  <style_properties>
+    <property property_name="bdImage_wfThreadsFull_imageWidth" property_type="scalar" definition="1" group_name="bdImage" title="Threads Full - Image Width" description="Enter the image width for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch width." css_components="" scalar_type="number" scalar_parameters="" display_order="1000" sub_group="wfThreadsFull"><![CDATA[500]]></property>
+    <property property_name="bdImage_wfThreadsFull_imageHeight" property_type="scalar" definition="1" group_name="bdImage" title="Threads Full - Image Height" description="Enter the image height for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch height." css_components="" scalar_type="number" scalar_parameters="" display_order="1010" sub_group="wfThreadsFull"><![CDATA[]]></property>
+    <group group_name="bdImage" display_order="9999">
+      <title>[bd] Image</title>
+      <description></description>
+    </group>
+  </style_properties>
   <templates>
-    <template title="bdimage.css" version_id="17" version_string="0.9.7"><![CDATA[.bdImage_lastThreadImage
+    <template title="bdimage.css" version_id="28" version_string="1.0.2b"><![CDATA[.bdImage_lastThreadImage
 {
 	float: left;
 	margin-right: 5px;
 	width: 30px;
 	height: 30px;
 }
+
+.bdImage_threadImage
+{
+	text-align: center;
+}
+	.bdImage_threadImage img
+	{
+		max-width: 100%;
+	}
 
 ul.bdImage_Picker
 {
@@ -305,6 +327,21 @@ ul.bdImage_Picker
     <template title="bdimage_thread_list_item_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
 	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
 </a>]]></template>
+    <template title="bdimage_wf_widget_threads_full_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<xen:require css="bdimage.css" />
+
+<div class="bdImage_threadImage">
+	<a href="{xen:link threads, $thread}">
+		<xen:if is="{xen:property bdImage_wfThreadsFull_imageWidth} AND {xen:property bdImage_wfThreadsFull_imageHeight}">
+			<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, {xen:property bdImage_wfThreadsFull_imageWidth}, {xen:property bdImage_wfThreadsFull_imageHeight}}" width="{xen:property bdImage_wfThreadsFull_imageWidth}" height="{xen:property bdImage_wfThreadsFull_imageHeight}" />
+		<xen:elseif is="{xen:property bdImage_wfThreadsFull_imageWidth}" />
+			<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, {xen:property bdImage_wfThreadsFull_imageWidth}, sh}" {xen:helper bdImage_imgAttribs, $thread.bdimage_image, {xen:property bdImage_wfThreadsFull_imageWidth}, sh} />
+		<xen:elseif is="{xen:property bdImage_wfThreadsFull_imageHeight}" />
+			<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, {xen:property bdImage_wfThreadsFull_imageHeight}, sw}" {xen:helper bdImage_imgAttribs, $thread.bdimage_image, {xen:property bdImage_wfThreadsFull_imageHeight}, sw} />
+		<xen:else />
+			<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, {xen:helper bdImage_width, $thread.bdimage_image}, sh}" />
+		</xen:if>
+	</a>
+</div>]]></template>
     <template title="bdimage_wf_widget_threads_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
 	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
 </a>]]></template>
@@ -836,6 +873,16 @@ $0]]></replace>
 
 <xen:else />
 	$2
+</xen:if>]]></replace>
+    </modification>
+    <modification template="wf_widget_threads_thread_full" modification_key="bdimage_wf_widget_threads_full_thread_image" description="Template Modification: Thread Image in [bd] Widget Framework Threads widget (full layout)." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<blockquote class="messageText ugc baseHtml">]]></find>
+      <replace><![CDATA[$0
+
+<xen:if is="{xen:helper bdImage_getOption, template, wf_widget_threads_thread_image} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
+
+	<xen:include template="bdimage_wf_widget_threads_full_thread_image" />
+
 </xen:if>]]></replace>
     </modification>
     <modification template="wf_widget_threads_thread_sidebar" modification_key="bdimage_wf_widget_threads_thread_image" description="Template Modification: Thread Image in [bd] Widget Framework Threads widget." execution_order="10" enabled="1" action="str_replace">

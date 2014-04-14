@@ -75,8 +75,8 @@
     <listener event_id="file_health_check" execute_order="10" callback_class="bdImage_Listener" callback_method="file_health_check" active="1" hint="" description=""/>
     <listener event_id="init_dependencies" execute_order="10" callback_class="bdImage_Listener" callback_method="init_dependencies" active="1" hint="" description=""/>
     <listener event_id="load_class" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class" active="1" hint="" description=""/>
-    <listener event_id="template_post_render" execute_order="10" callback_class="bdImage_Listener" callback_method="template_post_render" active="1" hint="PAGE_CONTAINER" description="PAGE_CONTAINER"/>
     <listener event_id="template_hook" execute_order="10" callback_class="bdImage_Listener" callback_method="template_hook" active="1" hint="" description=""/>
+    <listener event_id="template_post_render" execute_order="10" callback_class="bdImage_Listener" callback_method="template_post_render" active="1" hint="PAGE_CONTAINER" description="PAGE_CONTAINER"/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="bdImage_Listener" callback_method="widget_framework_ready" active="1" hint="" description=""/>
   </code_event_listeners>
   <cron>
@@ -103,7 +103,8 @@ step=14</edit_format_params>
       <default_value></default_value>
       <edit_format_params>thread_list_item_thread_image = {xen:phrase bdimage_template_thread_list_item_thread_image}
 node_forum_last_thread_image = {xen:phrase bdimage_template_node_forum_last_thread_image}
-search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_image}</edit_format_params>
+search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_image}
+wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_thread_image}</edit_format_params>
       <sub_options>*</sub_options>
       <relation group_id="bdImage" display_order="2000"/>
     </option>
@@ -131,6 +132,7 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
     <phrase title="bdimage_template_node_forum_last_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Last Thread Image in Forum List]]></phrase>
     <phrase title="bdimage_template_search_result_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in search result]]></phrase>
     <phrase title="bdimage_template_thread_list_item_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in Thread List]]></phrase>
+    <phrase title="bdimage_template_wf_widget_threads_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[Thread image in [bd] Widget Framework Threads widget.]]></phrase>
     <phrase title="bdimage_thread_image" version_id="13" version_string="0.9.4"><![CDATA[Thread Image]]></phrase>
     <phrase title="bdimage_thumbnail_height" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Height]]></phrase>
     <phrase title="bdimage_thumbnail_width" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Width]]></phrase>
@@ -222,6 +224,8 @@ ul.bdImage_Picker
 
 </style>
 </xen:container>]]></template>
+    <template title="bdimage_node_forum_last_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<xen:require css="bdimage.css" />
+<img src="{xen:helper bdImage_thumbnail, $forum.bdimage_last_post_image, 48, 48}" class="bdImage_lastThreadImage" />]]></template>
     <template title="bdimage_picker" version_id="17" version_string="0.9.7"><![CDATA[<xen:if is="{$images}">
 
 	<xen:require css="bdimage.css" />
@@ -295,6 +299,15 @@ ul.bdImage_Picker
 
 	
 ]]></template>
+    <template title="bdimage_search_result_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
+	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
+</a>]]></template>
+    <template title="bdimage_thread_list_item_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
+	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
+</a>]]></template>
+    <template title="bdimage_wf_widget_threads_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
+	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
+</a>]]></template>
     <template title="bdimage_widget.css" version_id="26" version_string="1.0.1-dev"><![CDATA[.bdImage_Widget_Slider_Container
 {
 	overflow: hidden;
@@ -761,36 +774,15 @@ ul.bdImage_Widget_Grid
 
 <xen:if is="{xen:helper bdImage_getOption, template, node_forum_last_thread_image} AND !!{xen:helper bdImage_image, $forum.bdimage_last_post_image}">
 
-	<xen:require css="bdimage.css" />
-	<img src="{xen:helper bdImage_thumbnail, $forum.bdimage_last_post_image, 48, 48}" class="bdImage_lastThreadImage" />
+	<xen:include template="bdimage_node_forum_last_thread_image" />
 
 </xen:if>]]></replace>
-    </modification>
-    <modification template="post_edit" modification_key="bdimage_post_edit_picker" description="Insert thread image picker into post_edit form." execution_order="10" enabled="1" action="preg_replace">
-      <find><![CDATA[#<xen:if is="{\$attachmentParams}">(.|\r|\n)+</xen:if>#]]></find>
-      <replace><![CDATA[<xen:if is="{$post.post_id} == {$thread.first_post_id}">
-
-	<dl class="ctrlUnit">
-		<dt>{xen:phrase bdimage_thread_image}:</dt>
-		<dd>
-			<xen:include template="bdimage_picker">
-				<xen:map from="$bdImage_images" to="$images" />
-				<xen:set var="$currentImage">{xen:helper bdImage_image, $thread.bdimage_image}</xen:set>
-			</xen:include>
-		</dd>
-	</dl>
-
-</xen:if>
-
-$0]]></replace>
     </modification>
     <modification template="search_result_thread" modification_key="bdimage_search_result_thread_image" description="Template Modification: Thread Image in search result." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:avatar user="$thread" size="s" img="true" />]]></find>
       <replace><![CDATA[<xen:if is="{xen:helper bdImage_getOption, template, search_result_thread_image} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
 
-	<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
-		<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
-	</a>
+	<xen:include template="bdimage_search_result_thread_image" />
 
 <xen:else />
 	$0
@@ -840,12 +832,20 @@ $0]]></replace>
 
 <xen:if is="{xen:helper bdImage_getOption, template, thread_list_item_thread_image} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
 
-	<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
-		<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
-	</a>
+	<xen:include template="bdimage_thread_list_item_thread_image" />
 
 <xen:else />
 	$2
+</xen:if>]]></replace>
+    </modification>
+    <modification template="wf_widget_threads_thread_sidebar" modification_key="bdimage_wf_widget_threads_thread_image" description="Template Modification: Thread Image in [bd] Widget Framework Threads widget." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:avatar user="$thread" size="s" img="true" />]]></find>
+      <replace><![CDATA[<xen:if is="{xen:helper bdImage_getOption, template, wf_widget_threads_thread_image} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
+
+	<xen:include template="bdimage_wf_widget_threads_thread_image" />
+
+<xen:else />
+	$0
 </xen:if>]]></replace>
     </modification>
   </public_template_modifications>

@@ -1,5 +1,7 @@
 <?php
-class bdImage_Installer {
+
+class bdImage_Installer
+{
 	/* Start auto-generated lines of code. Change made will be overwriten... */
 
 	protected static $_tables = array();
@@ -45,7 +47,7 @@ class bdImage_Installer {
 				$db->query($patch['alterTableAddColumnQuery']);
 			}
 		}
-		
+
 		self::installCustomized($existingAddOn, $addOnData);
 	}
 
@@ -77,13 +79,18 @@ class bdImage_Installer {
 	}
 
 	/* End auto-generated lines of code. Feel free to make changes below */
-	
-	private static function installCustomized() {
-		// customized install script goes here
+
+	private static function installCustomized($existingAddOn, $addOnData)
+	{
+		if (XenForo_Application::$versionId < 1020000)
+		{
+			throw new XenForo_Exception('[bd] Image requires XenForo 1.2.0+');
+		}
 	}
-	
-	private static function uninstallCustomized() {
+
+	private static function uninstallCustomized()
+	{
 		// customized uninstall script goes here
 	}
-	
+
 }

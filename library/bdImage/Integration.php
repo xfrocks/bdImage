@@ -178,8 +178,8 @@ class bdImage_Integration
 
 		if (empty($thumbnailUrl))
 		{
-			$requestPaths = XenForo_Application::get('requestPaths');
-			$thumbnailUrl = sprintf('%s/bdImage/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s', rtrim($requestPaths['fullBasePath'], '/'), rawurlencode($imageData['url']), intval($size), $mode, $hash);
+			$boardUrl = XenForo_Application::getOptions()->get('boardUrl');
+			$thumbnailUrl = sprintf('%s/bdImage/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s', rtrim($boardUrl, '/'), rawurlencode($imageData['url']), intval($size), $mode, $hash);
 		}
 
 		return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);

@@ -40,4 +40,38 @@ class bdImage_XenForo_Model_Thread extends XFCP_bdImage_XenForo_Model_Thread
 		return $response;
 	}
 
+	public function Appforo_prepareDataForThread(array $thread, array $forum, array $firstPost)
+	{
+		$data = parent::Appforo_prepareDataForThread($thread, $forum, $firstPost);
+
+		if (isset($thread['bdimage_image']))
+		{
+			$imageData = $thread['bdimage_image'];
+			$imageUrl = bdImage_Integration::getImage($imageData);
+			if (!empty($imageUrl))
+			{
+				$data['thread_image'] = bdImage_Integration::buildThumbnailLink($imageData, bdImage_Integration::getImageWidth($imageData), bdImage_Integration::getImageHeight($imageData));
+			}
+		}
+
+		return $data;
+	}
+
+	public function prepareApiDataForThread(array $thread, array $forum, array $firstPost)
+	{
+		$data = parent::prepareApiDataForThread($thread, $forum, $firstPost);
+
+		if (isset($thread['bdimage_image']))
+		{
+			$imageData = $thread['bdimage_image'];
+			$imageUrl = bdImage_Integration::getImage($imageData);
+			if (!empty($imageUrl))
+			{
+				$data['thread_image'] = bdImage_Integration::buildThumbnailLink($imageData, bdImage_Integration::getImageWidth($imageData), bdImage_Integration::getImageHeight($imageData));
+			}
+		}
+
+		return $data;
+	}
+
 }

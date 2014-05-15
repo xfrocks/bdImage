@@ -16,6 +16,17 @@ class bdImage_Listener
 			'XenForo_DataWriter_Forum',
 			'XenForo_Image_Gd',
 			'XenForo_Image_Imagemagick_Pecl',
+		);
+
+		if (in_array($class, $classes))
+		{
+			$extend[] = 'bdImage_' . $class;
+		}
+	}
+
+	public static function load_class_model($class, array &$extend)
+	{
+		static $classes = array(
 			'XenForo_Model_Post',
 			'XenForo_Model_Thread',
 		);

@@ -185,6 +185,32 @@ class bdImage_Integration
 		return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
 	}
 
+	public static function buildFullSizeLink($imageData)
+	{
+		$imageData = self::unpackData($imageData);
+
+		if (!defined('BDIMAGE_IS_WORKING'))
+		{
+			return $imageData['url'];
+		}
+		$url = $imageData['url'];
+
+		if (Zend_Uri::check($url))
+		{
+			// it is an uri already, return asap
+			return $url;
+		}
+
+		$size = self::_getImageSize($imageData);
+		if (empty($size))
+		{
+			// too bad, we cannot determine the size
+			return $url;
+		}
+
+		return self::buildThumbnailLink($imageData, $size[0], $size[1]);
+	}
+
 	public static function getImgAttributes($imageData, $size, $mode = self::MODE_CROP_EQUAL)
 	{
 		$width = false;

@@ -46,11 +46,10 @@ class bdImage_XenForo_Model_Thread extends XFCP_bdImage_XenForo_Model_Thread
 
 		if (isset($thread['bdimage_image']))
 		{
-			$imageData = $thread['bdimage_image'];
-			$imageUrl = bdImage_Integration::getImage($imageData);
+			$imageUrl = bdImage_Integration::buildFullSizeLink($thread['bdimage_image']);
 			if (!empty($imageUrl))
 			{
-				$data['thread_image'] = bdImage_Integration::buildThumbnailLink($imageData, bdImage_Integration::getImageWidth($imageData), bdImage_Integration::getImageHeight($imageData));
+				$data['thread_image'] = $imageUrl;
 			}
 		}
 
@@ -63,11 +62,10 @@ class bdImage_XenForo_Model_Thread extends XFCP_bdImage_XenForo_Model_Thread
 
 		if (isset($thread['bdimage_image']))
 		{
-			$imageData = $thread['bdimage_image'];
-			$imageUrl = bdImage_Integration::getImage($imageData);
+			$imageUrl = bdImage_Integration::buildFullSizeLink($thread['bdimage_image']);
 			if (!empty($imageUrl))
 			{
-				$data['thread_image'] = bdImage_Integration::buildThumbnailLink($imageData, bdImage_Integration::getImageWidth($imageData), bdImage_Integration::getImageHeight($imageData));
+				$data['thread_image'] = $imageUrl;
 			}
 		}
 

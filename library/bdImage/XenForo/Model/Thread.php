@@ -40,32 +40,20 @@ class bdImage_XenForo_Model_Thread extends XFCP_bdImage_XenForo_Model_Thread
 		return $response;
 	}
 
-	public function Appforo_prepareDataForThread(array $thread, array $forum, array $firstPost)
-	{
-		$data = parent::Appforo_prepareDataForThread($thread, $forum, $firstPost);
-
-		if (isset($thread['bdimage_image']))
-		{
-			$imageUrl = bdImage_Integration::buildFullSizeLink($thread['bdimage_image']);
-			if (!empty($imageUrl))
-			{
-				$data['thread_image'] = $imageUrl;
-			}
-		}
-
-		return $data;
-	}
-
 	public function prepareApiDataForThread(array $thread, array $forum, array $firstPost)
 	{
 		$data = parent::prepareApiDataForThread($thread, $forum, $firstPost);
 
-		if (isset($thread['bdimage_image']))
+		if (isset($thread['bdimage_image']) && empty($data['links']['image']))
 		{
 			$imageUrl = bdImage_Integration::buildFullSizeLink($thread['bdimage_image']);
 			if (!empty($imageUrl))
 			{
-				$data['thread_image'] = $imageUrl;
+				$data['links']['image'] = $imageUrl;
+                $data['links']['thumbnail'] = bdImage_Integration::buildThumbnailLink(
+                    $imageUrl,
+                    XenForo_Application::getOptions()->get('attachmentThumbnailDimensions')
+                );
 			}
 		}
 

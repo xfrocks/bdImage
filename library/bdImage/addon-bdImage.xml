@@ -103,6 +103,7 @@ step=14</edit_format_params>
     <option option_id="bdImage_template" edit_format="checkbox" data_type="array" can_backup="1">
       <default_value></default_value>
       <edit_format_params>thread_list_item_thread_image = {xen:phrase bdimage_template_thread_list_item_thread_image}
+thread_view_open_graph_meta = {xen:phrase bdimage_template_thread_view_open_graph_meta}
 node_forum_last_thread_image = {xen:phrase bdimage_template_node_forum_last_thread_image}
 search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_image}
 wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_thread_image}</edit_format_params>
@@ -133,6 +134,7 @@ wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_
     <phrase title="bdimage_template_node_forum_last_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Last Thread Image in Forum List]]></phrase>
     <phrase title="bdimage_template_search_result_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in search result]]></phrase>
     <phrase title="bdimage_template_thread_list_item_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in Thread List]]></phrase>
+    <phrase title="bdimage_template_thread_view_open_graph_meta" version_id="30" version_string="1.0.4"><![CDATA[Open Graph Image in Thread View]]></phrase>
     <phrase title="bdimage_template_wf_widget_threads_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[Thread image in [bd] Widget Framework Threads widget.]]></phrase>
     <phrase title="bdimage_thread_image" version_id="13" version_string="0.9.4"><![CDATA[Thread Image]]></phrase>
     <phrase title="bdimage_thumbnail_height" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Height]]></phrase>
@@ -875,6 +877,14 @@ $0]]></replace>
 <xen:else />
 	$2
 </xen:if>]]></replace>
+    </modification>
+    <modification template="thread_view" modification_key="bdimage_thread_view_open_graph_meta" description="Template Modification: Open Graph Image in Thread View." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:include template="open_graph_meta">]]></find>
+      <replace><![CDATA[$0
+
+<xen:set var="$ogExtraHtml"><xen:if is="{xen:helper bdImage_getOption, template, thread_view_open_graph_meta} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
+<meta property="og:image" content="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 560, 560}" />
+</xen:if></xen:set>]]></replace>
     </modification>
     <modification template="wf_widget_threads_thread_full" modification_key="bdimage_wf_widget_threads_full_thread_image" description="Template Modification: Thread Image in [bd] Widget Framework Threads widget (full layout)." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<blockquote class="messageText ugc baseHtml">]]></find>

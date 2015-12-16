@@ -330,6 +330,14 @@ ul.bdImage_Picker
     <template title="bdimage_thread_list_item_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
 	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
 </a>]]></template>
+    <template title="bdimage_thread_view_open_graph_meta" version_id="30" version_string="1.0.4"><![CDATA[<xen:if is="{xen:helper bdImage_getOption, template, thread_view_open_graph_meta}
+	AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
+<xen:set var="$width">560</xen:set>
+<xen:set var="$height">560</xen:set>
+<meta property="og:image" content="{xen:helper bdImage_thumbnail, $thread.bdimage_image, $width, $height}" />
+<meta property="og:image:width" content="{$width}" />
+<meta property="og:image:height" content="{$height}" />
+</xen:if>]]></template>
     <template title="bdimage_wf_widget_threads_full_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<xen:require css="bdimage.css" />
 
 <div class="bdImage_threadImage">
@@ -818,6 +826,14 @@ ul.bdImage_Widget_Grid
 
 </xen:if>]]></replace>
     </modification>
+    <modification template="open_graph_meta" modification_key="bdimage_open_graph_meta_insert" description="Insert our image(s)." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[{xen:raw $ogExtraHtml}]]></find>
+      <replace><![CDATA[$0{xen:raw $_bdImage_ogExtraHtml}]]></replace>
+    </modification>
+    <modification template="open_graph_meta" modification_key="bdimage_open_graph_meta_remove" description="Remove default images if ours is found." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<meta property="og:image".+?/>#]]></find>
+      <replace><![CDATA[<xen:if is="!{$_bdImage_ogExtraHtml}">$0</xen:if>]]></replace>
+    </modification>
     <modification template="search_result_thread" modification_key="bdimage_search_result_thread_image" description="Template Modification: Thread Image in search result." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:avatar user="$thread" size="s" img="true" />]]></find>
       <replace><![CDATA[<xen:if is="{xen:helper bdImage_getOption, template, search_result_thread_image} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
@@ -882,9 +898,7 @@ $0]]></replace>
       <find><![CDATA[<xen:include template="open_graph_meta">]]></find>
       <replace><![CDATA[$0
 
-<xen:set var="$ogExtraHtml"><xen:if is="{xen:helper bdImage_getOption, template, thread_view_open_graph_meta} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
-<meta property="og:image" content="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 560, 560}" />
-</xen:if></xen:set>]]></replace>
+<xen:set var="$_bdImage_ogExtraHtml"><xen:include template="bdimage_thread_view_open_graph_meta" /></xen:set>]]></replace>
     </modification>
     <modification template="wf_widget_threads_thread_full" modification_key="bdimage_wf_widget_threads_full_thread_image" description="Template Modification: Thread Image in [bd] Widget Framework Threads widget (full layout)." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<blockquote class="messageText ugc baseHtml">]]></find>

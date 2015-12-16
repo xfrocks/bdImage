@@ -4,6 +4,7 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
 {
 	public function rebuildDiscussionCounters($replyCount = false, $firstPostId = false, $lastPostId = false)
 	{
+		/** @var bdImage_XenForo_Model_Post $postModel */
 		$postModel = $this->_getPostModel();
 		$postModel->bdImage_setCachingPosts(true);
 
@@ -21,24 +22,22 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
 			// to work
 			$firstPost = $postModel->bdImage_getCachedPostById($this->get('first_post_id'));
 
-			// we can trigger bdImage_Integration::getBbCodeImage ourselves but it's better
-			// for compatibility purpose
-			// to let the data writer do it...
-			// TODO: refactor this code if it cause too much trouble
-			// $postDw =
-			// XenForo_DataWriter::create('XenForo_DataWriter_DiscussionMessage_Post');
-			// $postDw->setExistingData($firstPost, true);
-			// $image = $postDw->bdImage_getImage();
+			if (!empty($firstPost))
+			{
+				$contentData = array(
+						'contentType' => 'post',
+						'contentId' => $firstPost['post_id'],
+						'attachmentHash' => false,
+						'allAttachments' => !!bdImage_Option::get('allAttachments'),
+				);
+				$image = bdImage_Integration::getBbCodeImage($firstPost['message'], $contentData, $this);
 
-			$contentData = array(
-				'contentType' => 'post',
-				'contentId' => $firstPost['post_id'],
-				'attachmentHash' => false,
-				'allAttachments' => !!bdImage_Option::get('allAttachments'),
-			);
-			$image = bdImage_Integration::getBbCodeImage($firstPost['message'], $contentData, $this);
-
-			$this->set('bdimage_image', $image);
+				$this->set('bdimage_image', $image);
+			}
+			else
+			{
+				$this->set('bdimage_image', '');
+			}
 		}
 
 		$postModel->bdImage_setCachingPosts(false);

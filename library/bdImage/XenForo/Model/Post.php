@@ -16,7 +16,7 @@ class bdImage_XenForo_Model_Post extends XFCP_bdImage_XenForo_Model_Post
 		{
 			return $this->_bdImage_posts[$postId];
 		}
-		else
+		elseif (XenForo_Application::debugMode())
 		{
 			// this should not happen, we should throw an exception to fix conflict with some
 			// other add-on
@@ -27,6 +27,10 @@ class bdImage_XenForo_Model_Post extends XFCP_bdImage_XenForo_Model_Post
 				'posts' => array_keys($this->_bdImage_posts)
 			), true);
 			throw new XenForo_Exception($exceptionMessage);
+		}
+		else
+		{
+			return null;
 		}
 	}
 

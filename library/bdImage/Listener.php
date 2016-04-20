@@ -74,6 +74,14 @@ class bdImage_Listener
 			'bdImage_Template_Helper_WidgetSlider',
 			'getCssClass'
 		);
+
+		$config = XenForo_Application::getConfig();
+		$generatorDirName = $config->get(bdImage_Integration::CONFIG_GENERATOR_DIR_NAME);
+		if (is_string($generatorDirName)
+			&& strlen($generatorDirName) > 0
+		) {
+			bdImage_Integration::$generatorDirName = $generatorDirName;
+		}
 	}
 
 	public static function template_hook($hookName, &$contents, array $hookParams, XenForo_Template_Abstract $template)

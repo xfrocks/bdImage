@@ -2,6 +2,9 @@
 
 class bdImage_Integration
 {
+	const CONFIG_GENERATOR_DIR_NAME = 'bdImage_generatorDirName';
+	public static $generatorDirName = 'bdImage';
+
 	// used in getImageWidth and getImageHeight
 	// to cache image sizes calculated
 	protected static $_imageSizes = array();
@@ -131,7 +134,8 @@ class bdImage_Integration
 
 		$divider = substr(md5($hash), 0, 2);
 
-		return sprintf('%s/bdImage/cache/%s_%s/%s/%s.%s', $pathPrefix, $size, $mode, $divider, $hash, $ext);
+		return sprintf('%s/%s/cache/%s_%s/%s/%s.%s', $pathPrefix,
+			self::$generatorDirName, $size, $mode, $divider, $hash, $ext);
 	}
 
 	public static function getCacheUrl($uri, $size, $mode, $hash)
@@ -149,7 +153,7 @@ class bdImage_Integration
 			$pathPrefix = XenForo_Helper_File::getInternalDataPath();
 		}
 
-		return sprintf('%s/bdImage/cache/%s/%s.orig', $pathPrefix, gmdate('Ym'), md5($uri));
+		return sprintf('%s/%s/cache/%s/%s.orig', $pathPrefix, self::$generatorDirName, gmdate('Ym'), md5($uri));
 	}
 
 	public static function getImage($imageData)
@@ -179,7 +183,9 @@ class bdImage_Integration
 		if (empty($thumbnailUrl))
 		{
 			$boardUrl = XenForo_Application::getOptions()->get('boardUrl');
-			$thumbnailUrl = sprintf('%s/bdImage/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s', rtrim($boardUrl, '/'), rawurlencode($imageData['url']), intval($size), $mode, $hash);
+			$thumbnailUrl = sprintf('%s/%s/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s',
+				rtrim($boardUrl, '/'), self::$generatorDirName,
+				rawurlencode($imageData['url']), intval($size), $mode, $hash);
 		}
 
 		return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);

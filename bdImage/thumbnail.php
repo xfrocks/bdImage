@@ -39,8 +39,9 @@ $dependencies = new XenForo_Dependencies_Public();
 $dependencies->preLoadData();
 
 $requestPaths = XenForo_Application::get('requestPaths');
-$requestPaths['basePath'] = preg_replace('#bdImage/?$#', '', $requestPaths['basePath']);
-$requestPaths['fullBasePath'] = preg_replace('#bdImage/?$#', '', $requestPaths['fullBasePath']);
+$requestPathRegex = '#' . preg_quote(bdImage_Integration::$generatorDirName, '#') . '/?$#';
+$requestPaths['basePath'] = preg_replace($requestPathRegex, '', $requestPaths['basePath']);
+$requestPaths['fullBasePath'] = preg_replace($requestPathRegex, '', $requestPaths['fullBasePath']);
 XenForo_Application::set('requestPaths', $requestPaths);
 
 if (empty($size) OR bdImage_Integration::computeHash($url, $size, $mode) != $hash)

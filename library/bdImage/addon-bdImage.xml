@@ -258,7 +258,7 @@ ul.bdImage_Picker
 </xen:container>]]></template>
     <template title="bdimage_node_forum_last_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<xen:require css="bdimage.css" />
 <img src="{xen:helper bdImage_thumbnail, $forum.bdimage_last_post_image, 48, 48}" class="bdImage_lastThreadImage" />]]></template>
-    <template title="bdimage_picker" version_id="17" version_string="0.9.7"><![CDATA[<xen:if is="{$images}">
+    <template title="bdimage_picker" version_id="30" version_string="1.0.4"><![CDATA[<xen:if is="{$images}">
 
 	<xen:require css="bdimage.css" />
 
@@ -284,12 +284,15 @@ ul.bdImage_Picker
 
 			<li class="other">
 				<label>
-					<input type="radio" name="bdimage_image" value="other" class="Disabler" id="ctrl_bdimage_image_other" {xen:checked '{$currentImageFound} == 0'}/>
+					<input type="radio" name="bdimage_image" value="other"
+						   class="Disabler Hider" id="ctrl_bdimage_image_other"
+						   {xen:checked '{$currentImageFound} == 0'} />
 					{xen:phrase other}
 				</label><br/>
 				<br/>
 				<div id="ctrl_bdimage_image_other_Disabler">
-					<input type="text" name="bdimage_other" value="{xen:if '{$currentImageFound} == 0', '{$currentImage}'}" class="textCtrl" />
+					<input type="text" name="bdimage_other" placeholder="{xen:phrase image_url}" class="textCtrl"
+						   value="{xen:if '{$currentImageFound} == 0', '{$currentImage}'}" />
 				</div>
 			</li>
 		</ul>

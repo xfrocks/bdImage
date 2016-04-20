@@ -363,21 +363,13 @@ class bdImage_Integration
 			$uri = self::getAccessibleUri($imageData['url']);
 			if (!empty($uri))
 			{
-				require_once (dirname(__FILE__) . '/ThirdParties/Fastimage.php');
-				$originalCachePath = self::getOriginalCachePath($uri);
-				if (bdImage_Helper_File::existsAndNotEmpty($originalCachePath))
-				{
-					$image = new FastImage($originalCachePath);
+				$imageSize = bdImage_Helper_ShippableHelper_ImageSize::calculate($uri);
+				if (!empty($imageSize['width'])) {
+					$width = $imageSize['width'];
 				}
-				else
-				{
-					$image = new FastImage($uri);
+				if (!empty($imageSize['height'])) {
+					$height = $imageSize['height'];
 				}
-
-				// TODO: option?
-				// set_time_limit(5);
-
-				list($width, $height) = $image->getSize();
 			}
 		}
 

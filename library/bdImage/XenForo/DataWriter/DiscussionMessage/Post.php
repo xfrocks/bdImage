@@ -25,18 +25,6 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
 		return bdImage_Integration::getBbCodeImage($this->get('message'), $contentData, $this);
 	}
 
-	protected function _messagePreSave()
-	{
-		$response = parent::_messagePreSave();
-
-		if (isset($GLOBALS[bdImage_Listener::XENFORO_CONTROLLERPUBLIC_POST_SAVE]))
-		{
-			$GLOBALS[bdImage_Listener::XENFORO_CONTROLLERPUBLIC_POST_SAVE]->bdImage_actionSave($this);
-		}
-
-		return $response;
-	}
-
 	protected function _messagePostSave()
 	{
         if (bdImage_Option::get('threadAuto')

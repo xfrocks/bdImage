@@ -9,7 +9,6 @@ class bdImage_Listener
 	{
 		static $classes = array(
 			'XenForo_ControllerPublic_Attachment',
-			'XenForo_ControllerPublic_Post',
 			'XenForo_ControllerPublic_Thread',
 			'XenForo_DataWriter_Discussion_Thread',
 			'XenForo_DataWriter_DiscussionMessage_Post',

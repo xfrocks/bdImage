@@ -37,7 +37,7 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
                 XenForo_DataWriter::ERROR_SILENT);
             $threadDw->setExistingData($this->get('thread_id'));
             if ($this->get('post_id') == $threadDw->get('first_post_id')) {
-                $imageData = bdImage_Integration::unpackData($threadDw->get('bdimage_image'));
+                $imageData = bdImage_Helper_Data::unpack($threadDw->get('bdimage_image'));
 
                 if (empty($imageData['_locked'])) {
                     $threadDw->set('bdimage_image', $this->bdImage_getImage());

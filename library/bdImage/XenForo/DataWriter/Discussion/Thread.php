@@ -10,7 +10,7 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
 
         parent::rebuildDiscussionCounters($replyCount, $firstPostId, $lastPostId);
 
-        $imageData = bdImage_Integration::unpackData($this->get('bdimage_image'));
+        $imageData = bdImage_Helper_Data::unpack($this->get('bdimage_image'));
 
         if (bdImage_Option::get('threadAuto')
             && $this->get('first_post_id') > 0

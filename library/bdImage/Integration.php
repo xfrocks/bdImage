@@ -42,14 +42,14 @@ class bdImage_Integration
             return '';
         }
 
-        list($imageWidth, $imageHeight) = self::_getImageSize($image);
-        return self::_packData(self::getSafeImageUrl($image), $imageWidth, $imageHeight);
+        list($imageWidth, $imageHeight) = bdImage_Helper_Image::getSize($image);
+        return bdImage_Helper_Data::pack(self::getSafeImageUrl($image), $imageWidth, $imageHeight);
     }
 
     public static function getImageFromUri($uri, array $extraData = array())
     {
-        list($imageWidth, $imageHeight) = self::_getImageSize($uri);
-        return self::_packData(self::getSafeImageUrl($uri), $imageWidth, $imageHeight, $extraData);
+        list($imageWidth, $imageHeight) = bdImage_Helper_Image::getSize($uri);
+        return bdImage_Helper_Data::pack(self::getSafeImageUrl($uri), $imageWidth, $imageHeight, $extraData);
     }
 
     public static function getSafeImageUrl($uri)
@@ -130,10 +130,7 @@ class bdImage_Integration
 
     public static function getCacheUrl($uri, $size, $mode, $hash)
     {
-        $url = self::getCachePath($uri, $size, $mode, $hash, XenForo_Application::$externalDataUrl);
-        $url = XenForo_Link::convertUriToAbsoluteUri($url, true);
-
-        return $url;
+        return self::getCachePath($uri, $size, $mode, $hash, XenForo_Application::$externalDataUrl);
     }
 
     public static function getOriginalCachePath($uri, $pathPrefix = false)
@@ -147,31 +144,64 @@ class bdImage_Integration
 
     public static function getImage($imageData)
     {
-        $imageData = self::unpackData($imageData);
-
-        return $imageData['url'];
+        return bdImage_Helper_Data::get($imageData, 'url');
     }
 
     public static function buildThumbnailLink($imageData, $size, $mode = self::MODE_CROP_EQUAL)
     {
-        $imageData = self::unpackData($imageData);
-
         if (!defined('BDIMAGE_IS_WORKING')) {
-            return $imageData['url'];
+            return self::getImage($imageData);
         }
 
-        $hash = self::computeHash($imageData['url'], $size, $mode);
+        $imageData = bdImage_Helper_Data::unpack($imageData);
+        $imageUrl = $imageData['url'];
 
-        $cachePath = bdImage_Integration::getCachePath($imageData['url'], $size, $mode, $hash);
+        if (Zend_Uri::check($imageUrl)
+            && !empty($imageData['width'])
+            && !empty($imageData['height'])
+        ) {
+            // we have the image size information
+            // try to return the image url itself if its size matches the requested thumbnail
+            switch ($mode) {
+                case self::MODE_STRETCH_WIDTH:
+                    if ($imageData['height'] == $size) {
+                        return $imageUrl;
+                    }
+                    break;
+                case self::MODE_STRETCH_HEIGHT:
+                    if ($imageData['width'] == $size) {
+                        return $imageUrl;
+                    }
+                    break;
+                default:
+                    if (is_numeric($mode)) {
+                        if ($imageData['width'] == $size
+                            && $imageData['height'] == $mode
+                        ) {
+                            return $imageUrl;
+                        }
+                    } else {
+                        if ($imageData['width'] == $size
+                            && $imageData['height'] == $size
+                        ) {
+                            return $imageUrl;
+                        }
+                    }
+            }
+        }
+
+        $hash = bdImage_Helper_Data::computeHash($imageUrl, $size, $mode);
+
+        $cachePath = bdImage_Integration::getCachePath($imageUrl, $size, $mode, $hash);
         if (bdImage_Helper_File::existsAndNotEmpty($cachePath)) {
-            $thumbnailUrl = bdImage_Integration::getCacheUrl($imageData['url'], $size, $mode, $hash);
+            $thumbnailUrl = bdImage_Integration::getCacheUrl($imageUrl, $size, $mode, $hash);
         }
 
         if (empty($thumbnailUrl)) {
             $boardUrl = XenForo_Application::getOptions()->get('boardUrl');
             $thumbnailUrl = sprintf('%s/%s/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s',
                 rtrim($boardUrl, '/'), self::$generatorDirName,
-                rawurlencode($imageData['url']), intval($size), $mode, $hash);
+                rawurlencode($imageUrl), intval($size), $mode, $hash);
         }
 
         return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
@@ -179,22 +209,22 @@ class bdImage_Integration
 
     public static function buildFullSizeLink($imageData)
     {
-        $imageData = self::unpackData($imageData);
-
         if (!defined('BDIMAGE_IS_WORKING')) {
-            return $imageData['url'];
+            return self::getImage($imageData);
         }
-        $url = $imageData['url'];
 
-        if (Zend_Uri::check($url)) {
+        $imageData = bdImage_Helper_Data::unpack($imageData);
+        $imageUrl = $imageData['url'];
+
+        if (Zend_Uri::check($imageUrl)) {
             // it is an uri already, return asap
-            return $url;
+            return $imageUrl;
         }
 
-        $size = self::_getImageSize($imageData);
+        $size = bdImage_Helper_Image::getSize($imageData);
         if (empty($size)) {
             // too bad, we cannot determine the size
-            return $url;
+            return $imageUrl;
         }
 
         return self::buildThumbnailLink($imageData, $size[0], $size[1]);
@@ -240,15 +270,10 @@ class bdImage_Integration
         }
     }
 
-    public static function computeHash($imageUrl, $size, $mode)
-    {
-        return md5(md5($imageUrl) . intval($size) . $mode . XenForo_Application::getConfig()->get('globalSalt'));
-    }
-
     public static function getImageWidth($imageData)
     {
         if (!isset(self::$_imageSizes[$imageData])) {
-            self::$_imageSizes[$imageData] = self::_getImageSize($imageData);
+            self::$_imageSizes[$imageData] = bdImage_Helper_Image::getSize($imageData);
         }
 
         if (is_array(self::$_imageSizes[$imageData])) {
@@ -261,7 +286,7 @@ class bdImage_Integration
     public static function getImageHeight($imageData)
     {
         if (!isset(self::$_imageSizes[$imageData])) {
-            self::$_imageSizes[$imageData] = self::_getImageSize($imageData);
+            self::$_imageSizes[$imageData] = bdImage_Helper_Image::getSize($imageData);
         }
 
         if (is_array(self::$_imageSizes[$imageData])) {
@@ -270,94 +295,4 @@ class bdImage_Integration
 
         return false;
     }
-
-    public static function unpackData($rawImageData)
-    {
-        if (is_array($rawImageData)) {
-            $imageData = $rawImageData;
-        } else {
-            $imageData = @json_decode($rawImageData, true);
-        }
-        $result = array();
-
-        if (!empty($imageData)) {
-            $result = $imageData;
-
-            if (!isset($result['url'])) {
-                $result['url'] = false;
-            }
-        } else {
-            // it looks like the raw image data is just the image url
-            // may be from an earlier version?
-            $result['url'] = $rawImageData;
-        }
-
-        return $result;
-    }
-
-    protected static function _packData($url, $width, $height, array $extraData = array())
-    {
-        $data = array('url' => $url);
-
-        if (!empty($width)
-            && !empty($height)
-        ) {
-            $data['width'] = $width;
-            $data['height'] = $height;
-        }
-
-        // should we check for overriden values?
-        $data = array_merge($data, $extraData);
-
-        if (count($data) == 1) {
-            // no need to pack data
-            return $data['url'];
-        } else {
-            // use JSON to pack it
-            return json_encode($data);
-        }
-    }
-
-    protected static function _getImageSize($imageData, $doFetch = true)
-    {
-        $imageData = self::unpackData($imageData);
-
-        $width = false;
-        $height = false;
-
-        if (!empty($imageData['width'])
-            && !empty($imageData['height'])
-        ) {
-            $width = $imageData['width'];
-            $height = $imageData['height'];
-        }
-
-        if ((empty($width)
-                || empty($height))
-            && $doFetch
-        ) {
-            $uri = self::getAccessibleUri($imageData['url']);
-            if (!empty($uri)) {
-                $imageSize = bdImage_Helper_ShippableHelper_ImageSize::calculate($uri);
-                if (!empty($imageSize['width'])) {
-                    $width = $imageSize['width'];
-                }
-                if (!empty($imageSize['height'])) {
-                    $height = $imageSize['height'];
-                }
-            }
-        }
-
-        if (!empty($width)
-            && !empty($height)
-        ) {
-            return array(
-                $width,
-                $height
-            );
-        } else {
-            return false;
-        }
-    }
-
 }

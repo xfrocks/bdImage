@@ -44,148 +44,30 @@ $requestPaths['fullBasePath'] = preg_replace($requestPathRegex, '', $requestPath
 XenForo_Application::set('requestPaths', $requestPaths);
 
 if (empty($size)
-    || bdImage_Integration::computeHash($url, $size, $mode) != $hash
+    || bdImage_Helper_Data::computeHash($url, $size, $mode) != $hash
 ) {
     // invalid request, we may issue 401 but this is more of a security feature
     // so we are issuing 403 response now...
-    header("HTTP/1.0 403 Forbidden");
+    header('HTTP/1.0 403 Forbidden');
     exit;
 }
 
 $uri = bdImage_Integration::getAccessibleUri($url);
 if (empty($uri)) {
-    header("HTTP/1.0 404 Not Found");
+    header('HTTP/1.0 404 Not Found');
     exit;
 }
 
-$path = bdImage_Integration::getCachePath($uri, $size, $mode, $hash);
-$url = bdImage_Integration::getCacheUrl($uri, $size, $mode, $hash);
-$originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
-
-if (!bdImage_Helper_File::existsAndNotEmpty($path)) {
-    // this is the first time this url has been requested
-    // we will have to fetch the image, then resize as needed
-    $inputType = IMAGETYPE_JPEG;
-    // default to use JPEG
-    $ext = XenForo_Helper_File::getFileExtension($uri);
-    switch ($ext) {
-        case 'gif':
-            $inputType = IMAGETYPE_GIF;
-            break;
-        case 'jpg':
-        case 'jpeg':
-            $inputType = IMAGETYPE_JPEG;
-            break;
-        case 'png':
-            $inputType = IMAGETYPE_PNG;
-            break;
+try {
+    $thumbnailUri = bdImage_Helper_Thumbnail::getThumbnailUri($uri, $size, $mode, $hash);
+} catch (XenForo_Exception $e) {
+    if (XenForo_Application::debugMode()) {
+        XenForo_Error::logException($e, false);
     }
 
-    if (Zend_Uri::check($uri)) {
-        // this is a remote uri, try to cache it first
-        if (!bdImage_Helper_File::existsAndNotEmpty($originalCachePath)) {
-            XenForo_Helper_File::createDirectory(dirname($originalCachePath), true);
-            file_put_contents($originalCachePath, file_get_contents($uri));
-        }
-
-        // switch to use the cached original file
-        // doing this will reduce server load when a new image is uploaded and started to
-        // appear in different places with different sizes/modes
-        $uri = $originalCachePath;
-    }
-
-    $image = XenForo_Image_Abstract::createFromFile($uri, $inputType);
-
-    if (empty($image)) {
-        // try to read the magic bytes to determine the correct file type
-        $inputTypeRead = $inputType;
-        $fh = fopen($uri, 'rb');
-        if (!empty($fh)) {
-            $data = fread($fh, 4);
-
-            if (!empty($data) AND strlen($data) == 4) {
-                if (strcmp($data, 'GIF8') === 0) {
-                    $inputTypeRead = IMAGETYPE_GIF;
-                } elseif (strcmp(substr($data, 1, 3), 'PNG') === 0) {
-                    $inputTypeRead = IMAGETYPE_PNG;
-                }
-            }
-
-            fclose($fh);
-        }
-
-        if ($inputTypeRead != $inputType) {
-            // read some other input type, now try to read the image again...
-            $inputType = $inputTypeRead;
-            $image = XenForo_Image_Abstract::createFromFile($uri, $inputType);
-        }
-    }
-
-    if (empty($image)) {
-        // problem open the url
-        // issue a 500 response
-        header("HTTP/1.0 500 Internal Server Error");
-        exit;
-    }
-
-    switch ($mode) {
-        case bdImage_Integration::MODE_STRETCH_WIDTH:
-            $targetHeight = $size;
-            $targetWidth = $targetHeight / $image->getHeight() * $image->getWidth();
-            $image->thumbnail($targetWidth, $targetHeight);
-            break;
-        case bdImage_Integration::MODE_STRETCH_HEIGHT:
-            $targetWidth = $size;
-            $targetHeight = $targetWidth / $image->getWidth() * $image->getHeight();
-            $image->thumbnail($targetWidth, $targetHeight);
-            break;
-        default:
-            if (is_numeric($mode)) {
-                // exact crop
-                $origRatio = $image->getWidth() / $image->getHeight();
-                $cropRatio = $size / $mode;
-                $thumbnailWidth = 0;
-                $thumbnailHeight = 0;
-                if ($origRatio > $cropRatio) {
-                    $thumbnailHeight = $mode;
-                    $thumbnailWidth = $mode * $origRatio;
-                } else {
-                    $thumbnailWidth = $size;
-                    $thumbnailHeight = $size / $origRatio;
-                }
-
-                if ($thumbnailWidth <= $image->getWidth()
-                    && $thumbnailHeight <= $image->getHeight()
-                ) {
-                    $image->thumbnail($thumbnailWidth, $thumbnailHeight);
-                    $image->crop(0, 0, $size, $mode);
-                } else {
-                    // thumbnail requested is larger then the image size
-                    if ($origRatio > $cropRatio) {
-                        $image->crop(0, 0, $image->getHeight() * $cropRatio, $image->getHeight());
-                    } else {
-                        $image->crop(0, 0, $image->getWidth(), $image->getWidth() / $cropRatio);
-                    }
-                }
-            } else {
-                // square crop
-                $image->thumbnailFixedShorterSide($size);
-                $image->crop(0, 0, $size, $size);
-            }
-            break;
-    }
-
-    if (is_callable(array($image, 'bdImage_outputProgressiveJpeg'))) {
-        call_user_func(array($image, 'bdImage_outputProgressiveJpeg'), true);
-    }
-
-    XenForo_Helper_File::createDirectory(dirname($path), true);
-
-    $tempFile = tempnam(XenForo_Helper_File::getTempDir(), 'xf');
-    $image->output($inputType, $tempFile);
-
-    XenForo_Helper_File::safeRename($tempFile, $path);
+    header('HTTP/1.0 500 Internal Server Error');
+    exit;
 }
 
-header('Location: ' . $url, true, 302);
+header('Location: ' . $thumbnailUri, true, 302);
 exit;

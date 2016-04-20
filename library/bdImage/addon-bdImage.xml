@@ -356,49 +356,19 @@ ul.bdImage_Picker
     <template title="bdimage_wf_widget_threads_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
 	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
 </a>]]></template>
-    <template title="bdimage_widget.css" version_id="26" version_string="1.0.1-dev"><![CDATA[.bdImage_Widget_Slider_Container
+    <template title="bdimage_widget.css" version_id="30" version_string="1.0.4"><![CDATA[.bdImage_Widget_Slider_Container
 {
 	overflow: hidden;
 }
-
-	.bdImage_Widget_Slider_Container .jcarousel-clip
+	.bdImage_Widget_Slider_Container a
 	{
-		margin: 0 auto;
-		overflow: hidden;
+		display: block;
 	}
 
-	.bdImage_Widget_Slider_Container .jcarousel-prev-horizontal,
-	.bdImage_Widget_Slider_Container .jcarousel-prev-horizontal:after
+	.bdImage_Widget_Slider_Container .owl-carousel img
 	{
-		position: absolute;
-		left: 5px;
-		width: 32px;
-		height: 32px;
-		cursor: pointer;
-		background: transparent;
-	}
-	.bdImage_Widget_Slider_Container .jcarousel-next-horizontal,
-	.bdImage_Widget_Slider_Container .jcarousel-next-horizontal:after
-	{
-		position: absolute;
-		right: 5px;
-		width: 32px;
-		height: 32px;
-		cursor: pointer;
-		background: transparent;
-	}
-
-	.bdImage_Widget_Slider_Container .jcarousel-prev-horizontal:after
-	{
-		content: '←';
-		line-height: 15px;
-		font-size: 30px;
-	}
-	.bdImage_Widget_Slider_Container .jcarousel-next-horizontal:after
-	{
-		content: '→';
-		line-height: 15px;
-		font-size: 30px;
+		height: auto;
+		width: 100%;
 	}
 
 	.bdImage_Widget_Slider_Container .bx-wrapper .bx-viewport
@@ -518,41 +488,31 @@ ul.bdImage_Widget_Grid
 		</ul>
 	</div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_slider_threads" version_id="16" version_string="0.9.6b"><![CDATA[<xen:if hascontent="true">
-	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
-	<xen:container var="$head.{$cssClass}">
-<style>
-.{$cssClass} .jcarousel-clip
-{
-	width: {xen:calc '{$widget.options.thumbnail_width}*{$widget.options.visible_count} + {$widget.options.gap}*({$widget.options.visible_count}-1)'}px;
-}
-.{$cssClass} .jcarousel-prev-horizontal,
-.{$cssClass} .jcarousel-next-horizontal {
-	top: {xen:if '{$widget.options.title}', {xen:calc '{$widget.options.thumbnail_height} - 32'}, {xen:calc '({$widget.options.thumbnail_height} - 32) / 2'}}px;
-}
-.{$cssClass} ul.bdImage_Widget_Slider_Items > li
-{
-	padding-right: {$widget.options.gap}px;
-	width: {$widget.options.thumbnail_width}px;
-}
-</style>
-	</xen:container>
-	
-	<xen:require css="bdimage_widget.css" />
-	<xen:require js="js/bdImage/widget_slider.js" />
-	<xen:require js="js/bdImage/jquery.jcarousel.js" />
+    <template title="bdimage_widget_slider_threads" version_id="30" version_string="1.0.4"><![CDATA[<xen:if hascontent="true">	
+<xen:require css="bdimage_widget.css" />
+<xen:require js="js/bdImage/widget_slider.js" />
+<xen:require js="js/bdImage/owl.carousel/owl.carousel{xen:if '!{$debugMode}', .min}.js" />
+<xen:set var="$headKey">bdimage_widget_slider_threads_{$widget.widget_id}</xen:set>
+<xen:container var="$head.{$headKey}">
+<link rel="stylesheet" href="{xen:helper javascriptUrl, 'js/bdImage/owl.carousel/assets/owl.carousel{xen:if '!{$debugMode}', .min}.css'}">
+<link rel="stylesheet" href="{xen:helper javascriptUrl, 'js/bdImage/owl.carousel/assets/owl.theme.default{xen:if '!{$debugMode}', .min}.css'}">
+</xen:container>
 
-    <div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads_Container {$cssClass}">
-        <ul class="bdImage_Widget_Slider_Items">
-            <xen:contentcheck>
-				<xen:if is="{$threads}">
-					<xen:include template="bdimage_widget_thread_item">
-						<xen:set var="$bdImageWidgetThread_showTitle">{$widget.options.title}</xen:set>
-					</xen:include>
-				</xen:if>
-            </xen:contentcheck>
-        </ul>
-    </div>
+<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads_Container"
+	 data-layout="owlcarousel"
+	 data-layout-options='{xen:helper json, {xen:array
+						  'items={$widget.options.visible_count}',
+						  'margin={$widget.options.gap}'}}'>
+	<ul class="bdImage_Widget_Slider_Items">
+		<xen:contentcheck>
+		<xen:if is="{$threads}">
+		<xen:include template="bdimage_widget_thread_item">
+			<xen:set var="$bdImageWidgetThread_showTitle">{$widget.options.title}</xen:set>
+		</xen:include>
+		</xen:if>
+		</xen:contentcheck>
+	</ul>
+</div>
 </xen:if>]]></template>
     <template title="bdimage_widget_slider_threads_2" version_id="24" version_string="1.0.1"><![CDATA[<xen:if hascontent="true">
 	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>

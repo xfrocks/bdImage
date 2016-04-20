@@ -1,51 +1,68 @@
-/** @param {jQuery} $ jQuery Object */! function($, window, document, _undefined)
-{
-	XenForo.bdImage_Widget_Slider_Container = function($container)
-	{
-		this.__construct($container);
-	};
-	XenForo.bdImage_Widget_Slider_Container.prototype =
-	{
-		__construct: function($container)
-		{
-			var lib = $container.data('lib');
+//noinspection ThisExpressionReferencesGlobalObjectJS
+!function ($) {
 
-			if (lib == 'bxslider')
-			{
-				$container.find('ul').bxSlider(
-				{
-					auto: XenForo.isPositive($container.data('auto')),
-					autoHover: true,
-					captions: true,
-					mode: 'fade',
-					pager: XenForo.isPositive($container.data('pager'))
-				});
-			}
-			else
-			{
-				$container.find('ul').jcarousel(
-				{
-					animation: 'slow',
-					auto: 3,
-					scroll: 1,
-					wrap: 'circular',
-					initCallback: function(carousel)
-					{
-						carousel.clip.hover(function()
-						{
-							carousel.stopAuto();
-						}, function()
-						{
-							carousel.startAuto();
-						});
-					}
-				});
-			}
-		}
-	};
+    XenForo.bdImage_Widget_Slider_Container = function ($container) {
+        this.__construct($container);
+    };
 
-	// *********************************************************************
+    XenForo.bdImage_Widget_Slider_Container.prototype =
+    {
+        __construct: function ($container) {
+            var layout = $container.data('layout');
+            var layoutOptions = $container.data('layoutOptions');
 
-	XenForo.register('.bdImage_Widget_Slider_Container', 'XenForo.bdImage_Widget_Slider_Container');
+            if (layout === 'owlcarousel') {
+                var owlcarouselOptions =
+                {
+                    autoplay: false,
+                    autoplayHoverPause: false,
+                    center: false,
+                    dots: false,
+                    items: 1,
+                    lazyLoad: true,
+                    loop: true,
+                    margin: 10,
+                    nav: false
+                };
+
+                for (var i in layoutOptions) {
+                    if (!layoutOptions.hasOwnProperty(i)) {
+                        continue;
+                    }
+
+                    var typeOf = typeof owlcarouselOptions[i];
+
+                    switch (typeOf) {
+                        case 'boolean':
+                            owlcarouselOptions[i] = (layoutOptions[i] > 0);
+                            break;
+                        case 'number':
+                            owlcarouselOptions[i] = parseInt(layoutOptions[i]);
+                            break;
+                        default:
+                            console.log(i, owlcarouselOptions[i], typeOf);
+                    }
+                }
+
+                if (owlcarouselOptions.autoplay) {
+                    owlcarouselOptions.autoplayHoverPause = true;
+                }
+
+                if (owlcarouselOptions.items === 1
+                    && typeof layoutOptions['dots'] === 'undefined') {
+                    owlcarouselOptions.dots = true;
+                }
+                if (!owlcarouselOptions.dots && !owlcarouselOptions.nav) {
+                    owlcarouselOptions.dots = true;
+                }
+
+                $container.find('.bdImage_Widget_Slider_Items').owlCarousel(owlcarouselOptions);
+            }
+        }
+    };
+
+    // *********************************************************************
+
+    XenForo.register('.bdImage_Widget_Slider_Container', 'XenForo.bdImage_Widget_Slider_Container');
 
 }(jQuery, this, document);

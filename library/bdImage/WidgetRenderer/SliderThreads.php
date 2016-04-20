@@ -57,7 +57,7 @@ class bdImage_WidgetRenderer_SliderThreads extends WidgetFramework_WidgetRendere
 	{
 		$core = WidgetFramework_Core::getInstance();
 
-		/* @var $threadModel XenForo_Model_Thread */
+		/* @var $threadModel bdImage_XenForo_Model_Thread */
 		$threadModel = $core->getModelFromCache('XenForo_Model_Thread');
 		$threadModel->bdImage_addThreadCondition(true);
 

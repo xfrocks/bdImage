@@ -90,7 +90,7 @@
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="bdImage" display_order="1000"/>
+      <relation group_id="bdImage" display_order="1050"/>
     </option>
     <option option_id="bdImage_fileTtlDays" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
       <default_value>28</default_value>
@@ -108,6 +108,12 @@ search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_i
 wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_thread_image}</edit_format_params>
       <sub_options>*</sub_options>
       <relation group_id="bdImage" display_order="2000"/>
+    </option>
+    <option option_id="bdImage_threadAuto" edit_format="onoff" data_type="unsigned_integer" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdImage" display_order="1010"/>
     </option>
   </optiongroups>
   <permissions>
@@ -146,6 +152,8 @@ wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_
     <phrase title="option_bdImage_fileTtlDays_explain" version_id="23" version_string="1.0.0b"><![CDATA[Enter number of days to keep files.]]></phrase>
     <phrase title="option_bdImage_template" version_id="14" version_string="0.9.5"><![CDATA[Template Modification]]></phrase>
     <phrase title="option_bdImage_template_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[Tick the modifications you wish to apply automatically.]]></phrase>
+    <phrase title="option_bdImage_threadAuto" version_id="30" version_string="1.0.4"><![CDATA[Thread: Auto-extract Image]]></phrase>
+    <phrase title="option_bdImage_threadAuto_explain" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
     <phrase title="option_group_bdImage" version_id="14" version_string="0.9.5"><![CDATA[[bd] Image]]></phrase>
     <phrase title="option_group_bdImage_description" version_id="14" version_string="0.9.5"><![CDATA[]]></phrase>
     <phrase title="style_property_bdImage_wfThreadsFull_imageHeight_description_master" version_id="28" version_string="1.0.2b"><![CDATA[Enter the image height for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch height.]]></phrase>

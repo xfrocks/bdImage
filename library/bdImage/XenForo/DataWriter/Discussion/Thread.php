@@ -12,8 +12,10 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
 
 		$imageData = bdImage_Integration::unpackData($this->get('bdimage_image'));
 
-		if ($this->get('first_post_id') > 0 AND empty($imageData['url']))
-		{
+		if (bdImage_Option::get('threadAuto')
+			&& $this->get('first_post_id') > 0
+			&& empty($imageData['url'])
+		) {
 			// the parent will call XenForo_Model_Post::getPostsByIds or
 			// XenForo_Model_Post::getPostsInThread
 			// to get the first post data, by calling
@@ -64,13 +66,14 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
 			$GLOBALS[bdImage_Listener::XENFORO_CONTROLLERPUBLIC_THREAD_SAVE]->bdImage_actionSave($this);
 		}
 
-		if ($this->_firstMessageDw)
-		{
+		if (bdImage_Option::get('threadAuto')
+			&& $this->_firstMessageDw
+		) {
 			$image = $this->_firstMessageDw->bdImage_getImage();
 			$this->set('bdimage_image', $image);
 
 			// tell the post data writer not to update the thread again
-			$this->_firstMessageDw->setOption(bdImage_XenForo_DataWriter_DiscussionMessage_Post::OPTION_SKIP_UPDATING_THREAD_IMAGE, true);
+			$this->_firstMessageDw->setOption(bdImage_XenForo_DataWriter_DiscussionMessage_Post::OPTION_SKIP_THREAD_AUTO, true);
 		}
 
 		return parent::_discussionPreSave();

@@ -2,13 +2,13 @@
 
 class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_XenForo_DataWriter_DiscussionMessage_Post
 {
-	const OPTION_SKIP_UPDATING_THREAD_IMAGE = 'bdImage_skipUpdatingThreadImage';
+	const OPTION_SKIP_THREAD_AUTO = 'bdImage_skipUpdatingThreadImage';
 
 	protected function _getDefaultOptions()
 	{
 		$options = parent::_getDefaultOptions();
 
-		$options[self::OPTION_SKIP_UPDATING_THREAD_IMAGE] = false;
+		$options[self::OPTION_SKIP_THREAD_AUTO] = false;
 
 		return $options;
 	}
@@ -39,9 +39,12 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
 
 	protected function _messagePostSave()
 	{
-		$optionSkip = $this->getOption(self::OPTION_SKIP_UPDATING_THREAD_IMAGE);
-		if ($this->isChanged('message') AND $this->get('position') == 0 AND empty($optionSkip))
-		{
+        if (bdImage_Option::get('threadAuto')
+            && !$this->getOption(self::OPTION_SKIP_THREAD_AUTO)
+            && $this->isChanged('message')
+            && $this->get('thread_id') > 0
+            && $this->get('position') == 0
+        ) {
 			$threadDw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread', XenForo_DataWriter::ERROR_SILENT);
 			$threadDw->setExistingData($this->get('thread_id'));
 			if ($this->get('post_id') == $threadDw->get('first_post_id'))

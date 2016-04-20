@@ -77,7 +77,6 @@
     <listener event_id="load_class" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class" active="1" hint="" description=""/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_model" active="1" hint="" description=""/>
     <listener event_id="template_hook" execute_order="10" callback_class="bdImage_Listener" callback_method="template_hook" active="1" hint="" description=""/>
-    <listener event_id="template_post_render" execute_order="10" callback_class="bdImage_Listener" callback_method="template_post_render" active="1" hint="PAGE_CONTAINER" description="PAGE_CONTAINER"/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="bdImage_Listener" callback_method="widget_framework_ready" active="1" hint="" description=""/>
   </code_event_listeners>
   <cron>
@@ -492,68 +491,56 @@ ul.bdImage_Widget_Grid
 <xen:require css="bdimage_widget.css" />
 <xen:require js="js/bdImage/widget_slider.js" />
 <xen:require js="js/bdImage/owl.carousel/owl.carousel{xen:if '!{$debugMode}', .min}.js" />
-<xen:set var="$headKey">bdimage_widget_slider_threads_{$widget.widget_id}</xen:set>
-<xen:container var="$head.{$headKey}">
+<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
+<xen:container var="$head.{$cssClass}">
 <link rel="stylesheet" href="{xen:helper javascriptUrl, 'js/bdImage/owl.carousel/assets/owl.carousel{xen:if '!{$debugMode}', .min}.css'}">
 <link rel="stylesheet" href="{xen:helper javascriptUrl, 'js/bdImage/owl.carousel/assets/owl.theme.default{xen:if '!{$debugMode}', .min}.css'}">
 </xen:container>
 
-<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads_Container"
+<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads_Container {$cssClass}"
 	 data-layout="owlcarousel"
 	 data-layout-options='{xen:helper json, {xen:array
 						  'items={$widget.options.visible_count}',
 						  'margin={$widget.options.gap}'}}'>
 	<ul class="bdImage_Widget_Slider_Items">
 		<xen:contentcheck>
-		<xen:if is="{$threads}">
 		<xen:include template="bdimage_widget_thread_item">
 			<xen:set var="$bdImageWidgetThread_showTitle">{$widget.options.title}</xen:set>
 		</xen:include>
-		</xen:if>
 		</xen:contentcheck>
 	</ul>
 </div>
-</xen:if>]]></template>
-    <template title="bdimage_widget_slider_threads_2" version_id="24" version_string="1.0.1"><![CDATA[<xen:if hascontent="true">
-	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
-	<xen:container var="$head.{$cssClass}">
-<style>
-.{$cssClass} .bx-wrapper img
-{
-	max-width: {$widget.options.thumbnail_width}px;
-}
-</style>
-	</xen:container>
+</xen:if>
 
-	<xen:require css="bdimage_widget.css" />
-	<xen:require js="js/bdImage/widget_slider.js" />
-	<xen:require js="js/bdImage/jquery.bxslider/jquery.bxslider.js" />
+<xen:edithint template="bdimage_widget_slider_threads_2" />]]></template>
+    <template title="bdimage_widget_slider_threads_2" version_id="30" version_string="1.0.4"><![CDATA[<xen:if hascontent="true">
+<xen:require css="bdimage_widget.css" />
+<xen:require js="js/bdImage/widget_slider.js" />
+<xen:require js="js/bdImage/jquery.bxslider/jquery.bxslider{xen:if '!{$debugMode}', .min}.js" />
+<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
+<xen:container var="$head.{$cssClass}">
+<link rel="stylesheet" href="{xen:helper javascriptUrl, js/bdImage/jquery.bxslider/jquery.bxslider.css}">
+</xen:container>
 
-    <div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads2_Container {$cssClass}"
-		 style="max-width: {$widget.options.thumbnail_width}px;"
-		 data-lib="bxslider"
-		 data-auto="{xen:if '{$widget.options.auto}', 'yes', 'no'}"
-		 data-pager="{xen:if '{$widget.options.pager}', 'yes', 'no'}">
-        <ul class="bdImage_Widget_Slider_Items">
-            <xen:contentcheck>
-				<xen:if is="{$threads}">
-					<xen:foreach loop="$threads" value="$thread">
-						<xen:if is="{$thread.bdimage_image}">
-							<li>
-								<a href="{xen:link threads, $thread}">
-									<img src="{xen:helper bdImage_thumbnail,
-										$thread.bdimage_image,
-										{$widget.options.thumbnail_width},
-										{$widget.options.thumbnail_height}}"
-										{xen:if '{$widget.options.title}', 'title="{xen:helper snippet, $thread.title, $widget.options.title}"'} />
-								</a>
-							</li>
-						</xen:if>
-					</xen:foreach>
-				</xen:if>
-            </xen:contentcheck>
-        </ul>
-    </div>
+<xen:require css="bdimage_widget.css" />
+<xen:require js="js/bdImage/widget_slider.js" />
+<xen:require js="js/bdImage/jquery.bxslider/jquery.bxslider.js" />
+
+<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads2_Container {$cssClass}"
+	 style="max-width: {$widget.options.thumbnail_width}px;"
+	 data-layout="bxslider"
+	 data-layout-options='{xen:helper json, {xen:array
+						  'auto={$widget.options.auto}',
+						  'pager={$widget.options.pager}',
+						  'captions={$widget.options.title}'}}'>
+	<ul class="bdImage_Widget_Slider_Items">
+		<xen:contentcheck>
+		<xen:include template="bdimage_widget_thread_item">
+			<xen:set var="$bdImageWidgetThread_showImgTitle">{$widget.options.title}</xen:set>
+		</xen:include>
+		</xen:contentcheck>
+	</ul>
+</div>
 </xen:if>]]></template>
     <template title="bdimage_widget_threads" version_id="26" version_string="1.0.1-dev"><![CDATA[<xen:if hascontent="true">
 	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
@@ -748,31 +735,32 @@ ul.bdImage_Widget_Grid
 		</ul>
 	</div>
 </div>]]></template>
-    <template title="bdimage_widget_thread_item" version_id="16" version_string="0.9.6b"><![CDATA[<xen:foreach loop="$threads" value="$thread">
-	<xen:if is="{$thread.bdimage_image}">
-		<li>
-			<a href="{xen:link threads, $thread}"
-				<xen:if is="{$bdImageWidgetThread_showToolTip}">
-				class="Tooltip" title="{$thread.title} {xen:phrase by} {$thread.username}"
-				data-offsetx="10" data-offsety="{xen:calc '5 - {$widget.options.thumbnail_height}'}"
-				</xen:if>
-				>
-				<img src="{xen:helper bdImage_thumbnail,
-					$thread.bdimage_image,
-					{$widget.options.thumbnail_width},
-					{$widget.options.thumbnail_height}}" {xen:helper bdImage_imgAttribs,
-					$thread.bdimage_image,
-					{$widget.options.thumbnail_width},
-					{$widget.options.thumbnail_height}} />
-			</a>
+    <template title="bdimage_widget_thread_item" version_id="30" version_string="1.0.4"><![CDATA[<xen:foreach loop="$threads" value="$thread">
+<xen:if is="{$thread.bdimage_image}">
+<li>
+	<a href="{xen:link threads, $thread}"
+		<xen:if is="{$bdImageWidgetThread_showToolTip}">
+		class="Tooltip" title="{$thread.title} {xen:phrase by} {$thread.username}"
+		data-offsetx="10" data-offsety="{xen:calc '5 - {$widget.options.thumbnail_height}'}"
+		</xen:if>
+		>
+		<img src="{xen:helper bdImage_thumbnail,
+			$thread.bdimage_image,
+			{$widget.options.thumbnail_width},
+			{$widget.options.thumbnail_height}}" {xen:helper bdImage_imgAttribs,
+			$thread.bdimage_image,
+			{$widget.options.thumbnail_width},
+			{$widget.options.thumbnail_height}}
+			{xen:if '{$bdImageWidgetThread_showImgTitle}', 'title="{xen:helper snippet, $thread.title, $bdImageWidgetThread_showImgTitle}"'}/>
+	</a>
 
-			<xen:if is="{$bdImageWidgetThread_showTitle}">
-				<a href="{xen:link threads, $thread}">
-					{xen:helper snippet, $thread.title, $bdImageWidgetThread_showTitle}
-				</a>
-			</xen:if>
-		</li>
+	<xen:if is="{$bdImageWidgetThread_showTitle}">
+		<a href="{xen:link threads, $thread}">
+			{xen:helper snippet, $thread.title, $bdImageWidgetThread_showTitle}
+		</a>
 	</xen:if>
+</li>
+</xen:if>
 </xen:foreach>]]></template>
   </templates>
   <public_template_modifications>

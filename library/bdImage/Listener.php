@@ -88,31 +88,6 @@ class bdImage_Listener
 		}
 	}
 
-	public static function template_post_render($templateName, &$content, array &$containerData, XenForo_Template_Abstract $template)
-	{
-		if ($templateName === 'PAGE_CONTAINER')
-		{
-			$js = $template->getRequiredExternals('js');
-			if (is_array($js))
-			{
-				$js = implode('', $js);
-			}
-			$js = strval($js);
-
-			if (strpos($js, 'bdImage/jquery.bxslider/jquery.bxslider.js') !== false)
-			{
-				$search = '</head>';
-				$link = call_user_func_array('sprintf', array(
-					'<link rel="stylesheet" href="%2$s/bdImage/jquery.bxslider/jquery.bxslider.css?_v=%1$s" />',
-					XenForo_Application::$jsVersion,
-					XenForo_Application::$javaScriptUrl,
-				));
-
-				$content = str_replace($search, $link . $search, $content);
-			}
-		}
-	}
-
 	public static function widget_framework_ready(array &$renderers)
 	{
 		$renderers[] = 'bdImage_WidgetRenderer_Threads';

@@ -34,6 +34,21 @@ class bdImage_Listener
         }
     }
 
+    /**
+     * @param XenForo_Dependencies_Abstract $dependencies
+     * @param array $data
+     *
+     * @see bdImage_Option::get
+     * @see bdImage_Helper_Data::get
+     * @see bdImage_Integration::getImage
+     * @see bdImage_Integration::getSafeImageUrl
+     * @see bdImage_Integration::buildThumbnailLink
+     * @see bdImage_Integration::buildFullSizeLink
+     * @see bdImage_Integration::getImageWidth
+     * @see bdImage_Integration::getImageHeight
+     * @see bdImage_Integration::getImgAttributes
+     * @see bdImage_Template_Helper_WidgetSlider::getCssClass
+     */
     public static function init_dependencies(
         /** @noinspection PhpUnusedParameterInspection */
         XenForo_Dependencies_Abstract $dependencies,
@@ -41,40 +56,28 @@ class bdImage_Listener
     ) {
         define('BDIMAGE_IS_WORKING', 1);
 
-        XenForo_Template_Helper_Core::$helperCallbacks['bdimage_getoption'] = array(
-            'bdImage_Option',
-            'get'
-        );
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_getOption')]
+            = array('bdImage_Option', 'get');
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_getData')]
+            = array('bdImage_Helper_Data', 'get');
 
-        XenForo_Template_Helper_Core::$helperCallbacks['bdimage_image'] = array(
-            'bdImage_Integration',
-            'getImage'
-        );
-        XenForo_Template_Helper_Core::$helperCallbacks['bdimage_safeurl'] = array(
-            'bdImage_Integration',
-            'getSafeImageUrl'
-        );
-        XenForo_Template_Helper_Core::$helperCallbacks['bdimage_filename'] = 'basename';
-        XenForo_Template_Helper_Core::$helperCallbacks['bdimage_thumbnail'] = array(
-            'bdImage_Integration',
-            'buildThumbnailLink'
-        );
-        XenForo_Template_Helper_Core::$helperCallbacks['bdimage_width'] = array(
-            'bdImage_Integration',
-            'getImageWidth'
-        );
-        XenForo_Template_Helper_Core::$helperCallbacks['bdimage_height'] = array(
-            'bdImage_Integration',
-            'getImageHeight'
-        );
-        XenForo_Template_Helper_Core::$helperCallbacks['bdimage_imgattribs'] = array(
-            'bdImage_Integration',
-            'getImgAttributes'
-        );
-        XenForo_Template_Helper_Core::$helperCallbacks['bdimage_widget_slider_cssclass'] = array(
-            'bdImage_Template_Helper_WidgetSlider',
-            'getCssClass'
-        );
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_image')]
+            = array('bdImage_Integration', 'getImage');
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_safeUrl')]
+            = array('bdImage_Integration', 'getSafeImageUrl');
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_filename')] = 'basename';
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_thumbnail')]
+            = array('bdImage_Integration', 'buildThumbnailLink');
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_fullSize')]
+            = array('bdImage_Integration', 'buildFullSizeLink');
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_width')]
+            = array('bdImage_Integration', 'getImageWidth');
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_height')]
+            = array('bdImage_Integration', 'getImageHeight');
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_imgAttribs')]
+            = array('bdImage_Integration', 'getImgAttributes');
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_widget_slider_cssClass')]
+            = array('bdImage_Template_Helper_WidgetSlider', 'getCssClass');
 
         $config = XenForo_Application::getConfig();
         $generatorDirName = $config->get(bdImage_Integration::CONFIG_GENERATOR_DIR_NAME);

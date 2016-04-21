@@ -43,4 +43,43 @@ class bdImage_Helper_Image
             return false;
         }
     }
+
+    public static function getDataUriTransparentAtSameSize($uri)
+    {
+        if (!function_exists('imagecreatetruecolor')) {
+            return '';
+        }
+
+        list($width, $height) = self::getSize($uri);
+        if (empty($width) || empty($height)) {
+            return '';
+        }
+
+        $gcd = self::_findGreatestCommonDivisor($width, $height);
+        $width /= $gcd;
+        $height /= $gcd;
+
+        $image = imagecreate($width, $height);
+        imagealphablending($image, false);
+        imagesavealpha($image, true);
+        $colorTransparent = imagecolorallocatealpha($image, 255, 255, 255, 127);
+        imagefilledrectangle($image, 0, 0, $width, $height, $colorTransparent);
+
+        ob_start();
+        imagepng($image);
+        $imageData = ob_get_contents();
+        ob_end_clean();
+
+        return 'data:image/png;base64,' . base64_encode($imageData);
+    }
+
+    protected static function _findGreatestCommonDivisor($a, $b)
+    {
+        $mod = $a % $b;
+        if ($mod === 0) {
+            return $b;
+        } else {
+            return self::_findGreatestCommonDivisor($b, $mod);
+        }
+    }
 }

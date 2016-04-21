@@ -125,10 +125,12 @@ wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_
     <phrase title="bdimage_auto_play" version_id="24" version_string="1.0.1"><![CDATA[Auto Play]]></phrase>
     <phrase title="bdimage_columns" version_id="18" version_string="0.9.7b"><![CDATA[Columns]]></phrase>
     <phrase title="bdimage_column_gap" version_id="14" version_string="0.9.5"><![CDATA[Column Gap]]></phrase>
+    <phrase title="bdimage_discussion_in_x_started_by_y_date_z_replies_m_views_n" version_id="30" version_string="1.0.4"><![CDATA[Discussion in '{forum}' started by {name}, {date}. Replies: {replies}. Views: {views}.]]></phrase>
     <phrase title="bdimage_feature_body" version_id="14" version_string="0.9.5"><![CDATA[Display first post message of the feature thread]]></phrase>
     <phrase title="bdimage_feature_height" version_id="14" version_string="0.9.5"><![CDATA[Feature Image Height]]></phrase>
     <phrase title="bdimage_feature_width" version_id="14" version_string="0.9.5"><![CDATA[Feature Image Width]]></phrase>
     <phrase title="bdimage_gap" version_id="10" version_string="0.9-dev"><![CDATA[Gap (between thumbnails)]]></phrase>
+    <phrase title="bdimage_is_cover" version_id="30" version_string="1.0.4"><![CDATA[Render as thread top cover image]]></phrase>
     <phrase title="bdimage_rows" version_id="18" version_string="0.9.7b"><![CDATA[Rows]]></phrase>
     <phrase title="bdimage_row_gap" version_id="14" version_string="0.9.5"><![CDATA[Row Gap]]></phrase>
     <phrase title="bdimage_show_pager" version_id="24" version_string="1.0.1"><![CDATA[Show Pager]]></phrase>
@@ -141,6 +143,7 @@ wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_
     <phrase title="bdimage_template_thread_list_item_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in Thread List]]></phrase>
     <phrase title="bdimage_template_thread_view_open_graph_meta" version_id="30" version_string="1.0.4"><![CDATA[Open Graph Image in Thread View]]></phrase>
     <phrase title="bdimage_template_wf_widget_threads_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[Thread image in [bd] Widget Framework Threads widget.]]></phrase>
+    <phrase title="bdimage_thread_cover_image" version_id="30" version_string="1.0.4"><![CDATA[Cover Image]]></phrase>
     <phrase title="bdimage_thread_image" version_id="13" version_string="0.9.4"><![CDATA[Thread Image]]></phrase>
     <phrase title="bdimage_thumbnail_height" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Height]]></phrase>
     <phrase title="bdimage_thumbnail_width" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Width]]></phrase>
@@ -156,10 +159,24 @@ wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_
     <phrase title="option_bdImage_threadAuto_explain" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
     <phrase title="option_group_bdImage" version_id="14" version_string="0.9.5"><![CDATA[[bd] Image]]></phrase>
     <phrase title="option_group_bdImage_description" version_id="14" version_string="0.9.5"><![CDATA[]]></phrase>
+    <phrase title="style_property_bdImage_coverAvatar_description_master" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
+    <phrase title="style_property_bdImage_coverAvatar_master" version_id="30" version_string="1.0.4"><![CDATA[Avatar]]></phrase>
+    <phrase title="style_property_bdImage_coverBg_description_master" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
+    <phrase title="style_property_bdImage_coverBg_master" version_id="30" version_string="1.0.4"><![CDATA[Text Container]]></phrase>
+    <phrase title="style_property_bdImage_coverHidePageElements_description_master" version_id="30" version_string="1.0.4"><![CDATA[Enable this option to hide page elements such as the top breadcrumb, title bar, etc.]]></phrase>
+    <phrase title="style_property_bdImage_coverHidePageElements_master" version_id="30" version_string="1.0.4"><![CDATA[Hide Page Elements]]></phrase>
+    <phrase title="style_property_bdImage_coverPositionAboveTopBreadcrumb_description_master" version_id="30" version_string="1.0.4"><![CDATA[Cover will show up at the top of content block (next to sidebar, if available)]]></phrase>
+    <phrase title="style_property_bdImage_coverPositionAboveTopBreadcrumb_master" version_id="30" version_string="1.0.4"><![CDATA[Positioning: Content Top]]></phrase>
+    <phrase title="style_property_bdImage_coverPositionContentDirectChild_description_master" version_id="30" version_string="1.0.4"><![CDATA[Cover will span across the entire browser width.]]></phrase>
+    <phrase title="style_property_bdImage_coverPositionContentDirectChild_master" version_id="30" version_string="1.0.4"><![CDATA[Positioning: Above Content]]></phrase>
+    <phrase title="style_property_bdImage_cover_description_master" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
+    <phrase title="style_property_bdImage_cover_master" version_id="30" version_string="1.0.4"><![CDATA[Cover]]></phrase>
     <phrase title="style_property_bdImage_wfThreadsFull_imageHeight_description_master" version_id="28" version_string="1.0.2b"><![CDATA[Enter the image height for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch height.]]></phrase>
     <phrase title="style_property_bdImage_wfThreadsFull_imageHeight_master" version_id="28" version_string="1.0.2b"><![CDATA[Threads Full - Image Height]]></phrase>
     <phrase title="style_property_bdImage_wfThreadsFull_imageWidth_description_master" version_id="28" version_string="1.0.2b"><![CDATA[Enter the image width for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch width.]]></phrase>
     <phrase title="style_property_bdImage_wfThreadsFull_imageWidth_master" version_id="28" version_string="1.0.2b"><![CDATA[Threads Full - Image Width]]></phrase>
+    <phrase title="style_property_group_bdImage_cover_master" version_id="30" version_string="1.0.4"><![CDATA[[bd] Image: Cover]]></phrase>
+    <phrase title="style_property_group_bdImage_cover_master_desc" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
     <phrase title="style_property_group_bdImage_master" version_id="28" version_string="1.0.2b"><![CDATA[[bd] Image]]></phrase>
     <phrase title="style_property_group_bdImage_master_desc" version_id="28" version_string="1.0.2b"><![CDATA[]]></phrase>
   </phrases>
@@ -167,40 +184,188 @@ wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_
   <style_properties>
     <property property_name="bdImage_wfThreadsFull_imageWidth" property_type="scalar" definition="1" group_name="bdImage" title="Threads Full - Image Width" description="Enter the image width for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch width." css_components="" scalar_type="number" scalar_parameters="" display_order="1000" sub_group="wfThreadsFull"><![CDATA[500]]></property>
     <property property_name="bdImage_wfThreadsFull_imageHeight" property_type="scalar" definition="1" group_name="bdImage" title="Threads Full - Image Height" description="Enter the image height for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch height." css_components="" scalar_type="number" scalar_parameters="" display_order="1010" sub_group="wfThreadsFull"><![CDATA[]]></property>
+    <property property_name="bdImage_coverPositionContentDirectChild" property_type="scalar" definition="1" group_name="bdImage_cover" title="Positioning: Above Content" description="Cover will span across the entire browser width." css_components="" scalar_type="boolean" scalar_parameters="" display_order="10" sub_group="position"><![CDATA[1]]></property>
+    <property property_name="bdImage_coverPositionAboveTopBreadcrumb" property_type="scalar" definition="1" group_name="bdImage_cover" title="Positioning: Content Top" description="Cover will show up at the top of content block (next to sidebar, if available)" css_components="" scalar_type="boolean" scalar_parameters="" display_order="20" sub_group="position"><![CDATA[0]]></property>
+    <property property_name="bdImage_cover" property_type="css" definition="1" group_name="bdImage_cover" title="Cover" description="" css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="10" sub_group=""><![CDATA[{"color":"#fff"}]]></property>
+    <property property_name="bdImage_coverBg" property_type="css" definition="1" group_name="bdImage_cover" title="Text Container" description="" css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="100" sub_group=""><![CDATA[{"background-color":"rgba(0, 0, 0, 0.25)","font-size":"21px"}]]></property>
+    <property property_name="bdImage_coverHidePageElements" property_type="scalar" definition="1" group_name="bdImage_cover" title="Hide Page Elements" description="Enable this option to hide page elements such as the top breadcrumb, title bar, etc." css_components="" scalar_type="boolean" scalar_parameters="" display_order="100" sub_group=""><![CDATA[1]]></property>
+    <property property_name="bdImage_coverAvatar" property_type="css" definition="1" group_name="bdImage_cover" title="Avatar" description="" css_components="background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="200" sub_group=""><![CDATA[{"background-color":"@primaryLighterStill","border-radius":"48px","height":"96px","width":"96px"}]]></property>
     <group group_name="bdImage" display_order="9999">
       <title>[bd] Image</title>
       <description></description>
     </group>
+    <group group_name="bdImage_cover" display_order="9999">
+      <title>[bd] Image: Cover</title>
+      <description></description>
+    </group>
   </style_properties>
   <templates>
-    <template title="bdimage.css" version_id="28" version_string="1.0.2b"><![CDATA[.bdImage_lastThreadImage
-{
+    <template title="bdimage.css" version_id="30" version_string="1.0.4"><![CDATA[.bdImage_lastThreadImage {
 	float: left;
 	margin-right: 5px;
 	width: 30px;
 	height: 30px;
 }
 
-.bdImage_threadImage
-{
-	text-align: center;
-}
-	.bdImage_threadImage img
-	{
-		max-width: 100%;
-	}
+.bdImage_threadImage { text-align: center; }
+	.bdImage_threadImage img { max-width: 100%; }
 
-ul.bdImage_Picker
-{
-}
-	ul.bdImage_Picker > li
-	{
+ul.bdImage_Picker {}
+	ul.bdImage_Picker > li {
 		display: inline-block;
 	}
-	ul.bdImage_Picker > li.other
-	{
+	ul.bdImage_Picker > li.other {
 		display: block;
-	}]]></template>
+	}
+
+/* cover */
+<xen:set var="$coverAvatarSize">96</xen:set>
+
+<xen:if is="{xen:property bdImage_coverHidePageElements}">
+html.bdImage_hasCover .breadBoxTop,
+html.bdImage_hasCover .titleBar {
+	display: none;
+}
+</xen:if>
+
+.bdImage_coverContainer {
+	margin: 0;
+	position: relative;
+	text-align: left;
+}
+
+.bdImage_coverContainer .coverContent {
+	padding-left: {xen:property content.padding-left};
+	padding-right: {xen:property content.padding-right};
+}
+
+.bdImage_cover {
+	{xen:property bdImage_cover}
+
+	overflow: hidden;
+	position: relative;
+}
+	.position-ad_above_top_breadcrumb .bdImage_cover {
+		margin-left: {xen:calc '0 - {xen:property content.padding-left}'}px;
+		margin-right: {xen:calc '0 - {xen:property content.padding-right}'}px;
+	}
+	.Sidebar .position-ad_above_top_breadcrumb .bdImage_cover {
+		margin-right: 0;
+	}
+	.bdImage_cover a { color: inherit; }
+
+.bdImage_cover .avatar {
+	border-radius: {xen:property bdImage_coverAvatar.border-radius};
+	position: absolute;
+		bottom: 0;
+		left: {xen:calc 'floor({xen:property content.padding-left} / 2)'}px;
+}
+	.bdImage_cover .avatar img,
+	.bdImage_cover .avatar amp-img {
+		{xen:property bdImage_coverAvatar}
+	}
+
+.bdImage_cover .author .username {
+	font-size: {xen:property h1.font-size};
+	position: absolute;
+		bottom: {xen:calc 'floor({xen:property content.padding-bottom} / 2)'}px;
+		left: {xen:calc '{$coverAvatarSize} + {xen:property content.padding-left}'}px;
+	text-rendering: optimizelegibility;
+	text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+}
+
+.bdImage_cover .bg {
+	{xen:property bdImage_coverBg}
+
+	position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+}
+
+.bdImage_cover .bg p {
+	display: block;
+	width: 100%;
+}
+	.bdImage_coverContainer p.title {
+		font-size: 1.3em;
+		line-height: 1.4em;
+		top: 0;
+	}
+	.bdImage_cover p.description {
+		display: none;
+		font-size: 0.6em;
+		line-height: 2em;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+		.bdImage_cover:hover .bg { padding-bottom: 0.2em; }
+		.bdImage_cover:hover p.description { display: block; }
+
+.bdImage_cover .cover {
+	display: block;
+	height: auto;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+.bdImage_coverContainer > .title { display: none; }
+.bdImage_coverContainer.position-ad_above_top_breadcrumb > .title { padding: 0 !important; }
+
+.bdImage_coverContainer .share_bar {
+	display: block;
+	position: absolute;
+		bottom: {xen:property content.padding-bottom};
+		right: 0;
+	text-align: right;
+}
+	.bdImage_coverContainer .share_bar .sharePage .shareControl { display: inline-block; float: none; }
+	.bdImage_coverContainer .share_bar .textHeading { display: none; }
+	
+<xen:if is="{xen:property enableResponsive}">
+@media (max-width:{xen:property maxResponsiveWideWidth}) {
+	.Responsive .position-ad_above_top_breadcrumb .bdImage_cover {
+		margin-left: {xen:calc '0 - ceil({xen:property content.padding-left} / 2)'}px;
+		margin-right: {xen:calc '0 - ceil({xen:property content.padding-right} / 2)'}px;
+	}
+
+	.Responsive .bdImage_coverContainer .coverContent {
+		padding-left: {xen:calc 'floor({xen:property content.padding-left} / 2)'}px;
+		padding-right: {xen:calc 'floor({xen:property content.padding-right} / 2)'}px;
+	}
+}
+
+@media (max-width:{xen:property maxResponsiveMediumWidth}) {
+	.Responsive .bdImage_cover .avatar img,
+	.Responsive .bdImage_cover .avatar amp-img {
+		width: {xen:calc 'floor({xen:property bdImage_coverAvatar.width} * 0.6666)'}px;
+		height: {xen:calc 'floor({xen:property bdImage_coverAvatar.height} * 0.6666)'}px;
+	}
+
+	.Responsive .bdImage_cover .author .username { 
+		left: {xen:calc 'floor({xen:property bdImage_coverAvatar.width} * 0.6666) + {xen:property content.padding-left}'}px;
+	}
+
+	.bdImage_coverContainer > .title { display: block; }
+	.bdImage_cover .bg { display: none; }
+	.Responsive .thread-cover-container .share_bar { margin-top: {xen:property content.padding-top}; position: relative; bottom: 0; }
+	.Responsive .thread-cover-container .sharePage { display: block; }
+}
+
+@media (max-width:{xen:property maxResponsiveNarrowWidth}) {
+	.Responsive .bdImage_cover .avatar img,
+	.Responsive .bdImage_cover .avatar amp-img {
+		width: {xen:calc 'floor({xen:property bdImage_coverAvatar.width} * 0.5)'}px;
+		height: {xen:calc 'floor({xen:property bdImage_coverAvatar.height} * 0.5)'}px;
+	}
+
+	.Responsive .bdImage_cover .author .username { 
+		left: {xen:calc 'floor({xen:property bdImage_coverAvatar.width} * 0.5) + {xen:property content.padding-left}'}px;
+	}
+}
+</xen:if>]]></template>
     <template title="bdimage_grid_inline_css" version_id="19" version_string="0.10.0-dev"><![CDATA[<xen:set var="$gridWidth">{xen:calc '({$widget.options.thumbnail_width} + {$widget.options.gap}) * {$widget.options.grid_columns}'}</xen:set>
 <xen:set var="$maxWidthInSidebar">{xen:calc '{xen:property sidebar.width} - {xen:property secondaryContent.padding-left} - {xen:property secondaryContent.padding-right}'}</xen:set>
 <xen:container var="$head.{$cssClass}">
@@ -258,85 +423,156 @@ ul.bdImage_Picker
 </xen:container>]]></template>
     <template title="bdimage_node_forum_last_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<xen:require css="bdimage.css" />
 <img src="{xen:helper bdImage_thumbnail, $forum.bdimage_last_post_image, 48, 48}" class="bdImage_lastThreadImage" />]]></template>
-    <template title="bdimage_picker" version_id="30" version_string="1.0.4"><![CDATA[<xen:if is="{$images}">
+    <template title="bdimage_picker" version_id="30" version_string="1.0.4"><![CDATA[<xen:require css="bdimage.css" />
 
-	<xen:require css="bdimage.css" />
+<xen:set var="$currentImageUrl">{xen:helper bdImage_image, $currentImageData}</xen:set>
 
-	<div>
-		<ul class="bdImage_Picker">
-			<xen:set var="$currentImageFound">0</xen:set>
+<dl class="ctrlUnit">
+	<dt>
+		<label for="ctrl_bdimage_image">
+			{xen:phrase bdimage_thread_image}:
+		</label>
+	</dt>
+	<dd>
+		<ul>
+			<xen:if is="{$images}">
+			<li>
+				<ul class="bdImage_Picker">
+					<xen:set var="$currentImageFound">0</xen:set>
 
-			<xen:foreach loop="$images" value="$image">
-				<xen:set var="$safeUrl">{xen:helper bdImage_safeUrl, $image}</xen:set>
-				<xen:if is="{$safeUrl} == {$currentImage}">
-					<xen:set var="$currentImageFound">1</xen:set>
-				</xen:if>
+					<xen:foreach loop="$images" value="$image">
+					<xen:set var="$safeUrl">{xen:helper bdImage_safeUrl, $image}</xen:set>
+					<xen:if is="{$safeUrl} == {$currentImageUrl}">
+						<xen:set var="$currentImageFound">1</xen:set>
+					</xen:if>
 
-				<li><label>
+					<li>
+						<label>
+							<input type="radio" name="bdimage_image" value="{$safeUrl}"
+								   style="height: 48px"
+								   {xen:checked '{$safeUrl} == {$currentImageUrl}'}/>
+							<img src="{xen:helper bdImage_thumbnail, $image, 48, 48}" width="48" height="48" />
+						</label>
+					</li>
+					</xen:foreach>
 
-					<input type="radio" name="bdimage_image" value="{$safeUrl}"
-						   style="height: 48px"
-						   {xen:checked '{$safeUrl} == {$currentImage}'}/>
-					<img src="{xen:helper bdImage_thumbnail, $image, 48, 48}" width="48" height="48" />
-
-				</label></li>
-			</xen:foreach>
-
-			<li class="other">
+					<li class="other">
+						<label>
+							<input type="radio" name="bdimage_image" value="other"
+								   class="Disabler Hider" id="ctrl_bdimage_image_other"
+								   {xen:checked '!{$currentImageFound}'} />
+							{xen:phrase other}
+						</label><br/>
+						<br/>
+						<div id="ctrl_bdimage_image_other_Disabler">
+							<input type="text" name="bdimage_other" placeholder="{xen:phrase image_url}" class="textCtrl"
+								   value="{xen:if '!{$currentImageFound}', $currentImageUrl}" />
+						</div>
+					</li>
+				</ul>
+			</li>
+			<xen:else />
+			<li>
+				<input type="hidden" name="bdimage_image" value="other" />
+				<input type="text" name="bdimage_other" value="{$currentImageUrl}" class="textCtrl" />
+			</li>
+			</xen:if>
+			<li>
 				<label>
-					<input type="radio" name="bdimage_image" value="other"
-						   class="Disabler Hider" id="ctrl_bdimage_image_other"
-						   {xen:checked '{$currentImageFound} == 0'} />
-					{xen:phrase other}
-				</label><br/>
-				<br/>
-				<div id="ctrl_bdimage_image_other_Disabler">
-					<input type="text" name="bdimage_other" placeholder="{xen:phrase image_url}" class="textCtrl"
-						   value="{xen:if '{$currentImageFound} == 0', '{$currentImage}'}" />
-				</div>
+					<input type="checkbox" name="bdimage_extra_data[is_cover]" value="1" {xen:checked
+						   '{xen:helper bdImage_getData, $currentImageData, is_cover}'} />
+					{xen:phrase bdimage_is_cover}
+				</label>
 			</li>
 		</ul>
-	</div>
 
-<xen:else />
-
-	<input type="hidden" name="bdimage_image" value="other" />
-	<input type="text" name="bdimage_other" value="{$currentImage}" class="textCtrl" />
-
-</xen:if>
-
-<input type="hidden" name="bdimage_picker" value="1" />
-<input type="hidden" name="bdimage_current_image" value="{$currentImage}" />
+		<input type="hidden" name="bdimage_picker" value="1" />
+	</dd>
+</dl>
 
 <xen:edithint template="bdimage_picker_simple" />]]></template>
-    <template title="bdimage_picker_simple" version_id="17" version_string="0.9.7"><![CDATA[<xen:if is="{$images}">
+    <template title="bdimage_picker_simple" version_id="30" version_string="1.0.4"><![CDATA[<xen:if is="{$images}">
+
+<xen:set var="$currentImageUrl">{xen:helper bdImage_image, $currentImageData}</xen:set>
+
+<label>
+	<xen:if is="{xen:helper bdImage_getData, $currentImageData, is_cover}">
+	{xen:phrase bdimage_thread_cover_image}:
+	<input type="hidden" name="bdimage_extra_data[is_cover]" value="1" />
+	<xen:else />
+	{xen:phrase bdimage_thread_image}:
+	</xen:if>
 
 	<select {xen:if '{$id}', 'id="{$id}"'} name="bdimage_image" class="textCtrl bdImage_Picker">
 		<xen:set var="$currentImageFound">0</xen:set>
 		<xen:foreach loop="$images" value="$image">
 			<xen:set var="$safeUrl">{xen:helper bdImage_safeUrl, $image}</xen:set>
-			<xen:if is="{$safeUrl} == {$currentImage}">
+			<xen:if is="{$safeUrl} == {$currentImageUrl}">
 				<xen:set var="$currentImageFound">1</xen:set>
 			</xen:if>
 
-			<option value="{$safeUrl}" {xen:selected '{$safeUrl} == {$currentImage}'}>{xen:helper bdImage_filename, $safeUrl}</option>
+			<option value="{$safeUrl}" {xen:selected '{$safeUrl} == {$currentImageUrl}'}>
+				{xen:helper bdImage_filename, $safeUrl}
+			</option>
 		</xen:foreach>
 
 		<xen:if is="{$currentImageFound} == 0">
-			<option value="{$currentImage}" selected="selected">{xen:helper bdImage_filename, $currentImage}</option>
+			<option value="{$currentImage}" selected="selected">
+				{xen:helper bdImage_filename, $currentImageUrl}
+			</option>
 		</xen:if>
 	</select>
+</label>
 
-	<input type="hidden" name="bdimage_picker" value="1" />
-	<input type="hidden" name="bdimage_current_image" value="{$currentImage}" />
+<input type="hidden" name="bdimage_picker" value="1" />
 
-</xen:if>
-
-	
-]]></template>
+</xen:if>]]></template>
     <template title="bdimage_search_result_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
 	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
 </a>]]></template>
+    <template title="bdimage_thread_cover" version_id="30" version_string="1.0.4"><![CDATA[<xen:require css="bdimage.css" />
+
+<xen:set var="$coverTitleEscaped">{$thread.title}</xen:set>
+<xen:set var="$coverDescriptionEscaped">{xen:phrase bdimage_discussion_in_x_started_by_y_date_z_replies_m_views_n,
+	'forum=<a href="{xen:link forums, $forum}">{$forum.title}</a>',
+	'name={xen:helper username, $thread}',
+	'date=<a href="{xen:link threads, $bdImage_thread}">{xen:datetime $thread.post_date, html}</a>',
+	'replies={xen:number $thread.reply_count}',
+	'views={xen:number $thread.view_count}'}</xen:set>
+
+<div class="bdImage_coverContainer position-{$position}">
+	<p class="title coverContent">{xen:raw $coverTitleEscaped}</p>
+	<div class="bdImage_cover bdImage_threadCover-{$thread.thread_id}">
+		<xen:if is="!{$bdCache_isAmp}">
+			<xen:set var="$dataUri"><xen:callback class="bdImage_Helper_Image"
+			method="getDataUriTransparentAtSameSize">{xen:raw $thread.bdimage_image}</xen:callback></xen:set>
+		</xen:if>
+		<xen:if is="{$dataUri}">
+			<img class="cover" src="{xen:raw $dataUri}"
+				 style="background-image: url({xen:helper bdImage_fullSize,
+						$thread.bdimage_image}); background-size: cover;" />
+		<xen:else />
+			<img class="cover" src="{xen:helper bdImage_fullSize, $thread.bdimage_image}" />
+		</xen:if>
+		<div class="bg coverContent">
+			<p class="title">{xen:raw $coverTitleEscaped}</p>
+			<p class="description">{xen:raw $coverDescriptionEscaped}</p>
+		</div>
+		<xen:avatar user="$thread" size="m" img="true" />
+		<a class="author" href="{xen:link members, $thread}" title="{$thread.username}">
+			<span class="username">{$thread.username}</span>
+		</a>
+	</div>
+
+	<div class="share_bar">
+		<xen:include template="share_page">
+			<xen:set var="$url">{xen:link canonical:threads, $thread}</xen:set>
+		</xen:include>
+	</div>
+</div>
+
+<xen:edithint template="PAGE_CONTAINER" />
+]]></template>
     <template title="bdimage_thread_list_item_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
 	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
 </a>]]></template>
@@ -775,6 +1011,36 @@ ul.bdImage_Widget_Grid
 </xen:foreach>]]></template>
   </templates>
   <public_template_modifications>
+    <modification template="PAGE_CONTAINER" modification_key="bdimage_cover_ad_above_top_breadcrumb" description="Render cover at &quot;ad_above_top_breadcrumb&quot;." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:include template="ad_above_top_breadcrumb" />]]></find>
+      <replace><![CDATA[$0
+
+<xen:if is="{$bdImage_threadWithCover}
+			&& {xen:property bdImage_coverPositionAboveTopBreadcrumb}">
+	<xen:include template="bdimage_thread_cover">
+		<xen:set var="$position">ad_above_top_breadcrumb</xen:set>
+		<xen:map from="$bdImage_threadWithCover" to="$thread" />
+		<xen:map from="$bdImage_threadWithCover.forum" to="$forum" />
+	</xen:include>
+</xen:if>]]></replace>
+    </modification>
+    <modification template="PAGE_CONTAINER" modification_key="bdimage_cover_html_class" description="Inject &lt;html class /&gt;" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<html[^>]+class="#]]></find>
+      <replace><![CDATA[$0{xen:if $bdImage_threadWithCover, 'bdImage_hasCover '}]]></replace>
+    </modification>
+    <modification template="PAGE_CONTAINER" modification_key="bdimage_cover_page_container_content_direct_child" description="Render cover at &quot;page_container_content_direct_child&quot;." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<div id="content"[^>]+>#]]></find>
+      <replace><![CDATA[$0
+
+<xen:if is="{$bdImage_threadWithCover}
+			&& {xen:property bdImage_coverPositionContentDirectChild}">
+	<xen:include template="bdimage_thread_cover">
+		<xen:set var="$position">page_container_content_direct_child</xen:set>
+		<xen:map from="$bdImage_threadWithCover" to="$thread" />
+		<xen:map from="$bdImage_threadWithCover.forum" to="$forum" />
+	</xen:include>
+</xen:if>]]></replace>
+    </modification>
     <modification template="node_forum_level_2" modification_key="bdimage_node_forum_last_thread_image" description="Template Modification: Last Thread Image in Forum List." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:elseif is="{$forum.lastPost.date}" />]]></find>
       <replace><![CDATA[$0
@@ -805,37 +1071,24 @@ ul.bdImage_Widget_Grid
     </modification>
     <modification template="thread_edit" modification_key="bdimage_thread_edit_picker" description="Insert image picker into thread_edit form." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<dl class="ctrlUnit submitUnit">]]></find>
-      <replace><![CDATA[<xen:if hascontent="true">
-	<dl class="ctrlUnit">
-		<dt><label for="ctrl_bdimage_image">{xen:phrase image}:</label></dt>
-		<dd>
-			<xen:contentcheck>
-			<xen:include template="bdimage_picker">
-				<xen:map from="$bdImage_images" to="$images" />
-				<xen:set var="$currentImage">{xen:helper bdImage_image, $thread.bdimage_image}</xen:set>
-			</xen:include>
-			</xen:contentcheck>
-		</dd>
-	</dl>
-</xen:if>
+      <replace><![CDATA[<xen:include template="bdimage_picker">
+	<xen:map from="$bdImage_images" to="$images" />
+	<xen:set var="$currentImageData">{xen:raw $thread.bdimage_image}</xen:set>
+</xen:include>
 
 $0]]></replace>
     </modification>
     <modification template="thread_list_item_edit" modification_key="bdimage_thread_list_item_edit_picker" description="Insert image picker into thread_list_item_edit form." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<div class="buttons editBlock">]]></find>
       <replace><![CDATA[<xen:if hascontent="true">
-	<div class="bdImage_imageEdit editBlock">
-		<label>
-			{xen:phrase image}:
-
-			<xen:contentcheck>
-			<xen:include template="bdimage_picker_simple">
-				<xen:map from="$bdImage_images" to="$images" />
-				<xen:set var="$currentImage">{xen:helper bdImage_image, $thread.bdimage_image}</xen:set>
-			</xen:include>
-			</xen:contentcheck>
-		</label>
-	</div>
+<div class="bdImage_imageEdit editBlock">
+	<xen:contentcheck>
+	<xen:include template="bdimage_picker_simple">
+		<xen:map from="$bdImage_images" to="$images" />
+		<xen:set var="$currentImageData">{xen:raw $thread.bdimage_image}</xen:set>
+	</xen:include>
+	</xen:contentcheck>
+</div>
 </xen:if>
 
 

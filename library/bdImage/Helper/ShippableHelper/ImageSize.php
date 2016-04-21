@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2016-04-20T08:01:30+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2016-04-21T04:36:30+00:00
 
 /**
  * Class bdImage_Helper_ShippableHelper_ImageSize
- * @version 1
+ * @version 2
  * @see DevHelper_Helper_ShippableHelper_ImageSize
  */
 class bdImage_Helper_ShippableHelper_ImageSize
@@ -154,7 +154,11 @@ class bdImage_Helper_ShippableHelper_ImageSize
             $context = stream_context_create(array('http' => $httpContext));
         }
 
-        $this->handle = @fopen($uri, 'rb', null, $context);
+        if ($context != null) {
+            $this->handle = @fopen($uri, 'rb', null, $context);
+        } else {
+            $this->handle = @fopen($uri, 'rb');
+        }
     }
 
     private function close()

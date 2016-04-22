@@ -2,6 +2,8 @@
 
 class bdImage_Helper_Thumbnail
 {
+    const ERROR_DOWNLOAD_REMOTE_URI = '/download/remote/uri.error';
+
     public static function getThumbnailUri($imageUri, $size, $mode, $hash)
     {
         $cachePath = bdImage_Integration::getCachePath($imageUri, $size, $mode, $hash);
@@ -14,15 +16,19 @@ class bdImage_Helper_Thumbnail
 
         $imagePath = self::_downloadImageIfNeeded($imageUri);
 
-        $imageType = self::_guessImageTypeByFileExtension($imageUri);
-        $imageObj = XenForo_Image_Abstract::createFromFile($imagePath, $imageType);
-        if (empty($imageObj)) {
-            if (self::_detectImageType($imagePath, $imageType)) {
-                $imageObj = XenForo_Image_Abstract::createFromFile($imagePath, $imageType);
+        $imageType = self::_guessImageTypeByFileExtension($imageUri, $imagePath);
+        if ($imageType !== null) {
+            $imageObj = XenForo_Image_Abstract::createFromFile($imagePath, $imageType);
+            if (empty($imageObj)) {
+                if (self::_detectImageType($imagePath, $imageType)) {
+                    $imageObj = XenForo_Image_Abstract::createFromFile($imagePath, $imageType);
+                }
             }
         }
+
         if (empty($imageObj)) {
-            throw new XenForo_Exception('Unable to read image');
+            $imageObj = XenForo_Image_Abstract::createImage($size, $size);
+            $imageType = IMAGETYPE_PNG;
         }
 
         switch ($mode) {
@@ -114,8 +120,17 @@ class bdImage_Helper_Thumbnail
             // this is a remote uri, try to download it and return the downloaded file's path
             $originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
             if (!bdImage_Helper_File::existsAndNotEmpty($originalCachePath)) {
+                $uriContents = @file_get_contents($uri);
+                if (empty($uriContents)) {
+                    if (XenForo_Application::debugMode()) {
+                        XenForo_Helper_File::log(__CLASS__, sprintf('Error downloading %s %s', $uri, error_get_last()));
+                    }
+
+                    return self::ERROR_DOWNLOAD_REMOTE_URI;
+                }
+
                 XenForo_Helper_File::createDirectory(dirname($originalCachePath), true);
-                file_put_contents($originalCachePath, @file_get_contents($uri));
+                file_put_contents($originalCachePath, $uriContents);
             }
 
             return $originalCachePath;
@@ -124,9 +139,12 @@ class bdImage_Helper_Thumbnail
         return $uri;
     }
 
-    protected static function _guessImageTypeByFileExtension($uri)
+    protected static function _guessImageTypeByFileExtension($uri, $path)
     {
-        $result = IMAGETYPE_JPEG;
+        switch ($path) {
+            case self::ERROR_DOWNLOAD_REMOTE_URI:
+                return null;
+        }
 
         $ext = XenForo_Helper_File::getFileExtension($uri);
         switch ($ext) {
@@ -140,6 +158,8 @@ class bdImage_Helper_Thumbnail
             case 'png':
                 $result = IMAGETYPE_PNG;
                 break;
+            default:
+                $result = IMAGETYPE_JPEG;
         }
 
         return $result;
@@ -181,7 +201,9 @@ class bdImage_Helper_Thumbnail
             fclose($fh);
         }
 
-        if ($detectedImageType != $guessedImageType) {
+        if ($detectedImageType !== null
+            && $detectedImageType != $guessedImageType
+        ) {
             $guessedImageType = $detectedImageType;
             return true;
         }

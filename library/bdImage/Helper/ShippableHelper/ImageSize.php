@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2016-04-21T04:36:30+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2016-04-22T00:22:47+00:00
 
 /**
  * Class bdImage_Helper_ShippableHelper_ImageSize
- * @version 2
+ * @version 3
  * @see DevHelper_Helper_ShippableHelper_ImageSize
  */
 class bdImage_Helper_ShippableHelper_ImageSize
@@ -62,7 +62,7 @@ class bdImage_Helper_ShippableHelper_ImageSize
         $startTime = microtime(true);
 
         if (preg_match('#^' . preg_quote(XenForo_Application::getOptions()->get('boardUrl'), '#')
-            . '.+attachments/.+\.(?<id>\d+)/$#', $uri, $matches)) {
+            . '.+attachments/(.+\.)*(?<id>\d+)/$#', $uri, $matches)) {
             return self::_calculateForAttachment($uri, $matches['id']);
         }
 

@@ -102,11 +102,20 @@ class bdImage_Helper_Thumbnail
     protected static function _downloadImageIfNeeded($uri)
     {
         if (Zend_Uri::check($uri)) {
+            $boardUrl = XenForo_Application::getOptions()->get('boardUrl');
+            if (strpos($uri, $boardUrl) === 0) {
+                // looks like an url from our own site
+                $path = substr($uri, strlen($boardUrl));
+                if (bdImage_Helper_File::existsAndNotEmpty($path)) {
+                    return $path;
+                }
+            }
+
             // this is a remote uri, try to download it and return the downloaded file's path
             $originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
             if (!bdImage_Helper_File::existsAndNotEmpty($originalCachePath)) {
                 XenForo_Helper_File::createDirectory(dirname($originalCachePath), true);
-                file_put_contents($originalCachePath, file_get_contents($uri));
+                file_put_contents($originalCachePath, @file_get_contents($uri));
             }
 
             return $originalCachePath;

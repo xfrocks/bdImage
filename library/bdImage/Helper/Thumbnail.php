@@ -4,19 +4,19 @@ class bdImage_Helper_Thumbnail
 {
     const ERROR_DOWNLOAD_REMOTE_URI = '/download/remote/uri.error';
 
-    public static function getThumbnailUri($imageUri, $size, $mode, $hash)
+    public static function getThumbnailUri($url, $accessibleUri, $size, $mode, $hash)
     {
-        $cachePath = bdImage_Integration::getCachePath($imageUri, $size, $mode, $hash);
+        $cachePath = bdImage_Integration::getCachePath($url, $size, $mode, $hash);
 
-        $thumbnailUrl = bdImage_Integration::getCacheUrl($imageUri, $size, $mode, $hash);
+        $thumbnailUrl = bdImage_Integration::getCacheUrl($url, $size, $mode, $hash);
         $thumbnailUri = XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
         if (bdImage_Helper_File::existsAndNotEmpty($cachePath)) {
             return $thumbnailUri;
         }
 
-        $imagePath = self::_downloadImageIfNeeded($imageUri);
+        $imagePath = self::_downloadImageIfNeeded($accessibleUri);
 
-        $imageType = self::_guessImageTypeByFileExtension($imageUri, $imagePath);
+        $imageType = self::_guessImageTypeByFileExtension($url, $imagePath);
         if ($imageType !== null) {
             $imageObj = XenForo_Image_Abstract::createFromFile($imagePath, $imageType);
             if (empty($imageObj)) {
@@ -28,7 +28,10 @@ class bdImage_Helper_Thumbnail
 
         if (empty($imageObj)) {
             $imageObj = XenForo_Image_Abstract::createImage($size, $size);
-            $imageType = IMAGETYPE_PNG;
+        }
+
+        if (is_callable(array($imageObj, 'bdImage_optimizeOutput'))) {
+            call_user_func(array($imageObj, 'bdImage_optimizeOutput'), true);
         }
 
         switch ($mode) {
@@ -47,12 +50,15 @@ class bdImage_Helper_Thumbnail
                 break;
         }
 
-        if (is_callable(array($imageObj, 'bdImage_outputProgressiveJpeg'))) {
-            call_user_func(array($imageObj, 'bdImage_outputProgressiveJpeg'), true);
-        }
-
         $tempFile = tempnam(XenForo_Helper_File::getTempDir(), 'xf');
-        $imageObj->output($imageType, $tempFile);
+
+        $outputImageType = self::_guessImageTypeByFileExtension($cachePath);
+        $imageObj->output($outputImageType, $tempFile);
+
+        if (is_callable(array($imageObj, 'bdImage_cleanUp'))) {
+            call_user_func(array($imageObj, 'bdImage_cleanUp'));
+        }
+        unset($imageObj);
 
         XenForo_Helper_File::createDirectory(dirname($cachePath), true);
         XenForo_Helper_File::safeRename($tempFile, $cachePath);
@@ -139,7 +145,7 @@ class bdImage_Helper_Thumbnail
         return $uri;
     }
 
-    protected static function _guessImageTypeByFileExtension($uri, $path)
+    protected static function _guessImageTypeByFileExtension($uri, $path = '')
     {
         switch ($path) {
             case self::ERROR_DOWNLOAD_REMOTE_URI:

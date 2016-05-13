@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2016-04-22T00:22:47+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2016-05-13T09:41:53+00:00
 
 /**
  * Class bdImage_Helper_ShippableHelper_ImageSize
- * @version 3
+ * @version 5
  * @see DevHelper_Helper_ShippableHelper_ImageSize
  */
 class bdImage_Helper_ShippableHelper_ImageSize
@@ -61,9 +61,13 @@ class bdImage_Helper_ShippableHelper_ImageSize
 
         $startTime = microtime(true);
 
-        if (preg_match('#^' . preg_quote(XenForo_Application::getOptions()->get('boardUrl'), '#')
-            . '.+attachments/(.+\.)*(?<id>\d+)/$#', $uri, $matches)) {
-            return self::_calculateForAttachment($uri, $matches['id']);
+        if (preg_match('#attachments/(.+\.)*(?<id>\d+)/$#', $uri, $matches)) {
+            $attachmentResult = self::_calculateForAttachment($uri, $matches['id']);
+            if (!empty($attachmentResult['width'])
+                && !empty($attachmentResult['height'])
+            ) {
+                return $attachmentResult;
+            }
         }
 
         if ($instance === null) {
@@ -410,6 +414,11 @@ class bdImage_Helper_ShippableHelper_ImageSize
     private function readInt($str)
     {
         $size = unpack('C*', $str);
+        if (!isset($size[1])
+            || !isset($size[2])
+        ) {
+            return 0;
+        }
 
         return ($size[1] << 8) + $size[2];
     }

@@ -52,14 +52,14 @@ if (empty($size)
     exit;
 }
 
-$uri = bdImage_Integration::getAccessibleUri($url);
-if (empty($uri)) {
+$accessibleUri = bdImage_Integration::getAccessibleUri($url);
+if (empty($accessibleUri)) {
     header('HTTP/1.0 404 Not Found');
     exit;
 }
 
 try {
-    $thumbnailUri = bdImage_Helper_Thumbnail::getThumbnailUri($uri, $size, $mode, $hash);
+    $thumbnailUri = bdImage_Helper_Thumbnail::getThumbnailUri($url, $accessibleUri, $size, $mode, $hash);
 } catch (XenForo_Exception $e) {
     if (XenForo_Application::debugMode()) {
         XenForo_Error::logException($e, false);

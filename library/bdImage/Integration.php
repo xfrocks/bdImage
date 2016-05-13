@@ -116,10 +116,14 @@ class bdImage_Integration
             $pathPrefix = XenForo_Helper_File::getExternalDataPath();
         }
 
-        if (XenForo_Helper_File::getFileExtension($uri) === 'png') {
-            $ext = 'png';
-        } else {
-            $ext = 'jpg';
+        $uriExt = XenForo_Helper_File::getFileExtension($uri);
+        switch ($uriExt) {
+            case 'gif':
+            case 'png':
+                $ext = $uriExt;
+                break;
+            default:
+                $ext = 'jpg';
         }
 
         $divider = substr(md5($hash), 0, 2);

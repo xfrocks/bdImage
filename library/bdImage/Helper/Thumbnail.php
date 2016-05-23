@@ -94,13 +94,13 @@ class bdImage_Helper_Thumbnail
             && $thumbnailHeight <= $imageObj->getHeight()
         ) {
             $imageObj->thumbnail($thumbnailWidth, $thumbnailHeight);
-            $imageObj->crop(0, 0, $targetWidth, $targetHeight);
+            self::_cropCenter($imageObj, $targetWidth, $targetHeight);
         } else {
             // thumbnail requested is larger then the image size
             if ($origRatio > $cropRatio) {
-                $imageObj->crop(0, 0, $imageObj->getHeight() * $cropRatio, $imageObj->getHeight());
+                self::_cropCenter($imageObj, $imageObj->getHeight() * $cropRatio, $imageObj->getHeight());
             } else {
-                $imageObj->crop(0, 0, $imageObj->getWidth(), $imageObj->getWidth() / $cropRatio);
+                self::_cropCenter($imageObj, $imageObj->getWidth(), $imageObj->getWidth() / $cropRatio);
             }
         }
     }
@@ -108,7 +108,22 @@ class bdImage_Helper_Thumbnail
     protected static function _cropSquare(XenForo_Image_Abstract $imageObj, $target)
     {
         $imageObj->thumbnailFixedShorterSide($target);
-        $imageObj->crop(0, 0, $target, $target);
+        self::_cropCenter($imageObj, $target, $target);
+    }
+
+    protected static function _cropCenter(XenForo_Image_Abstract $imageObj, $cropWidth, $cropHeight)
+    {
+        if (XenForo_Application::getConfig()->get('bdImage_cropTopLeft') === true) {
+            // revert to top left cropping (old version behavior)
+            $imageObj->crop(0, 0, $cropWidth, $cropHeight);
+            return;
+        }
+
+        $width = $imageObj->getWidth();
+        $height = $imageObj->getHeight();
+        $x = floor(($width - $cropWidth) / 2);
+        $y = floor(($height - $cropHeight) / 2);
+        $imageObj->crop($x, $y, $cropWidth, $cropHeight);
     }
 
     protected static function _downloadImageIfNeeded($uri)

@@ -138,6 +138,13 @@ class bdImage_Helper_Thumbnail
                 }
             }
 
+            if (preg_match('#attachments/(.+\.)*(?<id>\d+)/$#', $uri, $matches)) {
+                $path = self::_getAttachmentDataFilePath($matches['id']);
+                if (bdImage_Helper_File::existsAndNotEmpty($path)) {
+                    return $path;
+                }
+            }
+
             // this is a remote uri, try to download it and return the downloaded file's path
             $originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
             if (!bdImage_Helper_File::existsAndNotEmpty($originalCachePath)) {
@@ -158,6 +165,23 @@ class bdImage_Helper_Thumbnail
         }
 
         return $uri;
+    }
+
+    protected static function _getAttachmentDataFilePath($attachmentId)
+    {
+        /** @var XenForo_Model_Attachment $attachmentModel */
+        static $attachmentModel = null;
+        static $attachments = array();
+
+        if ($attachmentModel === null) {
+            $attachmentModel = XenForo_Model::create('XenForo_Model_Attachment');
+        }
+
+        if (!isset($attachments[$attachmentId])) {
+            $attachments[$attachmentId] = $attachmentModel->getAttachmentById($attachmentId);
+        }
+
+        return $attachmentModel->getAttachmentDataFilePath($attachments[$attachmentId]);
     }
 
     protected static function _guessImageTypeByFileExtension($uri, $path = '')

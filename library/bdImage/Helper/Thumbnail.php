@@ -130,9 +130,10 @@ class bdImage_Helper_Thumbnail
     {
         if (Zend_Uri::check($uri)) {
             $boardUrl = XenForo_Application::getOptions()->get('boardUrl');
-            if (strpos($uri, $boardUrl) === 0) {
-                // looks like an url from our own site
-                $path = substr($uri, strlen($boardUrl));
+            if (strpos($uri, '..') === false
+                && strpos($uri, $boardUrl) === 0
+            ) {
+                $path = self::_getLocalFilePath(substr($uri, strlen($boardUrl)));
                 if (bdImage_Helper_File::existsAndNotEmpty($path)) {
                     return $path;
                 }
@@ -165,6 +166,17 @@ class bdImage_Helper_Thumbnail
         }
 
         return $uri;
+    }
+
+    protected static function _getLocalFilePath($path)
+    {
+        $path = preg_replace('#\?.*$#', '', $path);
+
+        /** @var XenForo_Application $app */
+        $app = XenForo_Application::getInstance();
+        $path = sprintf('%s/%s', rtrim($app->getRootDir(), '/'), ltrim($path, '/'));
+
+        return $path;
     }
 
     protected static function _getAttachmentDataFilePath($attachmentId)

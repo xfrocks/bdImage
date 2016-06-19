@@ -84,33 +84,23 @@ class bdImage_Integration
             return false;
         }
 
-        // workaround a common mistake with urls: space
-        $url = str_replace(' ', '%20', $url);
-
-        if (Zend_Uri::check($url)) {
-            $originalCachePath = bdImage_Integration::getOriginalCachePath($url);
-            if (bdImage_Helper_File::existsAndNotEmpty($originalCachePath)) {
-                return $originalCachePath;
-            } else {
-                return $url;
-            }
+        if (bdImage_Helper_File::existsAndNotEmpty($url)) {
+            return $url;
         }
 
-        // the url is not a valid uri, could be a path...
-        $path = $url;
-        if (bdImage_Helper_File::existsAndNotEmpty($path)) {
-            return $path;
-        }
-
-        // try relative to XenForo root
         /** @var XenForo_Application $application */
         $application = XenForo_Application::getInstance();
-        $path = $application->getRootDir() . '/' . $path;
+        $path = $application->getRootDir() . '/' . $url;
         if (bdImage_Helper_File::existsAndNotEmpty($path)) {
             return realpath($path);
         }
 
-        return false;
+        $originalCachePath = bdImage_Integration::getOriginalCachePath($url);
+        if (bdImage_Helper_File::existsAndNotEmpty($originalCachePath)) {
+            return $originalCachePath;
+        } else {
+            return $url;
+        }
     }
 
     public static function getCachePath($uri, $size, $mode, $hash, $pathPrefix = false)

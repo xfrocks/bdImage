@@ -128,44 +128,44 @@ class bdImage_Helper_Thumbnail
 
     protected static function _downloadImageIfNeeded($uri)
     {
-        if (Zend_Uri::check($uri)) {
-            $boardUrl = XenForo_Application::getOptions()->get('boardUrl');
-            if (strpos($uri, '..') === false
-                && strpos($uri, $boardUrl) === 0
-            ) {
-                $path = self::_getLocalFilePath(substr($uri, strlen($boardUrl)));
-                if (bdImage_Helper_File::existsAndNotEmpty($path)) {
-                    return $path;
-                }
-            }
-
-            if (preg_match('#attachments/(.+\.)*(?<id>\d+)/$#', $uri, $matches)) {
-                $path = self::_getAttachmentDataFilePath($matches['id']);
-                if (bdImage_Helper_File::existsAndNotEmpty($path)) {
-                    return $path;
-                }
-            }
-
-            // this is a remote uri, try to download it and return the downloaded file's path
-            $originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
-            if (!bdImage_Helper_File::existsAndNotEmpty($originalCachePath)) {
-                $uriContents = @file_get_contents($uri);
-                if (empty($uriContents)) {
-                    if (XenForo_Application::debugMode()) {
-                        XenForo_Helper_File::log(__CLASS__, sprintf('Error downloading %s %s', $uri, error_get_last()));
-                    }
-
-                    return self::ERROR_DOWNLOAD_REMOTE_URI;
-                }
-
-                XenForo_Helper_File::createDirectory(dirname($originalCachePath), true);
-                file_put_contents($originalCachePath, $uriContents);
-            }
-
-            return $originalCachePath;
+        if (bdImage_Helper_File::existsAndNotEmpty($uri)) {
+            return $uri;
         }
 
-        return $uri;
+        $boardUrl = XenForo_Application::getOptions()->get('boardUrl');
+        if (strpos($uri, '..') === false
+            && strpos($uri, $boardUrl) === 0
+        ) {
+            $path = self::_getLocalFilePath(substr($uri, strlen($boardUrl)));
+            if (bdImage_Helper_File::existsAndNotEmpty($path)) {
+                return $path;
+            }
+        }
+
+        if (preg_match('#attachments/(.+\.)*(?<id>\d+)/$#', $uri, $matches)) {
+            $path = self::_getAttachmentDataFilePath($matches['id']);
+            if (bdImage_Helper_File::existsAndNotEmpty($path)) {
+                return $path;
+            }
+        }
+
+        // this is a remote uri, try to download it and return the downloaded file's path
+        $originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
+        if (!bdImage_Helper_File::existsAndNotEmpty($originalCachePath)) {
+            $uriContents = @file_get_contents($uri);
+            if (empty($uriContents)) {
+                if (XenForo_Application::debugMode()) {
+                    XenForo_Helper_File::log(__CLASS__, sprintf('Error downloading %s %s', $uri, error_get_last()));
+                }
+
+                return self::ERROR_DOWNLOAD_REMOTE_URI;
+            }
+
+            XenForo_Helper_File::createDirectory(dirname($originalCachePath), true);
+            file_put_contents($originalCachePath, $uriContents);
+        }
+
+        return $originalCachePath;
     }
 
     protected static function _getLocalFilePath($path)

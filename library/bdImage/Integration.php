@@ -84,6 +84,9 @@ class bdImage_Integration
             return false;
         }
 
+        // workaround a common mistake with urls: space
+        $url = str_replace(' ', '%20', $url);
+
         if (Zend_Uri::check($url)) {
             $originalCachePath = bdImage_Integration::getOriginalCachePath($url);
             if (bdImage_Helper_File::existsAndNotEmpty($originalCachePath)) {

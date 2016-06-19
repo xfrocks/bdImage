@@ -18,16 +18,16 @@ class bdImage_Helper_Thumbnail
 
         $imageType = self::_guessImageTypeByFileExtension($url, $imagePath);
         if ($imageType !== null) {
-            $imageObj = XenForo_Image_Abstract::createFromFile($imagePath, $imageType);
+            $imageObj = self::_createImageObjFromFile($imagePath, $imageType);
             if (empty($imageObj)) {
                 if (self::_detectImageType($imagePath, $imageType)) {
-                    $imageObj = XenForo_Image_Abstract::createFromFile($imagePath, $imageType);
+                    $imageObj = self::_createImageObjFromFile($imagePath, $imageType);
                 }
             }
         }
 
         if (empty($imageObj)) {
-            $imageObj = XenForo_Image_Abstract::createImage($size, $size);
+            $imageObj = self::_createFallbackImageObj($size, $mode);
         }
 
         if (is_callable(array($imageObj, 'bdImage_optimizeOutput'))) {
@@ -124,6 +124,88 @@ class bdImage_Helper_Thumbnail
         $x = floor(($width - $cropWidth) / 2);
         $y = floor(($height - $cropHeight) / 2);
         $imageObj->crop($x, $y, $cropWidth, $cropHeight);
+    }
+
+    protected static function _createFallbackImageObj($size, $mode)
+    {
+        $bestFallbackImage = null;
+        $bestRatio = null;
+        $fallbackImages = preg_split('#\s#', bdImage_Option::get('fallbackImages'), -1, PREG_SPLIT_NO_EMPTY);
+        foreach ($fallbackImages as $fallbackImage) {
+            if (substr($fallbackImage, 0, 1) !== '/') {
+                /** @var XenForo_Application $application */
+                $application = XenForo_Application::getInstance();
+                $fallbackImage = sprintf('%s/%s', rtrim($application->getRootDir(), '/'), $fallbackImage);
+            }
+            $fallbackImageSize = bdImage_ShippableHelper_ImageSize::calculate($fallbackImage);
+
+            if (empty($fallbackImageSize['width'])
+                || empty($fallbackImageSize['height'])
+            ) {
+                continue;
+            }
+            $fallbackRatio = $fallbackImageSize['width'] / $fallbackImageSize['height'];
+
+            switch ($mode) {
+                case bdImage_Integration::MODE_STRETCH_WIDTH:
+                    if ($bestRatio === null
+                        || $bestRatio > $fallbackRatio
+                    ) {
+                        $bestFallbackImage = $fallbackImage;
+                        $bestRatio = $fallbackRatio;
+                    }
+                    break;
+                case bdImage_Integration::MODE_STRETCH_HEIGHT:
+                    if ($bestRatio === null
+                        || $bestRatio < $fallbackRatio
+                    ) {
+                        $bestFallbackImage = $fallbackImage;
+                        $bestRatio = $fallbackRatio;
+                    }
+                    break;
+                default:
+                    if (is_numeric($mode) && $mode > 0) {
+                        $ratio = $size / $mode;
+                    } else {
+                        $ratio = 1;
+                    }
+                    if ($bestRatio === null
+                        || abs(1 - $bestRatio / $ratio) > abs(1 - $fallbackRatio / $ratio)
+                    ) {
+                        $bestFallbackImage = $fallbackImage;
+                        $bestRatio = $fallbackRatio;
+                    }
+                    break;
+            }
+        }
+
+        if ($bestFallbackImage !== null) {
+            $imageType = self::_guessImageTypeByFileExtension($bestFallbackImage);
+            try {
+                return self::_createImageObjFromFile($bestFallbackImage, $imageType);
+            } catch (Exception $e) {
+                // ignore
+            }
+        }
+
+        return XenForo_Image_Abstract::createImage($size, $size);
+    }
+
+    /**
+     * @param string $path
+     * @param int $type
+     * @return null|XenForo_Image_Abstract
+     *
+     * @see XenForo_Image_Gd::createFromFileDirect
+     * @see XenForo_Image_ImageMagick_Pecl::createFromFileDirect
+     */
+    protected static function _createImageObjFromFile($path, $type)
+    {
+        try {
+            return XenForo_Image_Abstract::createFromFile($path, $type);
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
     protected static function _downloadImageIfNeeded($uri)

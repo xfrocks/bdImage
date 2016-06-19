@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="bdImage" title="[bd] Image" version_string="1.1.0" version_id="1010006" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="bdImage" title="[bd] Image" version_string="1.2.0" version_id="1020000" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -92,6 +92,13 @@
       <sub_options></sub_options>
       <relation group_id="bdImage" display_order="1050"/>
     </option>
+    <option option_id="bdImage_fallbackImages" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value>styles/default/xenforo/logo.og.png
+styles/default/xenforo/logo.png</default_value>
+      <edit_format_params>rows=5</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdImage" display_order="3000"/>
+    </option>
     <option option_id="bdImage_fileTtlDays" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
       <default_value>28</default_value>
       <edit_format_params>min=0
@@ -151,6 +158,8 @@ wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_
     <phrase title="cron_entry_bdImage_pruneFiles" version_id="23" version_string="1.0.0b"><![CDATA[[bd] Image: Prune Files]]></phrase>
     <phrase title="option_bdImage_allAttachments" version_id="20" version_string="0.10.0-dev"><![CDATA[Consider All Attachments for Image]]></phrase>
     <phrase title="option_bdImage_allAttachments_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[By default, only attachments that are included in the message are considered to be the feature image of a piece of content. Enable this option to check for all attachments.]]></phrase>
+    <phrase title="option_bdImage_fallbackImages" version_id="1010006" version_string="1.1.0"><![CDATA[Fallback Images]]></phrase>
+    <phrase title="option_bdImage_fallbackImages_explain" version_id="1010006" version_string="1.1.0"><![CDATA[Enter paths to fallback images. They will be used when the requested image cannot be found or downloaded. The add-on will pick the one with the closest ratio to the requested width/height.]]></phrase>
     <phrase title="option_bdImage_fileTtlDays" version_id="23" version_string="1.0.0b"><![CDATA[File TTL]]></phrase>
     <phrase title="option_bdImage_fileTtlDays_explain" version_id="23" version_string="1.0.0b"><![CDATA[Enter number of days to keep files.]]></phrase>
     <phrase title="option_bdImage_template" version_id="14" version_string="0.9.5"><![CDATA[Template Modification]]></phrase>

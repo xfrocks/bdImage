@@ -275,6 +275,10 @@ class bdImage_Helper_Thumbnail
             $attachments[$attachmentId] = $attachmentModel->getAttachmentById($attachmentId);
         }
 
+        if (empty($attachments[$attachmentId])) {
+            return '';
+        }
+
         return $attachmentModel->getAttachmentDataFilePath($attachments[$attachmentId]);
     }
 

@@ -22,7 +22,7 @@ class bdImage_Helper_Image
         ) {
             $uri = bdImage_Integration::getAccessibleUri($imageData['url']);
             if (!empty($uri)) {
-                $imageSize = bdImage_Helper_ShippableHelper_ImageSize::calculate($uri);
+                $imageSize = bdImage_ShippableHelper_ImageSize::calculate($uri);
                 if (!empty($imageSize['width'])) {
                     $width = $imageSize['width'];
                 }

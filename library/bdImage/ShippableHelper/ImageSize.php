@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2016-07-07T02:11:26+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2016-07-11T10:36:41+00:00
 
 /**
  * Class bdImage_ShippableHelper_ImageSize
- * @version 7
+ * @version 8
  * @see DevHelper_Helper_ShippableHelper_ImageSize
  */
 class bdImage_ShippableHelper_ImageSize
@@ -170,7 +170,14 @@ class bdImage_ShippableHelper_ImageSize
                 $httpContext['user_agent'] = 'Mozilla/4.0 (MSIE 6.0; Windows NT 5.0)';
             }
 
-            $context = stream_context_create(array('http' => $httpContext));
+            $context = stream_context_create(array(
+                'http' => $httpContext,
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                )
+            ));
         }
 
         if ($context != null) {

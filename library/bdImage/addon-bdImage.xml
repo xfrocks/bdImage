@@ -112,7 +112,8 @@ step=14</edit_format_params>
 thread_view_open_graph_meta = {xen:phrase bdimage_template_thread_view_open_graph_meta}
 node_forum_last_thread_image = {xen:phrase bdimage_template_node_forum_last_thread_image}
 search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_image}
-wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_thread_image}</edit_format_params>
+wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_thread_image}
+picker = {xen:phrase bdimage_template_picker}</edit_format_params>
       <sub_options>*</sub_options>
       <relation group_id="bdImage" display_order="2000"/>
     </option>
@@ -146,6 +147,7 @@ wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_
     <phrase title="bdimage_small_size" version_id="14" version_string="0.9.5"><![CDATA[Second Column Thumbnail Width]]></phrase>
     <phrase title="bdimage_small_title" version_id="14" version_string="0.9.5"><![CDATA[Second Column Title]]></phrase>
     <phrase title="bdimage_template_node_forum_last_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Last Thread Image in Forum List]]></phrase>
+    <phrase title="bdimage_template_picker" version_id="1020001" version_string="1.2.0"><![CDATA[Thread Image Pickers]]></phrase>
     <phrase title="bdimage_template_search_result_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in search result]]></phrase>
     <phrase title="bdimage_template_thread_list_item_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in Thread List]]></phrase>
     <phrase title="bdimage_template_thread_view_open_graph_meta" version_id="30" version_string="1.0.4"><![CDATA[Open Graph Image in Thread View]]></phrase>
@@ -1080,10 +1082,12 @@ ul.bdImage_Widget_Grid
     </modification>
     <modification template="thread_edit" modification_key="bdimage_thread_edit_picker" description="Insert image picker into thread_edit form." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<dl class="ctrlUnit submitUnit">]]></find>
-      <replace><![CDATA[<xen:include template="bdimage_picker">
+      <replace><![CDATA[<xen:if is="{xen:helper bdImage_getOption, template, picker}">
+<xen:include template="bdimage_picker">
 	<xen:map from="$bdImage_images" to="$images" />
 	<xen:set var="$currentImageData">{xen:raw $thread.bdimage_image}</xen:set>
 </xen:include>
+</xen:if>
 
 $0]]></replace>
     </modification>
@@ -1092,10 +1096,12 @@ $0]]></replace>
       <replace><![CDATA[<xen:if hascontent="true">
 <div class="bdImage_imageEdit editBlock">
 	<xen:contentcheck>
+	<xen:if is="{xen:helper bdImage_getOption, template, picker}">
 	<xen:include template="bdimage_picker_simple">
 		<xen:map from="$bdImage_images" to="$images" />
 		<xen:set var="$currentImageData">{xen:raw $thread.bdimage_image}</xen:set>
 	</xen:include>
+	</xen:if>
 	</xen:contentcheck>
 </div>
 </xen:if>

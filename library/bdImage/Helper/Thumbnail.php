@@ -3,15 +3,23 @@
 class bdImage_Helper_Thumbnail
 {
     const ERROR_DOWNLOAD_REMOTE_URI = '/download/remote/uri.error';
+    const HASH_FALLBACK = 'default';
+    const MAX_ATTEMPT = 3;
 
     public static function getThumbnailUri($url, $accessibleUri, $size, $mode, $hash)
     {
         $cachePath = bdImage_Integration::getCachePath($url, $size, $mode, $hash);
+        $cacheFileSize = bdImage_Helper_File::getImageFileSizeIfExists($cachePath);
 
         $thumbnailUrl = bdImage_Integration::getCacheUrl($url, $size, $mode, $hash);
         $thumbnailUri = XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
-        if (bdImage_Helper_File::existsAndNotEmpty($cachePath)) {
+        if ($cacheFileSize > bdImage_Helper_File::IMAGE_FILE_SIZE_THRESHOLD) {
             return $thumbnailUri;
+        }
+
+        $thumbnailError = array();
+        if ($cacheFileSize > 0) {
+            $thumbnailError = bdImage_Helper_File::getThumbnailError($cachePath);
         }
 
         $imagePath = self::_downloadImageIfNeeded($accessibleUri);
@@ -26,8 +34,29 @@ class bdImage_Helper_Thumbnail
             }
         }
 
+        if (empty($imageObj)
+            && $hash !== self::HASH_FALLBACK
+        ) {
+            $fallbackImage = self::_getFallbackImage($size, $mode);
+            if ($fallbackImage !== null) {
+                if (!isset($thumbnailError['attemptCount'])
+                    || $thumbnailError['attemptCount'] < self::MAX_ATTEMPT
+                ) {
+                    bdImage_Helper_File::saveThumbnailError($cachePath, $thumbnailError);
+                    return self::getThumbnailUri($fallbackImage, $fallbackImage, $size, $mode, self::HASH_FALLBACK);
+                } else {
+                    $fallbackImageType = self::_guessImageTypeByFileExtension($fallbackImage);
+                    try {
+                        $imageObj = self::_createImageObjFromFile($fallbackImage, $fallbackImageType);
+                    } catch (Exception $e) {
+                        // ignore
+                    }
+                }
+            }
+        }
+
         if (empty($imageObj)) {
-            $imageObj = self::_createFallbackImageObj($size, $mode);
+            $imageObj = XenForo_Image_Abstract::createImage($size, $size);
         }
 
         if (is_callable(array($imageObj, 'bdImage_optimizeOutput'))) {
@@ -126,7 +155,7 @@ class bdImage_Helper_Thumbnail
         $imageObj->crop($x, $y, $cropWidth, $cropHeight);
     }
 
-    protected static function _createFallbackImageObj($size, $mode)
+    protected static function _getFallbackImage($size, $mode)
     {
         $bestFallbackImage = null;
         $bestRatio = null;
@@ -179,16 +208,7 @@ class bdImage_Helper_Thumbnail
             }
         }
 
-        if ($bestFallbackImage !== null) {
-            $imageType = self::_guessImageTypeByFileExtension($bestFallbackImage);
-            try {
-                return self::_createImageObjFromFile($bestFallbackImage, $imageType);
-            } catch (Exception $e) {
-                // ignore
-            }
-        }
-
-        return XenForo_Image_Abstract::createImage($size, $size);
+        return $bestFallbackImage;
     }
 
     /**

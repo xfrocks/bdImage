@@ -190,8 +190,10 @@ class bdImage_Integration
         $hash = bdImage_Helper_Data::computeHash($imageUrl, $size, $mode);
 
         $cachePath = bdImage_Integration::getCachePath($imageUrl, $size, $mode, $hash);
-        if (bdImage_Helper_File::existsAndNotEmpty($cachePath)) {
-            $thumbnailUrl = bdImage_Integration::getCacheUrl($imageUrl, $size, $mode, $hash);
+        $cacheFileSize = bdImage_Helper_File::getImageFileSizeIfExists($cachePath);
+        if ($cacheFileSize > bdImage_Helper_File::IMAGE_FILE_SIZE_THRESHOLD) {
+            $thumbnailUrl = sprintf('%s?%d', bdImage_Integration::getCacheUrl($imageUrl,
+                $size, $mode, $hash), $cacheFileSize);
         }
 
         if (empty($thumbnailUrl)) {

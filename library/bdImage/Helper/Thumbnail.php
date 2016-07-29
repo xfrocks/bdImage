@@ -234,17 +234,18 @@ class bdImage_Helper_Thumbnail
         // this is a remote uri, try to download it and return the downloaded file's path
         $originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
         if (!bdImage_Helper_File::existsAndNotEmpty($originalCachePath)) {
-            $uriContents = @file_get_contents($uri);
-            if (empty($uriContents)) {
+            XenForo_Helper_File::createDirectory(dirname($originalCachePath), true);
+            $downloaded = bdImage_ShippableHelper_TempFile::download($uri, array(
+                'tempFile' => $originalCachePath,
+                'maxDownloadSize' => XenForo_Application::getOptions()->get('attachmentMaxFileSize') * 1024,
+            ));
+            if (empty($downloaded)) {
                 if (XenForo_Application::debugMode()) {
-                    XenForo_Helper_File::log(__CLASS__, sprintf('Error downloading %s %s', $uri, error_get_last()));
+                    XenForo_Helper_File::log(__CLASS__, sprintf('Error downloading %s', $uri));
                 }
 
                 return self::ERROR_DOWNLOAD_REMOTE_URI;
             }
-
-            XenForo_Helper_File::createDirectory(dirname($originalCachePath), true);
-            file_put_contents($originalCachePath, $uriContents);
         }
 
         return $originalCachePath;

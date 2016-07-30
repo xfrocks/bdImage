@@ -40,7 +40,7 @@ class bdImage_Helper_File
     {
         $fh = fopen($path, 'rb');
         if (empty($fh)) {
-            return null;
+            return array();
         }
 
         // current format
@@ -52,7 +52,7 @@ class bdImage_Helper_File
 
         if (substr($bytes, 0, 3) !== 'ERR') {
             // magic bytes mismatched
-            return null;
+            return array();
         }
 
         $raw = unpack('C*', substr($bytes, 3));

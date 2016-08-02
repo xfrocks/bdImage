@@ -14,7 +14,7 @@ class bdImage_Helper_Thumbnail
         $thumbnailUrl = bdImage_Integration::getCacheUrl($url, $size, $mode, $hash);
         $thumbnailUri = XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
         if ($cacheFileSize > bdImage_Helper_File::IMAGE_FILE_SIZE_THRESHOLD) {
-            return $thumbnailUri;
+            return sprintf('%s?%d', $thumbnailUri, $cacheFileSize);
         }
 
         $thumbnailError = array();
@@ -89,10 +89,11 @@ class bdImage_Helper_Thumbnail
         }
         unset($imageObj);
 
+        $tempFileSize = filesize($tempFile);
         XenForo_Helper_File::createDirectory(dirname($cachePath), true);
         XenForo_Helper_File::safeRename($tempFile, $cachePath);
 
-        return $thumbnailUri;
+        return sprintf('%s?%d', $thumbnailUri, $tempFileSize);
     }
 
     protected static function _resizeStretchWidth(XenForo_Image_Abstract $imageObj, $targetHeight)

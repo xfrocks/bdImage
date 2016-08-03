@@ -186,6 +186,8 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="style_property_bdImage_wfThreadsFull_imageHeight_master" version_id="28" version_string="1.0.2b"><![CDATA[Threads Full - Image Height]]></phrase>
     <phrase title="style_property_bdImage_wfThreadsFull_imageWidth_description_master" version_id="28" version_string="1.0.2b"><![CDATA[Enter the image width for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch width.]]></phrase>
     <phrase title="style_property_bdImage_wfThreadsFull_imageWidth_master" version_id="28" version_string="1.0.2b"><![CDATA[Threads Full - Image Width]]></phrase>
+    <phrase title="style_property_bdImage_wfThreadsSidebar_imageSize_description_master" version_id="1020100" version_string="1.2.1"><![CDATA[Enter the image size (width / height) for thumbnail used in [bd] Widget Framework's Threads widget (sidebar layout).]]></phrase>
+    <phrase title="style_property_bdImage_wfThreadsSidebar_imageSize_master" version_id="1020100" version_string="1.2.1"><![CDATA[Threads Sidebar - Image Size]]></phrase>
     <phrase title="style_property_group_bdImage_cover_master" version_id="30" version_string="1.0.4"><![CDATA[[bd] Image: Cover]]></phrase>
     <phrase title="style_property_group_bdImage_cover_master_desc" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
     <phrase title="style_property_group_bdImage_master" version_id="28" version_string="1.0.2b"><![CDATA[[bd] Image]]></phrase>
@@ -201,6 +203,7 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <property property_name="bdImage_coverBg" property_type="css" definition="1" group_name="bdImage_cover" title="Text Container" description="" css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="100" sub_group=""><![CDATA[{"background-color":"rgba(0, 0, 0, 0.25)","font-size":"21px"}]]></property>
     <property property_name="bdImage_coverHidePageElements" property_type="scalar" definition="1" group_name="bdImage_cover" title="Hide Page Elements" description="Enable this option to hide page elements such as the top breadcrumb, title bar, etc." css_components="" scalar_type="boolean" scalar_parameters="" display_order="100" sub_group=""><![CDATA[1]]></property>
     <property property_name="bdImage_coverAvatar" property_type="css" definition="1" group_name="bdImage_cover" title="Avatar" description="" css_components="background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="200" sub_group=""><![CDATA[{"background-color":"@primaryLighterStill","border-radius":"48px","height":"96px","width":"96px"}]]></property>
+    <property property_name="bdImage_wfThreadsSidebar_imageSize" property_type="scalar" definition="1" group_name="bdImage" title="Threads Sidebar - Image Size" description="Enter the image size (width / height) for thumbnail used in [bd] Widget Framework's Threads widget (sidebar layout)." css_components="" scalar_type="number" scalar_parameters="" display_order="1000" sub_group="wfThreadsSidebar"><![CDATA[48]]></property>
     <group group_name="bdImage" display_order="9999">
       <title>[bd] Image</title>
       <description></description>
@@ -610,8 +613,9 @@ html.bdImage_hasCover .titleBar {
 		</xen:if>
 	</a>
 </div>]]></template>
-    <template title="bdimage_wf_widget_threads_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
-	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image, 48, 48}" />
+    <template title="bdimage_wf_widget_threads_thread_image" version_id="1020100" version_string="1.2.1"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
+	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image,
+		{xen:property bdImage_wfThreadsSidebar_imageSize}, {xen:property bdImage_wfThreadsSidebar_imageSize}}" />
 </a>]]></template>
     <template title="bdimage_widget.css" version_id="30" version_string="1.0.4"><![CDATA[.bdImage_Widget_Slider_Container
 {

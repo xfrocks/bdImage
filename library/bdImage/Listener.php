@@ -41,7 +41,6 @@ class bdImage_Listener
      * @see bdImage_Option::get
      * @see bdImage_Helper_Data::get
      * @see bdImage_Integration::getImage
-     * @see bdImage_Integration::getSafeImageUrl
      * @see bdImage_Integration::buildThumbnailLink
      * @see bdImage_Integration::buildFullSizeLink
      * @see bdImage_Integration::getImageWidth
@@ -64,7 +63,7 @@ class bdImage_Listener
         XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_image')]
             = array('bdImage_Integration', 'getImage');
         XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_safeUrl')]
-            = array('bdImage_Integration', 'getSafeImageUrl');
+            = array('bdImage_Integration', 'getImage'); // kept for compatibility reason
         XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_filename')] = 'basename';
         XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_thumbnail')]
             = array('bdImage_Integration', 'buildThumbnailLink');

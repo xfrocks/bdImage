@@ -27,55 +27,27 @@ class bdImage_Integration
         $parser = new XenForo_BbCode_Parser($formatter);
         $parser->render($bbCode);
 
-        return $formatter->getImageUrls();
+        return $formatter->getImageDataMany();
     }
 
     public static function getBbCodeImage($bbCode, array $contentData = array(), $dwOrModel = null)
     {
-        $images = self::getBbCodeImages($bbCode, $contentData, $dwOrModel);
-        if (empty($images)) {
+        $imageDataMany = self::getBbCodeImages($bbCode, $contentData, $dwOrModel);
+        if (empty($imageDataMany)) {
             return '';
         }
 
-        $image = array_shift($images);
-        if (empty($image)) {
+        $imageData = reset($imageDataMany);
+        if (empty($imageData)) {
             return '';
         }
 
-        list($imageWidth, $imageHeight) = bdImage_Helper_Image::getSize($image);
-        return bdImage_Helper_Data::pack(self::getSafeImageUrl($image), $imageWidth, $imageHeight);
-    }
+        $imageUrl = self::getImage($imageData);
+        $imageWidth = self::getImageWidth($imageData);
+        $imageHeight = self::getImageHeight($imageData);
 
-    public static function getImageFromUri($uri, array $extraData = array())
-    {
-        list($imageWidth, $imageHeight) = bdImage_Helper_Image::getSize($uri);
-        return bdImage_Helper_Data::pack(self::getSafeImageUrl($uri), $imageWidth, $imageHeight, $extraData);
-    }
-
-    public static function getSafeImageUrl($uri)
-    {
-        if (empty($uri)) {
-            // nothing to do here
-            return $uri;
-        }
-
-        if (Zend_Uri::check($uri)) {
-            // uri, return asap
-            return $uri;
-        } else {
-            $realPath = realpath($uri);
-            /** @var XenForo_Application $application */
-            $application = XenForo_Application::getInstance();
-            $rootRealPath = realpath($application->getRootDir());
-
-            if (substr($realPath, 0, strlen($rootRealPath)) == $rootRealPath) {
-                // hide the root path
-                return ltrim(substr($realPath, strlen($rootRealPath)), '/');
-            } else {
-                // unable to hide anything...
-                return $uri;
-            }
-        }
+        return bdImage_Helper_Data::pack($imageUrl, $imageWidth, $imageHeight,
+            bdImage_Helper_Data::unpack($imageData));
     }
 
     public static function getAccessibleUri($url)

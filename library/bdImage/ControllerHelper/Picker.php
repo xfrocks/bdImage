@@ -4,13 +4,9 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
 {
     public function getPickedData()
     {
-        $uri = $this->getPickedImageUri();
+        $uri = $this->getPickedImageUrl();
         if ($uri === null) {
             return null;
-        }
-
-        if (empty($uri)) {
-            return array();
         }
 
         $extraData = $this->_controller->getInput()->filterSingle('bdimage_extra_data', XenForo_Input::ARRAY_SIMPLE);
@@ -20,10 +16,11 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
         ));
         $extraData['_locked'] = true;
 
-        return bdImage_Integration::getImageFromUri($uri, $extraData);
+        list($imageWidth, $imageHeight) = bdImage_Helper_Image::getSize($uri);
+        return bdImage_Helper_Data::pack($uri, $imageWidth, $imageHeight, $extraData);
     }
 
-    public function getPickedImageUri()
+    public function getPickedImageUrl()
     {
         $input = $this->_controller->getInput()->filter(array(
             'bdimage_picker' => XenForo_Input::UINT,
@@ -38,7 +35,7 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
         if ($input['bdimage_image'] == 'other') {
             return $input['bdimage_other'];
         } elseif (!empty($input['bdimage_image'])) {
-            return bdImage_Integration::getAccessibleUri($input['bdimage_image']);
+            return $input['bdimage_image'];
         } else {
             return '';
         }

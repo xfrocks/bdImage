@@ -2,8 +2,9 @@
 
 class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 {
-    protected $_imageUrls = array();
-    protected $_attachmentIds = array();
+    protected $_bdImage_attachmentIds = array();
+    protected $_bdImage_imageUrls = array();
+    protected $_bdImage_mediaIds = array();
 
     /** @var XenForo_DataWriter */
     protected $_dwOrModel = null;
@@ -21,13 +22,16 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
 
     public function reset()
     {
-        $this->_imageUrls = array();
-        $this->_attachmentIds = array();
+        $this->_bdImage_attachmentIds = array();
+        $this->_bdImage_imageUrls = array();
+        $this->_bdImage_mediaIds = array();
     }
 
-    public function getImageUrls()
+    public function getImageDataMany()
     {
-        if (!empty($this->_attachmentIds)
+        $imageDataMany = array();
+
+        if (!empty($this->_bdImage_attachmentIds)
             || !empty($this->_contentData['allAttachments'])
         ) {
             // found some attachment ids...
@@ -48,73 +52,57 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
                 }
 
                 if (!empty($this->_contentData['allAttachments'])) {
-                    $this->_attachmentIds = array_keys($attachments);
+                    $this->_bdImage_attachmentIds = array_keys($attachments);
                 }
 
-                foreach ($this->_attachmentIds as $attachmentId) {
+                foreach ($this->_bdImage_attachmentIds as $attachmentId) {
                     if (isset($attachments[$attachmentId])
+                        && isset($attachments[$attachmentId]['width'])
                         && $attachments[$attachmentId]['width'] > 0
+                        && isset($attachments[$attachmentId]['height'])
+                        && $attachments[$attachmentId]['height'] > 0
                     ) {
-                        $dataFilePath = $attachmentModel->getAttachmentDataFilePath($attachments[$attachmentId]);
+                        $attachmentUrl = XenForo_Link::buildPublicLink('canonical:attachments',
+                            $attachments[$attachmentId]);
 
-                        if (bdImage_Helper_File::existsAndNotEmpty($dataFilePath)) {
-                            $attachmentUrl = $dataFilePath;
-                        } else {
-                            // provide support for [bd] Attachment Store
-                            $attachmentUrl = XenForo_Link::buildPublicLink('canonical:attachments',
-                                $attachments[$attachmentId]);
-                        }
-
-                        $imageUrlKeyFound = false;
-                        foreach (array_keys($this->_imageUrls) as $imageUrlKey) {
-                            if (is_array($this->_imageUrls[$imageUrlKey])
-                                && $this->_imageUrls[$imageUrlKey][0] == 'attachment'
-                                && $this->_imageUrls[$imageUrlKey][1] == $attachmentId
-                            ) {
-                                $this->_imageUrls[$imageUrlKey] = $attachmentUrl;
-                                $imageUrlKeyFound = true;
-                            }
-                        }
-                        if (!$imageUrlKeyFound) {
-                            $this->_imageUrls[] = $attachmentUrl;
-                        }
+                        $imageDataMany[] = bdImage_Helper_Data::pack(
+                            $attachmentUrl,
+                            $attachments[$attachmentId]['width'],
+                            $attachments[$attachmentId]['height'],
+                            array('type' => 'attachment')
+                        );
                     }
                 }
             }
-
-            $this->_attachmentIds = array();
         }
 
-        $imageUrls = array();
+        foreach ($this->_bdImage_imageUrls as $imageUrl) {
+            $imageDataMany[] = $imageUrl;
+        }
 
-        foreach ($this->_imageUrls as $imageUrl) {
-            if (is_string($imageUrl)) {
-                $imageUrls[] = $imageUrl;
-            } else {
-                $type = array_shift($imageUrl);
-                $data = $imageUrl;
-                $imageUrl = false;
-
-                switch ($type) {
-                    case 'media':
-                        if ($data[0] == 'youtube') {
-                            $imageUrl = sprintf('http://img.youtube.com/vi/%s/default.jpg', $data[1]);
-                        }
-                        break;
-                }
-
-                if (!empty($imageUrl)) {
-                    $imageUrls[] = $imageUrl;
-                }
+        foreach ($this->_bdImage_mediaIds as $mediaId) {
+            switch ($mediaId[0]) {
+                case 'youtube':
+                    $imageDataMany = array_merge($imageDataMany,
+                        bdImage_Helper_YouTube::extractImageDataMany($mediaId[1]));
+                    break;
             }
         }
 
-        return $imageUrls;
+        return $imageDataMany;
     }
 
     public function getTags()
     {
         return array(
+            'attach' => array(
+                'plainChildren' => true,
+                'callback' => array(
+                    $this,
+                    'renderTagAttach'
+                )
+            ),
+
             'img' => array(
                 'hasOption' => false,
                 'plainChildren' => true,
@@ -123,13 +111,7 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
                     'renderTagImage'
                 )
             ),
-            'attach' => array(
-                'plainChildren' => true,
-                'callback' => array(
-                    $this,
-                    'renderTagAttach'
-                )
-            ),
+
             'media' => array(
                 'hasOption' => true,
                 'plainChildren' => true,
@@ -150,35 +132,24 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
         );
     }
 
-    public function preLoadData()
-    {
-        $this->_imageTemplate = '%1$s';
-
-        parent::preLoadData();
-    }
-
-    public function renderTagImage(array $tag, array $rendererStates)
-    {
-        $rendered = parent::renderTagImage($tag, $rendererStates);
-
-        $parsedUrl = parse_url($rendered);
-
-        if ($parsedUrl !== false) {
-            // look like we got the image URL
-            $this->_imageUrls[] = $rendered;
-        }
-    }
-
     public function renderTagAttach(array $tag, array $rendererStates)
     {
         $id = intval($this->stringifyTree($tag['children']));
         if (!empty($id)) {
-            $this->_imageUrls[] = array(
-                'attachment',
-                $id
-            );
-            $this->_attachmentIds[] = $id;
+            $this->_bdImage_attachmentIds[] = $id;
         }
+    }
+
+    public function renderTagImage(array $tag, array $rendererStates)
+    {
+        $url = $this->stringifyTree($tag['children']);
+
+        $validUrl = $this->_getValidUrl($url);
+        if (!$validUrl) {
+            return '';
+        }
+
+        $this->_bdImage_imageUrls[] = $validUrl;
     }
 
     public function renderTagMedia(array $tag, array $rendererStates)
@@ -186,8 +157,7 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
         $mediaKey = trim($this->stringifyTree($tag['children']));
         $mediaSiteId = strtolower($tag['option']);
 
-        $this->_imageUrls[] = array(
-            'media',
+        $this->_bdImage_mediaIds[] = array(
             $mediaSiteId,
             $mediaKey
         );
@@ -195,10 +165,9 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
         return '';
     }
 
-    protected function _generateProxyLink($proxyType, $url)
+    public function renderTagQuote(array $tag, array $rendererStates)
     {
-        // added support for XenForo 1.3 proxy link/image system
-        return $url;
+        return '';
     }
 
     public function getModelFromCache($class)

@@ -106,6 +106,12 @@ step=14</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="bdImage" display_order="3000"/>
     </option>
+    <option option_id="bdImage_googleApiKey" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdImage" display_order="1099"/>
+    </option>
     <option option_id="bdImage_template" edit_format="checkbox" data_type="array" can_backup="1">
       <default_value></default_value>
       <edit_format_params>thread_list_item_thread_image = {xen:phrase bdimage_template_thread_list_item_thread_image}
@@ -164,6 +170,8 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="option_bdImage_fallbackImages_explain" version_id="1010006" version_string="1.1.0"><![CDATA[Enter paths to fallback images. They will be used when the requested image cannot be found or downloaded. The add-on will pick the one with the closest ratio to the requested width/height.]]></phrase>
     <phrase title="option_bdImage_fileTtlDays" version_id="23" version_string="1.0.0b"><![CDATA[File TTL]]></phrase>
     <phrase title="option_bdImage_fileTtlDays_explain" version_id="23" version_string="1.0.0b"><![CDATA[Enter number of days to keep files.]]></phrase>
+    <phrase title="option_bdImage_googleApiKey" version_id="1020100" version_string="1.2.1"><![CDATA[Google API Key]]></phrase>
+    <phrase title="option_bdImage_googleApiKey_explain" version_id="1020100" version_string="1.2.1"><![CDATA[Enter Google API key, it will be used for accurate YouTube thumbnail fetching (instead of guessing).]]></phrase>
     <phrase title="option_bdImage_template" version_id="14" version_string="0.9.5"><![CDATA[Template Modification]]></phrase>
     <phrase title="option_bdImage_template_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[Tick the modifications you wish to apply automatically.]]></phrase>
     <phrase title="option_bdImage_threadAuto" version_id="30" version_string="1.0.4"><![CDATA[Thread: Auto-extract Image]]></phrase>
@@ -223,7 +231,7 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     </group>
   </style_properties>
   <templates>
-    <template title="bdimage.css" version_id="30" version_string="1.0.4"><![CDATA[.bdImage_lastThreadImage {
+    <template title="bdimage.css" version_id="1020100" version_string="1.2.1"><![CDATA[.bdImage_lastThreadImage {
 	float: left;
 	margin-right: 5px;
 	width: 30px;
@@ -234,12 +242,10 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
 	.bdImage_threadImage img { max-width: 100%; }
 
 ul.bdImage_Picker {}
-	ul.bdImage_Picker > li {
-		display: inline-block;
-	}
-	ul.bdImage_Picker > li.other {
-		display: block;
-	}
+	ul.bdImage_Picker > li.image { display: inline-block; }
+	ul.bdImage_Picker > li.image label { display: inline-block; }
+	ul.bdImage_Picker > li.image input { height: {xen:calc {xen:property bdImage_threadList_imageSize}}px; }
+	ul.bdImage_Picker > li.other { display: block; }
 
 /* cover */
 <xen:set var="$coverAvatarSize">96</xen:set>
@@ -449,7 +455,7 @@ html.bdImage_hasCover .titleBar {
 	{xen:property bdImage_forumLastThread_imageSize}}" width="{xen:property bdImage_forumLastThread_imageSize}" <xen:comment>
 	</xen:comment>height="{xen:property bdImage_forumLastThread_imageSize}" class="bdImage_lastThreadImage"{xen:if $debugMode,
 	' data-full={xen:helper bdImage_fullSize, $forum.bdimage_last_post_image}'} />]]></template>
-    <template title="bdimage_picker" version_id="30" version_string="1.0.4"><![CDATA[<xen:require css="bdimage.css" />
+    <template title="bdimage_picker" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:require css="bdimage.css" />
 
 <xen:set var="$currentImageUrl">{xen:helper bdImage_image, $currentImageData}</xen:set>
 
@@ -466,18 +472,24 @@ html.bdImage_hasCover .titleBar {
 				<ul class="bdImage_Picker">
 					<xen:set var="$currentImageFound">0</xen:set>
 
-					<xen:foreach loop="$images" value="$image">
-					<xen:set var="$safeUrl">{xen:helper bdImage_safeUrl, $image}</xen:set>
-					<xen:if is="{$safeUrl} == {$currentImageUrl}">
+					<xen:foreach loop="$images" value="$imageData">
+					<xen:set var="$imageUrl">{xen:helper bdImage_image, $imageData}</xen:set>
+					<xen:set var="$imageWidth">{xen:helper bdImage_getData, $imageData, width}</xen:set>
+					<xen:set var="$imageHeight">{xen:helper bdImage_getData, $imageData, height}</xen:set>
+					<xen:set var="$imageType">{xen:helper bdImage_getData, $imageData, type}</xen:set>
+					<xen:set var="$imageTooltip">{$imageType}{xen:if '{$imageWidth}
+						&& {$imageHeight}', ' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</xen:set>
+					<xen:if is="{$imageUrl} == {$currentImageUrl}">
 						<xen:set var="$currentImageFound">1</xen:set>
 					</xen:if>
 
-					<li>
-						<label>
-							<input type="radio" name="bdimage_image" value="{$safeUrl}"
-								   style="height: 48px"
-								   {xen:checked '{$safeUrl} == {$currentImageUrl}'}/>
-							<img src="{xen:helper bdImage_thumbnail, $image, 48, 48}" width="48" height="48" />
+					<li class="image">
+						<label{xen:if $imageTooltip, ' title="{xen:jsescape $imageTooltip}" class="Tooltip"'}>
+							<input type="radio" name="bdimage_image" value="{$imageUrl}" {xen:checked
+								'{$imageUrl} == {$currentImageUrl}'} />
+							<img src="{xen:helper bdImage_thumbnail,
+								$imageData, {xen:property bdImage_threadList_imageSize}}" {xen:helper bdImage_imgAttribs,
+								$imageData, {xen:property bdImage_threadList_imageSize}} />
 						</label>
 					</li>
 					</xen:foreach>
@@ -506,7 +518,7 @@ html.bdImage_hasCover .titleBar {
 			<li>
 				<label>
 					<input type="checkbox" name="bdimage_extra_data[is_cover]" value="1" {xen:checked
-						   '{xen:helper bdImage_getData, $currentImageData, is_cover}'} />
+						'{xen:helper bdImage_getData, $currentImageData, is_cover}'} />
 					{xen:phrase bdimage_is_cover}
 				</label>
 			</li>
@@ -517,9 +529,9 @@ html.bdImage_hasCover .titleBar {
 </dl>
 
 <xen:edithint template="bdimage_picker_simple" />]]></template>
-    <template title="bdimage_picker_simple" version_id="30" version_string="1.0.4"><![CDATA[<xen:if is="{$images}">
+    <template title="bdimage_picker_simple" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:set var="$currentImageUrl">{xen:helper bdImage_image, $currentImageData}</xen:set>
 
-<xen:set var="$currentImageUrl">{xen:helper bdImage_image, $currentImageData}</xen:set>
+<xen:if is="{$images} || {$currentImageUrl}">
 
 <label>
 	<xen:if is="{xen:helper bdImage_getData, $currentImageData, is_cover}">
@@ -530,19 +542,23 @@ html.bdImage_hasCover .titleBar {
 	</xen:if>
 
 	<select {xen:if '{$id}', 'id="{$id}"'} name="bdimage_image" class="textCtrl bdImage_Picker">
+		<option value=""></option>
+
 		<xen:set var="$currentImageFound">0</xen:set>
-		<xen:foreach loop="$images" value="$image">
-			<xen:set var="$safeUrl">{xen:helper bdImage_safeUrl, $image}</xen:set>
-			<xen:if is="{$safeUrl} == {$currentImageUrl}">
+		<xen:foreach loop="$images" value="$imageData">
+			<xen:set var="$imageUrl">{xen:helper bdImage_image, $imageData}</xen:set>
+			<xen:set var="$imageWidth">{xen:helper bdImage_getData, $imageData, width}</xen:set>
+			<xen:set var="$imageHeight">{xen:helper bdImage_getData, $imageData, height}</xen:set>
+			<xen:if is="{$imageUrl} == {$currentImageUrl}">
 				<xen:set var="$currentImageFound">1</xen:set>
 			</xen:if>
 
-			<option value="{$safeUrl}" {xen:selected '{$safeUrl} == {$currentImageUrl}'}>
-				{xen:helper bdImage_filename, $safeUrl}
-			</option>
+			<option value="{$imageUrl}" {xen:selected
+				'{$imageUrl} == {$currentImageUrl}'}>{$imageUrl}{xen:if '{$imageWidth}
+				&& {$imageHeight}', ' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</option>
 		</xen:foreach>
 
-		<xen:if is="{$currentImageFound} == 0">
+		<xen:if is="{$currentImageFound} == 0 && {$currentImageUrl}">
 			<option value="{$currentImage}" selected="selected">
 				{xen:helper bdImage_filename, $currentImageUrl}
 			</option>

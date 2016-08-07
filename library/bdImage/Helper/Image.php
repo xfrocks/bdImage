@@ -44,13 +44,13 @@ class bdImage_Helper_Image
         }
     }
 
-    public static function getDataUriTransparentAtSameSize($uri)
+    public static function getDataUriTransparentAtSameSize($imageData)
     {
         if (!function_exists('imagecreatetruecolor')) {
             return '';
         }
 
-        list($width, $height) = self::getSize($uri);
+        list($width, $height) = self::getSize($imageData);
         if (empty($width) || empty($height)) {
             return '';
         }
@@ -67,10 +67,10 @@ class bdImage_Helper_Image
 
         ob_start();
         imagepng($image);
-        $imageData = ob_get_contents();
+        $imageBytes = ob_get_contents();
         ob_end_clean();
 
-        return 'data:image/png;base64,' . base64_encode($imageData);
+        return 'data:image/png;base64,' . base64_encode($imageBytes);
     }
 
     protected static function _findGreatestCommonDivisor($a, $b)

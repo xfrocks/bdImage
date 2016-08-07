@@ -16,15 +16,15 @@ class bdImage_Helper_Data
     {
         $data = array('url' => $url);
 
-        if (!empty($width)
-            && !empty($height)
-        ) {
+        if ($width > 0) {
             $data['width'] = $width;
+        }
+
+        if ($height > 0) {
             $data['height'] = $height;
         }
 
-        // should we check for overridden values?
-        $data = array_merge($data, $extraData);
+        $data += $extraData;
 
         if (count($data) == 1) {
             // no need to pack data
@@ -58,7 +58,7 @@ class bdImage_Helper_Data
 
         return $result;
     }
-    
+
     public static function computeHash($imageUrl, $size, $mode)
     {
         return md5(md5($imageUrl) .

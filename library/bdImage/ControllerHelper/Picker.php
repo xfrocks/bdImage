@@ -4,8 +4,8 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
 {
     public function getPickedData()
     {
-        $uri = $this->getPickedImageUrl();
-        if ($uri === null) {
+        $url = $this->getPickedImageUrl();
+        if ($url === null) {
             return null;
         }
 
@@ -16,8 +16,7 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
         ));
         $extraData['_locked'] = true;
 
-        list($imageWidth, $imageHeight) = bdImage_Helper_Image::getSize($uri);
-        return bdImage_Helper_Data::pack($uri, $imageWidth, $imageHeight, $extraData);
+        return bdImage_Helper_Data::packUrl($url, $extraData);
     }
 
     public function getPickedImageUrl()

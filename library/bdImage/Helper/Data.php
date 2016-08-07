@@ -12,6 +12,12 @@ class bdImage_Helper_Data
         }
     }
 
+    public static function packUrl($url, array $extraData = array())
+    {
+        list($imageWidth, $imageHeight) = bdImage_Helper_Image::getSize($url);
+        return self::pack($url, $imageWidth, $imageHeight, $extraData);
+    }
+
     public static function pack($url, $width, $height, array $extraData = array())
     {
         $data = array('url' => $url);

@@ -5,34 +5,6 @@ class bdImage_Listener
     const XENFORO_CONTROLLERPUBLIC_POST_SAVE = 'bdImage_XenForo_ControllerPublic_Post::actionSave';
     const XENFORO_CONTROLLERPUBLIC_THREAD_SAVE = 'bdImage_XenForo_ControllerPublic_Thread::actionSave';
 
-    public static function load_class($class, array &$extend)
-    {
-        static $classes = array(
-            'XenForo_ControllerPublic_Attachment',
-            'XenForo_ControllerPublic_Thread',
-            'XenForo_DataWriter_Discussion_Thread',
-            'XenForo_DataWriter_DiscussionMessage_Post',
-            'XenForo_DataWriter_Forum',
-            'XenForo_Image_Gd',
-            'XenForo_Image_ImageMagick_Pecl',
-        );
-
-        if (in_array($class, $classes)) {
-            $extend[] = 'bdImage_' . $class;
-        }
-    }
-
-    public static function load_class_model($class, array &$extend)
-    {
-        static $classes = array(
-            'XenForo_Model_Thread',
-        );
-
-        if (in_array($class, $classes)) {
-            $extend[] = 'bdImage_' . $class;
-        }
-    }
-
     /**
      * @param XenForo_Dependencies_Abstract $dependencies
      * @param array $data
@@ -118,4 +90,60 @@ class bdImage_Listener
         $hashes += bdImage_FileSums::getHashes();
     }
 
+
+    public static function load_class_XenForo_ControllerPublic_Attachment($class, array &$extend)
+    {
+        if ($class === 'XenForo_ControllerPublic_Attachment') {
+            $extend[] = 'bdImage_XenForo_ControllerPublic_Attachment';
+        }
+    }
+
+    public static function load_class_XenForo_ControllerPublic_Thread($class, array &$extend)
+    {
+        if ($class === 'XenForo_ControllerPublic_Thread') {
+            $extend[] = 'bdImage_XenForo_ControllerPublic_Thread';
+        }
+    }
+
+    public static function load_class_XenForo_DataWriter_Discussion_Thread($class, array &$extend)
+    {
+        if ($class === 'XenForo_DataWriter_Discussion_Thread') {
+            $extend[] = 'bdImage_XenForo_DataWriter_Discussion_Thread';
+        }
+    }
+
+    public static function load_class_4f477c58235ffb475271e2521731d700($class, array &$extend)
+    {
+        if ($class === 'XenForo_DataWriter_DiscussionMessage_Post') {
+            $extend[] = 'bdImage_XenForo_DataWriter_DiscussionMessage_Post';
+        }
+    }
+
+    public static function load_class_XenForo_DataWriter_Forum($class, array &$extend)
+    {
+        if ($class === 'XenForo_DataWriter_Forum') {
+            $extend[] = 'bdImage_XenForo_DataWriter_Forum';
+        }
+    }
+
+    public static function load_class_XenForo_Image_Gd($class, array &$extend)
+    {
+        if ($class === 'XenForo_Image_Gd') {
+            $extend[] = 'bdImage_XenForo_Image_Gd';
+        }
+    }
+
+    public static function load_class_XenForo_Image_ImageMagick_Pecl($class, array &$extend)
+    {
+        if ($class === 'XenForo_Image_ImageMagick_Pecl') {
+            $extend[] = 'bdImage_XenForo_Image_ImageMagick_Pecl';
+        }
+    }
+
+    public static function load_class_XenForo_Model_Thread($class, array &$extend)
+    {
+        if ($class === 'XenForo_Model_Thread') {
+            $extend[] = 'bdImage_XenForo_Model_Thread';
+        }
+    }
 }

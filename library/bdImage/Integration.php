@@ -231,42 +231,47 @@ class bdImage_Integration
 
     public static function getImgAttributes($imageData, $size, $mode = self::MODE_CROP_EQUAL)
     {
-        $width = false;
-        $height = false;
+        $width = 0;
+        $height = 0;
 
-        $imageWidth = self::getImageWidth($imageData);
-        $imageHeight = self::getImageHeight($imageData);
-        if (!empty($imageWidth)
-            && !empty($imageHeight)
-        ) {
-            switch ($mode) {
-                case self::MODE_CROP_EQUAL:
-                    $width = $size;
-                    $height = $size;
-                    break;
-                case self::MODE_STRETCH_WIDTH:
-                    $height = $size;
+        switch ($mode) {
+            case self::MODE_CROP_EQUAL:
+                $width = intval($size);
+                $height = intval($size);
+                break;
+            case self::MODE_STRETCH_WIDTH:
+                $imageWidth = self::getImageWidth($imageData);
+                $imageHeight = self::getImageHeight($imageData);
+                if ($imageWidth > 0 && $imageHeight > 0) {
+                    $height = intval($size);
                     $width = $height / $imageHeight * $imageWidth;
-                    break;
-                case self::MODE_STRETCH_HEIGHT:
-                    $width = $size;
+                }
+                break;
+            case self::MODE_STRETCH_HEIGHT:
+                $imageWidth = self::getImageWidth($imageData);
+                $imageHeight = self::getImageHeight($imageData);
+                if ($imageWidth > 0 && $imageHeight > 0) {
+                    $width = intval($size);
                     $height = $width / $imageWidth * $imageHeight;
-                    break;
-                default:
-                    if (is_numeric($mode)) {
-                        $width = $size;
-                        $height = $mode;
-                    }
-            }
+                }
+                break;
+            default:
+                if (is_numeric($mode)) {
+                    $width = intval($size);
+                    $height = intval($mode);
+                }
         }
 
-        if (!empty($width)
-            && !empty($height)
-        ) {
-            return sprintf(' width="%d" height="%d"', $width, $height);
-        } else {
-            return '';
+        $attributes = array();
+
+        if ($width > 0) {
+            $attributes[] = sprintf(' width="%d"', $width);
         }
+        if ($height > 0) {
+            $attributes[] = sprintf(' height="%d"', $height);
+        }
+
+        return implode('', $attributes);
     }
 
     public static function getImageWidth($imageData)

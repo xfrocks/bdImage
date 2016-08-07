@@ -2,9 +2,16 @@
 
 class bdImage_Helper_File
 {
-    // http://cloudinary.com/blog/one_pixel_is_worth_three_thousand_words
-    // image file should have more than 8 bytes
-    const IMAGE_FILE_SIZE_THRESHOLD = 8;
+    // current format
+    // 3 magic bytes: ERR
+    // 1 version: char
+    // 1 attempt count: char
+    // 4 latest attempt: unsigned long
+    const THUMBNAIL_ERROR_FORMAT_PACK = 'CCN';
+    const THUMBNAIL_ERROR_FORMAT_UNPACK = 'Cv/Cac/Nla';
+    const THUMBNAIL_ERROR_MAGIC_BYTES = 'ERR';
+    const THUMBNAIL_ERROR_VERSION = 2;
+    const THUMBNAIL_ERROR_FILE_LENGTH = 9;
 
     /**
      * @param string $path
@@ -12,7 +19,7 @@ class bdImage_Helper_File
      */
     public static function existsAndNotEmpty($path)
     {
-        return self::getImageFileSizeIfExists($path) > self::IMAGE_FILE_SIZE_THRESHOLD;
+        return self::getImageFileSizeIfExists($path) > self::THUMBNAIL_ERROR_FILE_LENGTH;
     }
 
     /**
@@ -38,32 +45,36 @@ class bdImage_Helper_File
 
     public static function getThumbnailError($path)
     {
+        $data = array(
+            'version' => 0,
+            'attemptCount' => 0,
+            'latestAttempt' => 0,
+        );
+
         $fh = fopen($path, 'rb');
         if (empty($fh)) {
-            return array();
+            return $data;
         }
 
-        // current format
-        // magic bytes: ERR
-        // version: char
-        // attempt count: char
-        $bytes = fread($fh, filesize($path));
+        $bytes = fread($fh, self::THUMBNAIL_ERROR_FILE_LENGTH);
         fclose($fh);
 
-        if (substr($bytes, 0, 3) !== 'ERR') {
-            // magic bytes mismatched
-            return array();
+        if (substr($bytes, 0, 3) !== self::THUMBNAIL_ERROR_MAGIC_BYTES) {
+            return $data;
         }
 
-        $raw = unpack('C*', substr($bytes, 3));
-        $data = array('version' => $raw[1]);
+        $raw = unpack(self::THUMBNAIL_ERROR_FORMAT_UNPACK, substr($bytes, 3));
 
-        switch ($data['version']) {
-            case 1:
-                if (isset($raw[2])) {
-                    $data['attemptCount'] = $raw[2];
-                }
-                break;
+        if (isset($raw['v'])) {
+            $data['version'] = $raw['v'];
+        }
+
+        if (isset($raw['ac'])) {
+            $data['attemptCount'] = $raw['ac'];
+        }
+
+        if (isset($raw['la'])) {
+            $data['latestAttempt'] = $raw['la'];
         }
 
         return $data;
@@ -71,13 +82,17 @@ class bdImage_Helper_File
 
     public static function saveThumbnailError($path, array $data = array())
     {
-        $data += array(
-            'attemptCount' => 0,
-        );
+        $attemptCount = 0;
+        if (isset($data['attemptCount'])) {
+            $attemptCount = $data['attemptCount'];
+        }
 
-        $data['attemptCount']++;
-
-        $raw = 'ERR' . pack('C*', 1, $data['attemptCount']);
+        $raw = self::THUMBNAIL_ERROR_MAGIC_BYTES
+            . pack(self::THUMBNAIL_ERROR_FORMAT_PACK,
+                self::THUMBNAIL_ERROR_VERSION,
+                $attemptCount + 1,
+                XenForo_Application::$time
+            );
 
         XenForo_Helper_File::createDirectory(dirname($path), true);
         return file_put_contents($path, $raw);

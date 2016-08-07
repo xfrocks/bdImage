@@ -2,33 +2,66 @@
 
 class bdImage_Helper_Thumbnail
 {
+    public static $maxAttempt = 3;
+    public static $coolDownSeconds = 600;
+    public static $cropTopLeft = false;
+
     const ERROR_DOWNLOAD_REMOTE_URI = '/download/remote/uri.error';
     const HASH_FALLBACK = 'default';
-    const MAX_ATTEMPT = 3;
 
     public static function getThumbnailUri($url, $accessibleUri, $size, $mode, $hash)
+    {
+        $config = XenForo_Application::getConfig();
+        foreach (array(
+                     'maxAttempt',
+                     'coolDownSeconds',
+                     'cropTopLeft'
+                 ) as $key) {
+            // $config['bdImage_maxAttempt'] = 3;
+            // $config['bdImage_coolDownSeconds'] = 600;
+            // $config['bdImage_cropTopLeft'] = false;
+            self::$$key = $config->get('bdImage_' . $key, self::$$key);
+        }
+
+        return self::_buildThumbnailLink($url, $accessibleUri, $size, $mode, $hash);
+    }
+
+    protected static function _buildThumbnailLink($url, $accessibleUri, $size, $mode, $hash)
     {
         $cachePath = bdImage_Integration::getCachePath($url, $size, $mode, $hash);
         $cacheFileSize = bdImage_Helper_File::getImageFileSizeIfExists($cachePath);
 
         $thumbnailUrl = bdImage_Integration::getCacheUrl($url, $size, $mode, $hash);
         $thumbnailUri = XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
-        if ($cacheFileSize > bdImage_Helper_File::IMAGE_FILE_SIZE_THRESHOLD) {
+        if ($cacheFileSize > bdImage_Helper_File::THUMBNAIL_ERROR_FILE_LENGTH) {
             return sprintf('%s?%d', $thumbnailUri, $cacheFileSize);
         }
 
         $thumbnailError = array();
-        if ($cacheFileSize > 0) {
+        if ($cacheFileSize > 0 && self::$maxAttempt > 1) {
             $thumbnailError = bdImage_Helper_File::getThumbnailError($cachePath);
+
+            if (isset($thumbnailError['latestAttempt'])
+                && $thumbnailError['latestAttempt'] > XenForo_Application::$time - self::$coolDownSeconds
+                && $hash !== self::HASH_FALLBACK
+            ) {
+                $fallbackImage = self::_getFallbackImage($size, $mode);
+                if ($fallbackImage !== null) {
+                    self::_log('Cooling down...');
+                    return self::_buildThumbnailLink($fallbackImage, $fallbackImage, $size, $mode, self::HASH_FALLBACK);
+                }
+            }
         }
 
         $imagePath = self::_downloadImageIfNeeded($accessibleUri);
 
         $imageType = self::_guessImageTypeByFileExtension($url, $imagePath);
         if ($imageType !== null) {
+            self::_log('Guessed image type: %d', $imageType);
             $imageObj = self::_createImageObjFromFile($imagePath, $imageType);
             if (empty($imageObj)) {
                 if (self::_detectImageType($imagePath, $imageType)) {
+                    self::_log('Detected image type: %d', $imageType);
                     $imageObj = self::_createImageObjFromFile($imagePath, $imageType);
                 }
             }
@@ -39,23 +72,29 @@ class bdImage_Helper_Thumbnail
         ) {
             $fallbackImage = self::_getFallbackImage($size, $mode);
             if ($fallbackImage !== null) {
-                if (!isset($thumbnailError['attemptCount'])
-                    || $thumbnailError['attemptCount'] < self::MAX_ATTEMPT
+                if (self::$maxAttempt > 1
+                    && (!isset($thumbnailError['attemptCount'])
+                        || $thumbnailError['attemptCount'] < self::$maxAttempt)
                 ) {
+                    self::_log('Using fallback image...');
                     bdImage_Helper_File::saveThumbnailError($cachePath, $thumbnailError);
-                    return self::getThumbnailUri($fallbackImage, $fallbackImage, $size, $mode, self::HASH_FALLBACK);
+                    return self::_buildThumbnailLink($fallbackImage, $fallbackImage, $size, $mode, self::HASH_FALLBACK);
                 } else {
+                    if (self::$maxAttempt > 1) {
+                        self::_log('Exceeded MAX_ATTEMPT');
+                    }
                     $fallbackImageType = self::_guessImageTypeByFileExtension($fallbackImage);
                     try {
                         $imageObj = self::_createImageObjFromFile($fallbackImage, $fallbackImageType);
                     } catch (Exception $e) {
-                        // ignore
+                        self::_log($e->getMessage());
                     }
                 }
             }
         }
 
         if (empty($imageObj)) {
+            self::_log('Using blank image...');
             $imageObj = XenForo_Image_Abstract::createImage($size, $size);
         }
 
@@ -93,6 +132,7 @@ class bdImage_Helper_Thumbnail
         XenForo_Helper_File::createDirectory(dirname($cachePath), true);
         XenForo_Helper_File::safeRename($tempFile, $cachePath);
 
+        self::_log('Done');
         return sprintf('%s?%d', $thumbnailUri, $tempFileSize);
     }
 
@@ -126,8 +166,8 @@ class bdImage_Helper_Thumbnail
             $imageObj->thumbnail($thumbnailWidth, $thumbnailHeight);
             self::_cropCenter($imageObj, $targetWidth, $targetHeight);
         } else {
-            // thumbnail requested is larger then the image size
             if ($origRatio > $cropRatio) {
+                self::_log('Requested size is larger than the image size');
                 self::_cropCenter($imageObj, $imageObj->getHeight() * $cropRatio, $imageObj->getHeight());
             } else {
                 self::_cropCenter($imageObj, $imageObj->getWidth(), $imageObj->getWidth() / $cropRatio);
@@ -143,7 +183,7 @@ class bdImage_Helper_Thumbnail
 
     protected static function _cropCenter(XenForo_Image_Abstract $imageObj, $cropWidth, $cropHeight)
     {
-        if (XenForo_Application::getConfig()->get('bdImage_cropTopLeft') === true) {
+        if (self::$cropTopLeft) {
             // revert to top left cropping (old version behavior)
             $imageObj->crop(0, 0, $cropWidth, $cropHeight);
             return;
@@ -241,6 +281,7 @@ class bdImage_Helper_Thumbnail
         ) {
             $path = self::_getLocalFilePath(substr($uri, strlen($boardUrl)));
             if (bdImage_Helper_File::existsAndNotEmpty($path)) {
+                self::_log('Using local file path %s...', $path);
                 return $path;
             }
         }
@@ -248,6 +289,7 @@ class bdImage_Helper_Thumbnail
         if (preg_match('#attachments/(.+\.)*(?<id>\d+)/$#', $uri, $matches)) {
             $path = self::_getAttachmentDataFilePath($matches['id']);
             if (bdImage_Helper_File::existsAndNotEmpty($path)) {
+                self::_log('Using attachment data file path %s...', $path);
                 return $path;
             }
         }
@@ -261,14 +303,12 @@ class bdImage_Helper_Thumbnail
                 'maxDownloadSize' => XenForo_Application::getOptions()->get('attachmentMaxFileSize') * 1024,
             ));
             if (empty($downloaded)) {
-                if (XenForo_Application::debugMode()) {
-                    XenForo_Helper_File::log(__CLASS__, sprintf('Error downloading %s', $uri));
-                }
-
+                self::_log('Cannot download %s', $uri);
                 return self::ERROR_DOWNLOAD_REMOTE_URI;
             }
         }
 
+        self::_log('Using original cache path %s...', $originalCachePath);
         return $originalCachePath;
     }
 
@@ -374,5 +414,37 @@ class bdImage_Helper_Thumbnail
         }
 
         return false;
+    }
+
+    protected static function _log()
+    {
+        static $headerCount = 0;
+
+        if (!XenForo_Application::debugMode()) {
+            return false;
+        }
+
+        $args = func_get_args();
+        $message = call_user_func_array('sprintf', $args);
+
+        $scriptFilename = (isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '');
+        $scriptFilename = basename($scriptFilename);
+        if ($scriptFilename === 'thumbnail.php') {
+            return self::_setHeaderSafe(sprintf('X-Thumbnail-%d: %s', $headerCount++, $message));
+        }
+
+        $requestPaths = XenForo_Application::get('requestPaths');
+        return XenForo_Helper_File::log(__CLASS__, sprintf('%s: %s', $requestPaths['requestUri'], $message));
+    }
+
+    protected static function _setHeaderSafe($string, $replace = true, $httpResponseCode = null)
+    {
+        if (headers_sent()) {
+            return false;
+        }
+
+        header($string, $replace, $httpResponseCode);
+
+        return true;
     }
 }

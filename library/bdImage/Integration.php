@@ -34,12 +34,12 @@ class bdImage_Integration
     {
         $imageDataMany = self::getBbCodeImages($bbCode, $contentData, $dwOrModel);
         if (empty($imageDataMany)) {
-            return '';
+            return null;
         }
 
         $imageData = reset($imageDataMany);
         if (empty($imageData)) {
-            return '';
+            return null;
         }
 
         $imageUrl = self::getImage($imageData);

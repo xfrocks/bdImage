@@ -2,46 +2,6 @@
 
 class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_DataWriter_Discussion_Thread
 {
-    public function rebuildDiscussionCounters($replyCount = false, $firstPostId = false, $lastPostId = false)
-    {
-        /** @var bdImage_XenForo_Model_Post $postModel */
-        $postModel = $this->_getPostModel();
-        $postModel->bdImage_setCachingPosts(true);
-
-        parent::rebuildDiscussionCounters($replyCount, $firstPostId, $lastPostId);
-
-        $imageData = bdImage_Helper_Data::unpack($this->get('bdimage_image'));
-
-        if (bdImage_Option::get('threadAuto')
-            && $this->get('first_post_id') > 0
-            && empty($imageData['url'])
-        ) {
-            // the parent will call XenForo_Model_Post::getPostsByIds or
-            // XenForo_Model_Post::getPostsInThread
-            // to get the first post data, by calling
-            // bdImage_XenForo_Model_Post::bdImage_setCachingPosts
-            // we have enabled the caching of those methods so no extra queries are required
-            // to work
-            $firstPost = $postModel->bdImage_getCachedPostById($this->get('first_post_id'));
-
-            if (!empty($firstPost)) {
-                $contentData = array(
-                    'contentType' => 'post',
-                    'contentId' => $firstPost['post_id'],
-                    'attachmentHash' => false,
-                    'allAttachments' => !!bdImage_Option::get('allAttachments'),
-                );
-                $image = bdImage_Integration::getBbCodeImage($firstPost['message'], $contentData, $this);
-
-                $this->set('bdimage_image', $image);
-            } else {
-                $this->set('bdimage_image', '');
-            }
-        }
-
-        $postModel->bdImage_setCachingPosts(false);
-    }
-
     protected function _getFields()
     {
         $fields = parent::_getFields();

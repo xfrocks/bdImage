@@ -4,6 +4,20 @@
   <admin_permissions/>
   <admin_style_properties/>
   <admin_templates>
+    <template title="bdimage_tools_rebuild"><![CDATA[<xen:set var="$bdImage_threadAuto"><xen:callback class="bdImage_Option"
+	method="get">threadAuto</xen:callback></xen:set>
+
+<xen:if is="{$bdImage_threadAuto}">
+<xen:form action="{xen:adminlink tools/trigger-deferred}">
+	<h2 class="subHeading">{xen:phrase bdimage_rebuild_thread_images}</h2>
+	<xen:spinboxunit name="options[batch]" value="250" step="50" min="1" label="{xen:phrase items_to_process_per_page}:" />
+	
+	<xen:submitunit save="{xen:phrase rebuild_now}" />
+	<input type="hidden" name="cache" value="bdImage_Deferred_Thread" />
+</xen:form>
+</xen:if>
+
+<xen:edithint template="tools_rebuild" />]]></template>
     <template title="bdimage_widget_options_attachments_grid"><![CDATA[<xen:spinboxunit label="{xen:phrase bdimage_rows}:" name="{$namePrefix}grid_rows" value="{xen:if '!empty({$options.grid_rows})', $options.grid_rows, 4}" />
 <xen:spinboxunit label="{xen:phrase bdimage_columns}:" name="{$namePrefix}grid_columns" value="{xen:if '!empty({$options.grid_columns})', $options.grid_columns, 4}" />
 
@@ -69,7 +83,14 @@
 
 ]]></template>
   </admin_templates>
-  <admin_template_modifications/>
+  <admin_template_modifications>
+    <modification template="tools_rebuild" modification_key="bdimage_tools_rebuild" description="Insert rebuild forms." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#\A.+\z#s]]></find>
+      <replace><![CDATA[$0
+
+<xen:include template="bdimage_tools_rebuild" />]]></replace>
+    </modification>
+  </admin_template_modifications>
   <code_events/>
   <code_event_listeners>
     <listener event_id="file_health_check" execute_order="10" callback_class="bdImage_Listener" callback_method="file_health_check" active="1" hint="" description=""/>
@@ -145,6 +166,7 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="bdimage_feature_width" version_id="14" version_string="0.9.5"><![CDATA[Feature Image Width]]></phrase>
     <phrase title="bdimage_gap" version_id="10" version_string="0.9-dev"><![CDATA[Gap (between thumbnails)]]></phrase>
     <phrase title="bdimage_is_cover" version_id="30" version_string="1.0.4"><![CDATA[Render as thread top cover image]]></phrase>
+    <phrase title="bdimage_rebuild_thread_images" version_id="1020100" version_string="1.2.1"><![CDATA[Rebuild Thread Images]]></phrase>
     <phrase title="bdimage_rows" version_id="18" version_string="0.9.7b"><![CDATA[Rows]]></phrase>
     <phrase title="bdimage_row_gap" version_id="14" version_string="0.9.5"><![CDATA[Row Gap]]></phrase>
     <phrase title="bdimage_show_pager" version_id="24" version_string="1.0.1"><![CDATA[Show Pager]]></phrase>

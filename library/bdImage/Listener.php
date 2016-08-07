@@ -25,7 +25,6 @@ class bdImage_Listener
     public static function load_class_model($class, array &$extend)
     {
         static $classes = array(
-            'XenForo_Model_Post',
             'XenForo_Model_Thread',
         );
 

@@ -59,7 +59,9 @@ class bdImage_Helper_File
         $bytes = fread($fh, self::THUMBNAIL_ERROR_FILE_LENGTH);
         fclose($fh);
 
-        if (substr($bytes, 0, 3) !== self::THUMBNAIL_ERROR_MAGIC_BYTES) {
+        if (strlen($bytes) < self::THUMBNAIL_ERROR_FILE_LENGTH
+            || substr($bytes, 0, 3) !== self::THUMBNAIL_ERROR_MAGIC_BYTES
+        ) {
             return $data;
         }
 

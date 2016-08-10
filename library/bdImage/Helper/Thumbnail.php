@@ -28,12 +28,16 @@ class bdImage_Helper_Thumbnail
 
     protected static function _buildThumbnailLink($url, $accessibleUri, $size, $mode, $hash)
     {
+        $forceRebuild = !empty($_REQUEST['rebuild']) && XenForo_Application::debugMode();
+
         $cachePath = bdImage_Integration::getCachePath($url, $size, $mode, $hash);
         $cacheFileSize = bdImage_Helper_File::getImageFileSizeIfExists($cachePath);
 
         $thumbnailUrl = bdImage_Integration::getCacheUrl($url, $size, $mode, $hash);
         $thumbnailUri = XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
-        if ($cacheFileSize > bdImage_Helper_File::THUMBNAIL_ERROR_FILE_LENGTH) {
+        if ($cacheFileSize > bdImage_Helper_File::THUMBNAIL_ERROR_FILE_LENGTH
+            && !$forceRebuild
+        ) {
             return sprintf('%s?%d', $thumbnailUri, $cacheFileSize);
         }
 
@@ -44,6 +48,7 @@ class bdImage_Helper_Thumbnail
             if (isset($thumbnailError['latestAttempt'])
                 && $thumbnailError['latestAttempt'] > XenForo_Application::$time - self::$coolDownSeconds
                 && $hash !== self::HASH_FALLBACK
+                && !$forceRebuild
             ) {
                 $fallbackImage = self::_getFallbackImage($size, $mode);
                 if ($fallbackImage !== null) {

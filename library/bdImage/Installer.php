@@ -84,7 +84,7 @@ class bdImage_Installer
 
     private static function uninstallCustomized()
     {
-        // customized uninstall script goes here
+        bdImage_ShippableHelper_Updater::onUninstall();
     }
 
 }

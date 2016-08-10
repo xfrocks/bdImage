@@ -56,6 +56,8 @@ class bdImage_Listener
         ) {
             bdImage_Integration::$generatorDirName = $generatorDirName;
         }
+
+        bdImage_ShippableHelper_Updater::onInitDependencies($dependencies);
     }
 
     public static function template_hook(

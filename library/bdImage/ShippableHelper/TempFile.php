@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2016-07-29T16:09:05+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2016-08-08T15:29:05+00:00
 
 /**
  * Class bdImage_ShippableHelper_TempFile
- * @version 5
+ * @version 6
  * @see DevHelper_Helper_ShippableHelper_TempFile
  */
 class bdImage_ShippableHelper_TempFile
@@ -40,6 +40,7 @@ class bdImage_ShippableHelper_TempFile
             'timeOutInSeconds' => 0,
             'maxRedirect' => 3,
             'maxDownloadSize' => 0,
+            'secured' => 0,
         );
 
         $tempFile = trim(strval($options['tempFile']));
@@ -83,6 +84,10 @@ class bdImage_ShippableHelper_TempFile
             curl_setopt($ch, CURLOPT_MAXREDIRS, $options['maxRedirect']);
         } else {
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
+        }
+        if ($options['secured'] === 0) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         }
 
         curl_exec($ch);

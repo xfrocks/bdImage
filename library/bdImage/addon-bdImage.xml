@@ -656,6 +656,51 @@ html.bdImage_hasCover .titleBar {
 	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image,
 		{xen:property bdImage_threadList_imageSize}}" width="{xen:property bdImage_threadList_imageSize}" height="{xen:property bdImage_threadList_imageSize}" />
 </a>]]></template>
+    <template title="bdimage_thread_test" version_id="1020270" version_string="1.2.2"><![CDATA[<xen:title>{xen:phrase bdimage_thread_image}</xen:title>
+
+<form action="{xen:link threads/bd-image/test}" method="post" class="xenForm">
+
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_url">{xen:phrase url}:</label></dt>
+		<dd>
+			<input type="text" name="url" class="textCtrl" id="ctrl_url" />
+		</dd>
+	</dl>
+
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_width">{xen:phrase bdimage_thumbnail_width}:</label></dt>
+		<dd>
+			<input type="number" name="width" class="textCtrl" id="ctrl_width" />
+		</dd>
+	</dl>
+
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_height">{xen:phrase bdimage_thumbnail_height}:</label></dt>
+		<dd>
+			<input type="number" name="height" class="textCtrl" id="ctrl_height" />
+		</dd>
+	</dl>
+
+	<dl class="ctrlUnit">
+		<dt>&nbsp;</dt>
+		<dd>
+			<label>
+				<input type="checkbox" name="rebuild" value="1" />
+				{xen:phrase rebuild_now}
+			</label>
+		</dd>
+	</dl>
+
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd>
+			<input type="submit" value="{xen:phrase continue}" class="button primary" />
+		</dd>
+	</dl>
+
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+	<input type="hidden" name="_xfConfirm" value="1" />
+</form>]]></template>
     <template title="bdimage_thread_view_open_graph_meta" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:if is="{xen:helper bdImage_getOption, template, thread_view_open_graph_meta}
 	AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
 <xen:set var="$width">{xen:helper bdImage_width, $thread.bdimage_image}</xen:set>

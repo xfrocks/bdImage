@@ -26,9 +26,21 @@ class bdImage_Helper_Thumbnail
         return self::_buildThumbnailLink($url, $accessibleUri, $size, $mode, $hash);
     }
 
+    public static function buildPhpLink($url, $size, $mode, $hash)
+    {
+        return sprintf('%s/%s/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s',
+            rtrim(XenForo_Application::getOptions()->get('boardUrl'), '/'),
+            bdImage_Integration::$generatorDirName, rawurlencode($url),
+            intval($size), $mode, $hash);
+    }
+
     protected static function _buildThumbnailLink($url, $accessibleUri, $size, $mode, $hash)
     {
-        $forceRebuild = !empty($_REQUEST['rebuild']) && XenForo_Application::debugMode();
+        $forceRebuild = false;
+        if (!empty($_REQUEST['rebuild'])) {
+            $forceRebuild = $_REQUEST['rebuild'] === bdImage_Helper_Data::computeHash(
+                    self::buildPhpLink($url, $size, $mode, $hash), 0, 'rebuild');
+        }
 
         $cachePath = bdImage_Integration::getCachePath($url, $size, $mode, $hash);
         $cacheFileSize = bdImage_Helper_File::getImageFileSizeIfExists($cachePath);

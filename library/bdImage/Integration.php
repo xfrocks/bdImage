@@ -169,10 +169,7 @@ class bdImage_Integration
         }
 
         if (empty($thumbnailUrl)) {
-            $boardUrl = XenForo_Application::getOptions()->get('boardUrl');
-            $thumbnailUrl = sprintf('%s/%s/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s',
-                rtrim($boardUrl, '/'), self::$generatorDirName,
-                rawurlencode($imageUrl), intval($size), $mode, $hash);
+            $thumbnailUrl = bdImage_Helper_Thumbnail::buildPhpLink($imageUrl, $size, $mode, $hash);
         }
 
         return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);

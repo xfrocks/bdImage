@@ -92,14 +92,6 @@ class bdImage_Listener
         $hashes += bdImage_FileSums::getHashes();
     }
 
-
-    public static function load_class_XenForo_ControllerPublic_Attachment($class, array &$extend)
-    {
-        if ($class === 'XenForo_ControllerPublic_Attachment') {
-            $extend[] = 'bdImage_XenForo_ControllerPublic_Attachment';
-        }
-    }
-
     public static function load_class_XenForo_ControllerPublic_Thread($class, array &$extend)
     {
         if ($class === 'XenForo_ControllerPublic_Thread') {

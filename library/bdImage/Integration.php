@@ -52,7 +52,7 @@ class bdImage_Integration
 
     public static function getAccessibleUri($url)
     {
-        if (empty($url)) {
+        if (empty($url) || !is_string($url)) {
             return false;
         }
 

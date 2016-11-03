@@ -67,7 +67,7 @@ class bdImage_Helper_Data
 
     public static function computeHash($imageUrl, $size, $mode)
     {
-        return md5(md5($imageUrl) .
+        return md5(md5(strval($imageUrl)) .
             intval($size) . $mode .
             XenForo_Application::getConfig()->get('globalSalt'));
     }

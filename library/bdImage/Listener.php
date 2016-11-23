@@ -131,8 +131,10 @@ class bdImage_Listener
 
     public static function load_class_XenForo_Model_Thread($class, array &$extend)
     {
-        if ($class === 'XenForo_Model_Thread') {
-            $extend[] = 'bdImage_XenForo_Model_Thread';
+        if (XenForo_Application::isRegistered('apiRoutes')
+            && $class === 'XenForo_Model_Thread'
+        ) {
+            $extend[] = 'bdImage_bdApi_Extend_Model_Thread';
         }
     }
 

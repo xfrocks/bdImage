@@ -126,7 +126,7 @@
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="bdImage" display_order="1050"/>
+      <relation group_id="bdImage" display_order="1020"/>
     </option>
     <option option_id="bdImage_fallbackImages" edit_format="textbox" data_type="string" can_backup="1">
       <default_value>styles/default/xenforo/logo.og.png
@@ -141,6 +141,12 @@ styles/default/xenforo/logo.png</default_value>
 step=14</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="bdImage" display_order="3000"/>
+    </option>
+    <option option_id="bdImage_forumLastPostImage" edit_format="onoff" data_type="unsigned_integer" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdImage" display_order="1050"/>
     </option>
     <option option_id="bdImage_googleApiKey" edit_format="textbox" data_type="string" can_backup="1">
       <default_value></default_value>
@@ -207,6 +213,8 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="option_bdImage_fallbackImages_explain" version_id="1010006" version_string="1.1.0"><![CDATA[Enter paths to fallback images. They will be used when the requested image cannot be found or downloaded. The add-on will pick the one with the closest ratio to the requested width/height.]]></phrase>
     <phrase title="option_bdImage_fileTtlDays" version_id="23" version_string="1.0.0b"><![CDATA[File TTL]]></phrase>
     <phrase title="option_bdImage_fileTtlDays_explain" version_id="23" version_string="1.0.0b"><![CDATA[Enter number of days to keep files.]]></phrase>
+    <phrase title="option_bdImage_forumLastPostImage" version_id="1020270" version_string="1.2.2"><![CDATA[Forum: Keep Track of Last Post Image]]></phrase>
+    <phrase title="option_bdImage_forumLastPostImage_explain" version_id="1020270" version_string="1.2.2"><![CDATA[]]></phrase>
     <phrase title="option_bdImage_googleApiKey" version_id="1020100" version_string="1.2.1"><![CDATA[Google API Key]]></phrase>
     <phrase title="option_bdImage_googleApiKey_explain" version_id="1020100" version_string="1.2.1"><![CDATA[Enter Google API key, it will be used for accurate YouTube thumbnail fetching (instead of guessing).]]></phrase>
     <phrase title="option_bdImage_template" version_id="14" version_string="0.9.5"><![CDATA[Template Modification]]></phrase>

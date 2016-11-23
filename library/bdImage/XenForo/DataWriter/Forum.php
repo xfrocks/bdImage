@@ -18,9 +18,10 @@ class bdImage_XenForo_DataWriter_Forum extends XFCP_bdImage_XenForo_DataWriter_F
     {
         parent::updateCountersAfterDiscussionSave($discussionDw, $forceInsert);
 
-        if ($this->get('last_post_id') == $discussionDw->get('last_post_id')) {
-            // the last post info has been updated with data from the thread
-            // we will copy the thread's image too
+        $this->set('bdimage_last_post_image', '');
+        if ($this->get('last_post_id') == $discussionDw->get('last_post_id')
+            && bdImage_Option::get('forumLastPostImage') > 0
+        ) {
             $this->set('bdimage_last_post_image', $discussionDw->get('bdimage_image'));
         }
     }
@@ -29,16 +30,21 @@ class bdImage_XenForo_DataWriter_Forum extends XFCP_bdImage_XenForo_DataWriter_F
     {
         parent::updateLastPost();
 
-        if ($this->get('last_post_id') > 0) {
-            // the parent implementation will call
-            // XenForo_Model_Thread::getLastUpdatedThreadInForum itself
-            // but the result is cached so we don't make much impact here by calling it again
-            /** @var XenForo_Model_Thread $attachmentModel */
-            $attachmentModel = $this->getModelFromCache('XenForo_Model_Thread');
-            $lastPost = $attachmentModel->getLastUpdatedThreadInForum($this->get('node_id'));
+        $this->set('bdimage_last_post_image', '');
+        if ($this->get('last_post_id') > 0
+            && bdImage_Option::get('forumLastPostImage') > 0
+        ) {
+            /** @var XenForo_Model_Thread $threadModel */
+            $threadModel = $this->getModelFromCache('XenForo_Model_Thread');
+            $threads = $threadModel->getThreads(array(
+                'node_id' => $this->get('node_id'),
+                'last_post_date' => array('=', $this->get('last_post_date'))
+            ));
 
-            if ($lastPost) {
-                $this->set('bdimage_last_post_image', $lastPost['bdimage_image']);
+            foreach ($threads as $thread) {
+                if ($thread['last_post_id'] == $this->get('last_post_id')) {
+                    $this->set('bdimage_last_post_image', $thread['bdimage_image']);
+                }
             }
         }
     }

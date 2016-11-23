@@ -72,7 +72,6 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
                 'rebuild' => XenForo_Input::BOOLEAN,
             ));
 
-
             if ($input['width'] > 0 && $input['height'] > 0) {
                 $size = $input['width'];
                 $mode = $input['height'];

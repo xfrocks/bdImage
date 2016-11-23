@@ -1,6 +1,6 @@
 <?php
 
-class bdImage_WidgetRenderer_SliderThreads2 extends WidgetFramework_WidgetRenderer_Threads
+class bdImage_WidgetRenderer_SliderThreads2 extends bdImage_WidgetRenderer_ThreadsBase
 {
     protected function _getConfiguration()
     {
@@ -57,24 +57,4 @@ class bdImage_WidgetRenderer_SliderThreads2 extends WidgetFramework_WidgetRender
     {
         return 'bdimage_widget_slider_threads_2';
     }
-
-    protected function _render(
-        array $widget,
-        $positionCode,
-        array $params,
-        XenForo_Template_Abstract $renderTemplateObject
-    ) {
-        $core = WidgetFramework_Core::getInstance();
-
-        /* @var $threadModel bdImage_XenForo_Model_Thread */
-        $threadModel = $core->getModelFromCache('XenForo_Model_Thread');
-        $threadModel->bdImage_addThreadCondition(true);
-
-        $response = parent::_render($widget, $positionCode, $params, $renderTemplateObject);
-
-        $threadModel->bdImage_addThreadCondition(false);
-
-        return $response;
-    }
-
 }

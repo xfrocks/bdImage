@@ -60,22 +60,17 @@ class bdImage_Listener
         bdImage_ShippableHelper_Updater::onInitDependencies($dependencies);
     }
 
-    public static function template_hook(
-        $hookName,
-        &$contents,
-        array $hookParams,
-        /** @noinspection PhpUnusedParameterInspection */
-        XenForo_Template_Abstract $template
-    ) {
-        if ($hookName == 'wf_widget_options_threads_layout') {
-            if (strpos($hookParams['options_loaded'], 'bdImage_') === 0) {
-                $contents = '';
-            }
-        }
-    }
-
     public static function widget_framework_ready(array &$renderers)
     {
+        $addOns = XenForo_Application::get('addOns');
+        if (!isset($addOns['widget_framework'])
+            || $addOns['widget_framework'] < 2060318
+        ) {
+            // realistically we don't need the isset() check
+            // we do need to make sure [bd] Widget Framework is at least v2.6.3 beta 18 though
+            return;
+        }
+
         $renderers[] = 'bdImage_WidgetRenderer_Threads';
         $renderers[] = 'bdImage_WidgetRenderer_ThreadsTwo';
         $renderers[] = 'bdImage_WidgetRenderer_SliderThreads';
@@ -138,6 +133,13 @@ class bdImage_Listener
     {
         if ($class === 'XenForo_Model_Thread') {
             $extend[] = 'bdImage_XenForo_Model_Thread';
+        }
+    }
+
+    public static function load_class_WidgetFramework_Model_Thread($class, array &$extend)
+    {
+        if ($class === 'WidgetFramework_Model_Thread') {
+            $extend[] = 'bdImage_WidgetFramework_Model_Thread';
         }
     }
 }

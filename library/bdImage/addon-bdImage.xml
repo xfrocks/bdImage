@@ -34,7 +34,9 @@
 	<xen:option name="{$namePrefix}as_guest" value="1" selected="{$options.as_guest}">{xen:phrase wf_use_guest_permissions}</xen:option>
 </xen:checkboxunit>
 ]]></template>
-    <template title="bdimage_widget_options_slider_threads"><![CDATA[<xen:include template="wf_widget_options_threads" />
+    <template title="bdimage_widget_options_slider_threads"><![CDATA[<xen:include template="wf_widget_options_threads">
+	<xen:set var="$hideThreadsLayout">1</xen:set>
+</xen:include>
 
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_width}" name="{$namePrefix}thumbnail_width" value="{xen:if 'isset({$options.thumbnail_width})', {$options.thumbnail_width}, 100}" min="1" step="50" />
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_height}" name="{$namePrefix}thumbnail_height" value="{xen:if 'isset({$options.thumbnail_height})', {$options.thumbnail_height}, 100}" min="1" step="50" />
@@ -42,7 +44,9 @@
 
 <xen:spinboxunit label="{xen:phrase bdimage_gap}" name="{$namePrefix}gap" value="{xen:if 'isset({$options.gap})', {$options.gap}, 10}" min="1" step="10" />
 <xen:spinboxunit label="{xen:phrase bdimage_visible_count}" name="{$namePrefix}visible_count" value="{xen:if 'isset({$options.visible_count})', {$options.visible_count}, 1}" min="1" />]]></template>
-    <template title="bdimage_widget_options_slider_threads_2"><![CDATA[<xen:include template="wf_widget_options_threads" />
+    <template title="bdimage_widget_options_slider_threads_2"><![CDATA[<xen:include template="wf_widget_options_threads">
+	<xen:set var="$hideThreadsLayout">1</xen:set>
+</xen:include>
 
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_width}" name="{$namePrefix}thumbnail_width" value="{xen:if 'isset({$options.thumbnail_width})', {$options.thumbnail_width}, 400}" min="1" step="50" />
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_height}" name="{$namePrefix}thumbnail_height" value="{xen:if 'isset({$options.thumbnail_height})', {$options.thumbnail_height}, 300}" min="1" step="50" />
@@ -55,12 +59,16 @@
 	<xen:option name="{$namePrefix}pager" value="1" selected="{xen:if 'isset({$options.pager})', {$options.pager}, 0}">{xen:phrase bdimage_show_pager}</xen:option>
 </xen:checkboxunit>
 ]]></template>
-    <template title="bdimage_widget_options_threads"><![CDATA[<xen:include template="wf_widget_options_threads" />
+    <template title="bdimage_widget_options_threads"><![CDATA[<xen:include template="wf_widget_options_threads">
+	<xen:set var="$hideThreadsLayout">1</xen:set>
+</xen:include>
 
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_width}" name="{$namePrefix}thumbnail_width" value="{xen:if 'isset({$options.thumbnail_width})', {$options.thumbnail_width}, 100}" min="1" step="50" />
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_height}" name="{$namePrefix}thumbnail_height" value="{xen:if 'isset({$options.thumbnail_height})', {$options.thumbnail_height}, 100}" min="1" step="50" />
 <xen:spinboxunit label="{xen:phrase bdimage_gap}" name="{$namePrefix}gap" value="{xen:if 'isset({$options.gap})', {$options.gap}, 10}" min="1" step="10" />]]></template>
-    <template title="bdimage_widget_options_threads_grid"><![CDATA[<xen:include template="wf_widget_options_threads" />
+    <template title="bdimage_widget_options_threads_grid"><![CDATA[<xen:include template="wf_widget_options_threads">
+	<xen:set var="$hideThreadsLayout">1</xen:set>
+</xen:include>
 
 <xen:spinboxunit label="{xen:phrase bdimage_columns}:" name="{$namePrefix}grid_columns" value="{xen:if '!empty({$options.grid_columns})', $options.grid_columns, 5}" />
 
@@ -68,7 +76,9 @@
 <xen:spinboxunit label="{xen:phrase bdimage_thumbnail_height}" name="{$namePrefix}thumbnail_height" value="{xen:if 'isset({$options.thumbnail_height})', {$options.thumbnail_height}, 50}" min="1" step="25" />
 <xen:spinboxunit label="{xen:phrase bdimage_gap}" name="{$namePrefix}gap" value="{xen:if 'isset({$options.gap})', {$options.gap}, 5}" min="1" step="5" />
 ]]></template>
-    <template title="bdimage_widget_options_threads_two"><![CDATA[<xen:include template="wf_widget_options_threads" />
+    <template title="bdimage_widget_options_threads_two"><![CDATA[<xen:include template="wf_widget_options_threads">
+	<xen:set var="$hideThreadsLayout">1</xen:set>
+</xen:include>
 
 <xen:spinboxunit label="{xen:phrase bdimage_feature_width}" name="{$namePrefix}feature_width" value="{xen:if 'isset({$options.feature_width})', {$options.feature_width}, 300}" min="1" step="100" />
 <xen:spinboxunit label="{xen:phrase bdimage_feature_height}" name="{$namePrefix}feature_height" value="{xen:if 'isset({$options.feature_height})', {$options.feature_height}, 200}" min="1" step="100" />
@@ -101,8 +111,8 @@
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_DataWriter_Discussion_Thread" active="1" hint="XenForo_DataWriter_Discussion_Thread" description="XenForo_DataWriter_Discussion_Thread"/>
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_4f477c58235ffb475271e2521731d700" active="1" hint="XenForo_DataWriter_DiscussionMessage_Post" description="XenForo_DataWriter_DiscussionMessage_Post"/>
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_DataWriter_Forum" active="1" hint="XenForo_DataWriter_Forum" description="XenForo_DataWriter_Forum"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_WidgetFramework_Model_Thread" active="1" hint="WidgetFramework_Model_Thread" description="WidgetFramework_Model_Thread"/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_Model_Thread" active="1" hint="XenForo_Model_Thread" description="XenForo_Model_Thread"/>
-    <listener event_id="template_hook" execute_order="10" callback_class="bdImage_Listener" callback_method="template_hook" active="1" hint="" description=""/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="bdImage_Listener" callback_method="widget_framework_ready" active="1" hint="" description=""/>
   </code_event_listeners>
   <cron>
@@ -875,17 +885,17 @@ ul.bdImage_Widget_Grid
 		</ul>
 	</div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_slider_threads" version_id="30" version_string="1.0.4"><![CDATA[<xen:if hascontent="true">	
+    <template title="bdimage_widget_slider_threads" version_id="1020270" version_string="1.2.2"><![CDATA[<xen:if hascontent="true">	
 <xen:require css="bdimage_widget.css" />
-<xen:require js="js/bdImage/widget_slider.js" />
+<xen:require js="js/bdImage/widget_slider.min.js" />
 <xen:require js="js/bdImage/owl.carousel/owl.carousel{xen:if '!{$debugMode}', .min}.js" />
-<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
-<xen:container var="$head.{$cssClass}">
+<xen:container var="$head.bdimage_widget_slider_threads">
 <link rel="stylesheet" href="{xen:helper javascriptUrl, 'js/bdImage/owl.carousel/assets/owl.carousel{xen:if '!{$debugMode}', .min}.css'}">
 <link rel="stylesheet" href="{xen:helper javascriptUrl, 'js/bdImage/owl.carousel/assets/owl.theme.default{xen:if '!{$debugMode}', .min}.css'}">
 </xen:container>
 
-<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads_Container {$cssClass}"
+<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads_Container {xen:helper
+			bdImage_Widget_Slider_CssClass, $widget}"
 	 data-layout="owlcarousel"
 	 data-layout-options='{xen:helper json, {xen:array
 						  'items={$widget.options.visible_count}',
@@ -901,20 +911,16 @@ ul.bdImage_Widget_Grid
 </xen:if>
 
 <xen:edithint template="bdimage_widget_slider_threads_2" />]]></template>
-    <template title="bdimage_widget_slider_threads_2" version_id="30" version_string="1.0.4"><![CDATA[<xen:if hascontent="true">
+    <template title="bdimage_widget_slider_threads_2" version_id="1020270" version_string="1.2.2"><![CDATA[<xen:if hascontent="true">
 <xen:require css="bdimage_widget.css" />
-<xen:require js="js/bdImage/widget_slider.js" />
+<xen:require js="js/bdImage/widget_slider.min.js" />
 <xen:require js="js/bdImage/jquery.bxslider/jquery.bxslider{xen:if '!{$debugMode}', .min}.js" />
-<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
-<xen:container var="$head.{$cssClass}">
+<xen:container var="$head.bdimage_widget_slider_threads_2">
 <link rel="stylesheet" href="{xen:helper javascriptUrl, js/bdImage/jquery.bxslider/jquery.bxslider.css}">
 </xen:container>
 
-<xen:require css="bdimage_widget.css" />
-<xen:require js="js/bdImage/widget_slider.js" />
-<xen:require js="js/bdImage/jquery.bxslider/jquery.bxslider.js" />
-
-<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads2_Container {$cssClass}"
+<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads2_Container {xen:helper
+			bdImage_Widget_Slider_CssClass, $widget}"
 	 style="max-width: {$widget.options.thumbnail_width}px;"
 	 data-layout="bxslider"
 	 data-layout-options='{xen:helper json, {xen:array

@@ -303,7 +303,7 @@ class bdImage_Helper_Thumbnail
             }
         }
 
-        if (preg_match('#attachments/(.+\.)*(?<id>\d+)/$#', $uri, $matches)) {
+        if (preg_match('#attachments/(.+\.)*(?<id>\d+)/#', $uri, $matches)) {
             $fullIndex = XenForo_Link::buildPublicLink('full:index');
             $canonicalIndex = XenForo_Link::buildPublicLink('canonical:index');
             if (strpos($uri, $fullIndex) === 0 || strpos($uri, $canonicalIndex) === 0) {

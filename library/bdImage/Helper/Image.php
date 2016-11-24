@@ -52,45 +52,11 @@ class bdImage_Helper_Image
      */
     public static function getDataUriTransparentAtSameSize($imageData)
     {
-        if (!function_exists('imagecreatetruecolor')) {
-            return '';
-        }
-
         list($width, $height) = self::getSize($imageData);
         if (empty($width) || empty($height)) {
             return '';
         }
 
-        $gcd = self::_findGreatestCommonDivisor($width, $height);
-        $width /= $gcd;
-        $height /= $gcd;
-
-        $image = imagecreate($width, $height);
-        imagealphablending($image, false);
-        imagesavealpha($image, true);
-        $colorTransparent = imagecolorallocatealpha($image, 255, 255, 255, 127);
-        imagefilledrectangle($image, 0, 0, $width, $height, $colorTransparent);
-
-        ob_start();
-        imagepng($image);
-        $imageBytes = ob_get_contents();
-        ob_end_clean();
-
-        return 'data:image/png;base64,' . base64_encode($imageBytes);
-    }
-
-    /**
-     * @param int $a
-     * @param int $b
-     * @return int
-     */
-    protected static function _findGreatestCommonDivisor($a, $b)
-    {
-        $mod = $a % $b;
-        if ($mod === 0) {
-            return $b;
-        } else {
-            return self::_findGreatestCommonDivisor($b, $mod);
-        }
+        return bdImage_ShippableHelper_ImageSize::getDataUriAtSize($width, $height);
     }
 }

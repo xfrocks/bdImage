@@ -395,7 +395,7 @@ class bdImage_Helper_Thumbnail
     protected static function _getLocalFilePath($path)
     {
         // remove query parameters
-        $path = preg_replace('#\?.*$#', '', $path);
+        $path = preg_replace('#(\?|\#).*$#', '', $path);
         if (strlen($path) === 0) {
             return $path;
         }

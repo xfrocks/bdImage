@@ -23,7 +23,7 @@ class bdImage_bdApi_Extend_Model_Thread extends XFCP_bdImage_bdApi_Extend_Model_
                 $fullSize = bdImage_Helper_Image::getSize($imageData);
                 if (is_array($fullSize)) {
                     $data['thread_image'] = array(
-                        'link' => bdImage_Integration::buildFullSizeLink($imageData),
+                        'link' => bdImage_Integration::getOriginalUrl($imageData),
                         'width' => $fullSize[0],
                         'height' => $fullSize[1],
                     );

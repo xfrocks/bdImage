@@ -22,7 +22,7 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
             'allAttachments' => !!bdImage_Option::get('allAttachments'),
         );
 
-        return bdImage_Integration::getBbCodeImage($this->get('message'), $contentData, $this);
+        return bdImage_Helper_BbCode::extractImage($this->get('message'), $contentData, $this);
     }
 
     protected function _messagePostSave()

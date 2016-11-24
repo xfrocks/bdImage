@@ -9,7 +9,14 @@ class bdImage_Helper_Thumbnail
     const ERROR_DOWNLOAD_REMOTE_URI = '/download/remote/uri.error';
     const HASH_FALLBACK = 'default';
 
-    public static function getThumbnailUri($url, $accessibleUri, $size, $mode, $hash)
+    /**
+     * @param string $url
+     * @param int $size
+     * @param int|string $mode
+     * @param string $hash
+     * @return string
+     */
+    public static function getThumbnailUri($url, $size, $mode, $hash)
     {
         $config = XenForo_Application::getConfig();
         foreach (array(
@@ -23,18 +30,32 @@ class bdImage_Helper_Thumbnail
             self::$$key = $config->get('bdImage_' . $key, self::$$key);
         }
 
-        return self::_buildThumbnailLink($url, $accessibleUri, $size, $mode, $hash);
+        return self::_buildThumbnailLink($url, $size, $mode, $hash);
     }
 
+    /**
+     * @param string $url
+     * @param int $size
+     * @param int|string $mode
+     * @param string $hash
+     * @return string
+     */
     public static function buildPhpLink($url, $size, $mode, $hash)
     {
         return sprintf('%s/%s/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s',
             rtrim(XenForo_Application::getOptions()->get('boardUrl'), '/'),
-            bdImage_Integration::$generatorDirName, rawurlencode($url),
+            bdImage_Listener::$generatorDirName, rawurlencode($url),
             intval($size), $mode, $hash);
     }
 
-    protected static function _buildThumbnailLink($url, $accessibleUri, $size, $mode, $hash)
+    /**
+     * @param string $url
+     * @param int $size
+     * @param int|string $mode
+     * @param string $hash
+     * @return string
+     */
+    protected static function _buildThumbnailLink($url, $size, $mode, $hash)
     {
         $forceRebuild = false;
         if (!empty($_REQUEST['rebuild'])) {
@@ -42,10 +63,10 @@ class bdImage_Helper_Thumbnail
                     self::buildPhpLink($url, $size, $mode, $hash), 0, 'rebuild');
         }
 
-        $cachePath = bdImage_Integration::getCachePath($url, $size, $mode, $hash);
+        $cachePath = bdImage_Helper_File::getCachePath($url, $size, $mode, $hash);
         $cacheFileSize = bdImage_Helper_File::getImageFileSizeIfExists($cachePath);
 
-        $thumbnailUrl = bdImage_Integration::getCacheUrl($url, $size, $mode, $hash);
+        $thumbnailUrl = bdImage_Helper_File::getCacheUrl($url, $size, $mode, $hash);
         $thumbnailUri = XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
         if ($cacheFileSize > bdImage_Helper_File::THUMBNAIL_ERROR_FILE_LENGTH
             && !$forceRebuild
@@ -65,12 +86,12 @@ class bdImage_Helper_Thumbnail
                 $fallbackImage = self::_getFallbackImage($size, $mode);
                 if ($fallbackImage !== null) {
                     self::_log('Cooling down...');
-                    return self::_buildThumbnailLink($fallbackImage, $fallbackImage, $size, $mode, self::HASH_FALLBACK);
+                    return self::_buildThumbnailLink($fallbackImage, $size, $mode, self::HASH_FALLBACK);
                 }
             }
         }
 
-        $imagePath = self::_downloadImageIfNeeded($accessibleUri);
+        $imagePath = self::_downloadImageIfNeeded($url);
 
         $imageType = self::_guessImageTypeByFileExtension($url, $imagePath);
         if ($imageType !== null) {
@@ -95,7 +116,7 @@ class bdImage_Helper_Thumbnail
                 ) {
                     self::_log('Using fallback image...');
                     bdImage_Helper_File::saveThumbnailError($cachePath, $thumbnailError);
-                    return self::_buildThumbnailLink($fallbackImage, $fallbackImage, $size, $mode, self::HASH_FALLBACK);
+                    return self::_buildThumbnailLink($fallbackImage, $size, $mode, self::HASH_FALLBACK);
                 } else {
                     if (self::$maxAttempt > 1) {
                         self::_log('Exceeded MAX_ATTEMPT');
@@ -153,18 +174,31 @@ class bdImage_Helper_Thumbnail
         return sprintf('%s?%d', $thumbnailUri, $tempFileSize);
     }
 
+    /**
+     * @param XenForo_Image_Abstract $imageObj
+     * @param int $targetHeight
+     */
     protected static function _resizeStretchWidth(XenForo_Image_Abstract $imageObj, $targetHeight)
     {
         $targetWidth = $targetHeight / $imageObj->getHeight() * $imageObj->getWidth();
         $imageObj->thumbnail($targetWidth, $targetHeight);
     }
 
+    /**
+     * @param XenForo_Image_Abstract $imageObj
+     * @param int $targetWidth
+     */
     protected static function _resizeStretchHeight(XenForo_Image_Abstract $imageObj, $targetWidth)
     {
         $targetHeight = $targetWidth / $imageObj->getWidth() * $imageObj->getHeight();
         $imageObj->thumbnail($targetWidth, $targetHeight);
     }
 
+    /**
+     * @param XenForo_Image_Abstract $imageObj
+     * @param int $targetWidth
+     * @param int $targetHeight
+     */
     protected static function _cropExact(XenForo_Image_Abstract $imageObj, $targetWidth, $targetHeight)
     {
         $origRatio = $imageObj->getWidth() / $imageObj->getHeight();
@@ -192,12 +226,21 @@ class bdImage_Helper_Thumbnail
         }
     }
 
+    /**
+     * @param XenForo_Image_Abstract $imageObj
+     * @param int $target
+     */
     protected static function _cropSquare(XenForo_Image_Abstract $imageObj, $target)
     {
         $imageObj->thumbnailFixedShorterSide($target);
         self::_cropCenter($imageObj, $target, $target);
     }
 
+    /**
+     * @param XenForo_Image_Abstract $imageObj
+     * @param int $cropWidth
+     * @param int $cropHeight
+     */
     protected static function _cropCenter(XenForo_Image_Abstract $imageObj, $cropWidth, $cropHeight)
     {
         if (self::$cropTopLeft) {
@@ -213,6 +256,11 @@ class bdImage_Helper_Thumbnail
         $imageObj->crop($x, $y, $cropWidth, $cropHeight);
     }
 
+    /**
+     * @param int $size
+     * @param int|string $mode
+     * @return string
+     */
     protected static function _getFallbackImage($size, $mode)
     {
         $bestFallbackImage = null;
@@ -286,45 +334,52 @@ class bdImage_Helper_Thumbnail
         }
     }
 
-    protected static function _downloadImageIfNeeded($uri)
+    /**
+     * @param string $url
+     * @return string
+     */
+    protected static function _downloadImageIfNeeded($url)
     {
-        if (bdImage_Helper_File::existsAndNotEmpty($uri)) {
-            return $uri;
+        $cachedPathOrUrl = bdImage_Helper_File::getImageCachedPathOrUrl($url);
+        if (bdImage_Helper_File::existsAndNotEmpty($cachedPathOrUrl)) {
+            return $cachedPathOrUrl;
         }
 
         $boardUrl = XenForo_Application::getOptions()->get('boardUrl');
-        if (strpos($uri, '..') === false
-            && strpos($uri, $boardUrl) === 0
+        if (strpos($url, '..') === false
+            && strpos($url, $boardUrl) === 0
         ) {
-            $path = self::_getLocalFilePath(substr($uri, strlen($boardUrl)));
-            if (strlen($path) > 0 && bdImage_Helper_File::existsAndNotEmpty($path)) {
-                self::_log('Using local file path %s...', $path);
-                return $path;
+            $localFilePath = self::_getLocalFilePath(substr($url, strlen($boardUrl)));
+            if (strlen($localFilePath) > 0
+                && bdImage_Helper_File::existsAndNotEmpty($localFilePath)
+            ) {
+                self::_log('Using local file path %s...', $localFilePath);
+                return $localFilePath;
             }
         }
 
-        if (preg_match('#attachments/(.+\.)*(?<id>\d+)/#', $uri, $matches)) {
+        if (preg_match('#attachments/(.+\.)*(?<id>\d+)/#', $url, $matches)) {
             $fullIndex = XenForo_Link::buildPublicLink('full:index');
             $canonicalIndex = XenForo_Link::buildPublicLink('canonical:index');
-            if (strpos($uri, $fullIndex) === 0 || strpos($uri, $canonicalIndex) === 0) {
-                $path = self::_getAttachmentDataFilePath($matches['id']);
-                if (bdImage_Helper_File::existsAndNotEmpty($path)) {
-                    self::_log('Using attachment data file path %s...', $path);
-                    return $path;
+            if (strpos($url, $fullIndex) === 0 || strpos($url, $canonicalIndex) === 0) {
+                $attachmentDataFilePath = self::_getAttachmentDataFilePath($matches['id']);
+                if (bdImage_Helper_File::existsAndNotEmpty($attachmentDataFilePath)) {
+                    self::_log('Using attachment data file path %s...', $attachmentDataFilePath);
+                    return $attachmentDataFilePath;
                 }
             }
         }
 
         // this is a remote uri, try to download it and return the downloaded file's path
-        $originalCachePath = bdImage_Integration::getOriginalCachePath($uri);
+        $originalCachePath = bdImage_Helper_File::getOriginalCachePath($url);
         if (!bdImage_Helper_File::existsAndNotEmpty($originalCachePath)) {
             XenForo_Helper_File::createDirectory(dirname($originalCachePath), true);
-            $downloaded = bdImage_ShippableHelper_TempFile::download($uri, array(
+            $downloaded = bdImage_ShippableHelper_TempFile::download($url, array(
                 'tempFile' => $originalCachePath,
                 'maxDownloadSize' => XenForo_Application::getOptions()->get('attachmentMaxFileSize') * 1024,
             ));
             if (empty($downloaded)) {
-                self::_log('Cannot download %s', $uri);
+                self::_log('Cannot download url %s', $url);
                 return self::ERROR_DOWNLOAD_REMOTE_URI;
             }
         }
@@ -333,6 +388,10 @@ class bdImage_Helper_Thumbnail
         return $originalCachePath;
     }
 
+    /**
+     * @param string $path
+     * @return string
+     */
     protected static function _getLocalFilePath($path)
     {
         // remove query parameters
@@ -353,6 +412,10 @@ class bdImage_Helper_Thumbnail
         return $path;
     }
 
+    /**
+     * @param int $attachmentId
+     * @return string
+     */
     protected static function _getAttachmentDataFilePath($attachmentId)
     {
         /** @var XenForo_Model_Attachment $attachmentModel */
@@ -374,14 +437,19 @@ class bdImage_Helper_Thumbnail
         return $attachmentModel->getAttachmentDataFilePath($attachments[$attachmentId]);
     }
 
-    protected static function _guessImageTypeByFileExtension($uri, $path = '')
+    /**
+     * @param string $url
+     * @param string $path
+     * @return int|null
+     */
+    protected static function _guessImageTypeByFileExtension($url, $path = '')
     {
         switch ($path) {
             case self::ERROR_DOWNLOAD_REMOTE_URI:
                 return null;
         }
 
-        $ext = XenForo_Helper_File::getFileExtension($uri);
+        $ext = XenForo_Helper_File::getFileExtension($url);
         switch ($ext) {
             case 'gif':
                 $result = IMAGETYPE_GIF;
@@ -400,6 +468,11 @@ class bdImage_Helper_Thumbnail
         return $result;
     }
 
+    /**
+     * @param string $path
+     * @param int $guessedImageType
+     * @return bool
+     */
     protected static function _detectImageType($path, &$guessedImageType)
     {
         $detectedImageType = null;
@@ -437,7 +510,7 @@ class bdImage_Helper_Thumbnail
         }
 
         if ($detectedImageType !== null
-            && $detectedImageType != $guessedImageType
+            && $detectedImageType !== $guessedImageType
         ) {
             $guessedImageType = $detectedImageType;
             return true;
@@ -446,6 +519,9 @@ class bdImage_Helper_Thumbnail
         return false;
     }
 
+    /**
+     * @return bool
+     */
     protected static function _log()
     {
         static $headerCount = 0;
@@ -467,6 +543,12 @@ class bdImage_Helper_Thumbnail
         return XenForo_Helper_File::log(__CLASS__, sprintf('%s: %s', $requestPaths['requestUri'], $message));
     }
 
+    /**
+     * @param string $string
+     * @param bool $replace
+     * @param null|int $httpResponseCode
+     * @return bool
+     */
     protected static function _setHeaderSafe($string, $replace = true, $httpResponseCode = null)
     {
         if (headers_sent()) {

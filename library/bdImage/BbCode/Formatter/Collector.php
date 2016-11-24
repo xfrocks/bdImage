@@ -84,7 +84,7 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
             switch ($mediaId[0]) {
                 case 'youtube':
                     $imageDataMany = array_merge($imageDataMany,
-                        bdImage_Helper_YouTube::extractImageDataMany($mediaId[1]));
+                        bdImage_Helper_BbCode::extractYouTubeThumbnails($mediaId[1]));
                     break;
             }
         }
@@ -150,6 +150,7 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
         }
 
         $this->_bdImage_imageUrls[] = $validUrl;
+        return '';
     }
 
     public function renderTagMedia(array $tag, array $rendererStates)

@@ -5,10 +5,14 @@ class bdImage_Option
     public static function get($key, $subKey = null)
     {
         if (is_array($subKey)) {
-            $subKey = null;
+            if (count($subKey) === 1) {
+                $subKey = reset($subKey);
+            } else {
+                $subKey = null;
+            }
         }
 
-        return XenForo_Application::getOptions()->get(sprintf('bdImage_%s', $key), $subKey);
+        return XenForo_Application::getOptions()->get('bdImage_' . $key, $subKey);
     }
 
 }

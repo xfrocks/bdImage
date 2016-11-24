@@ -2,6 +2,11 @@
 
 class bdImage_Helper_Image
 {
+    /**
+     * @param string $imageData
+     * @param bool $doFetch
+     * @return array|false
+     */
     public static function getSize($imageData, $doFetch = true)
     {
         $imageData = bdImage_Helper_Data::unpack($imageData);
@@ -9,20 +14,15 @@ class bdImage_Helper_Image
         $width = false;
         $height = false;
 
-        if (!empty($imageData['width'])
-            && !empty($imageData['height'])
-        ) {
+        if (isset($imageData['width']) && isset($imageData['height'])) {
             $width = $imageData['width'];
             $height = $imageData['height'];
         }
 
-        if ((empty($width)
-                || empty($height))
-            && $doFetch
-        ) {
-            $uri = bdImage_Integration::getAccessibleUri($imageData['url']);
-            if (!empty($uri)) {
-                $imageSize = bdImage_ShippableHelper_ImageSize::calculate($uri);
+        if ((empty($width) || empty($height)) && $doFetch) {
+            $cachedPathOrUrl = bdImage_Helper_File::getImageCachedPathOrUrl($imageData);
+            if (strlen($cachedPathOrUrl) > 0) {
+                $imageSize = bdImage_ShippableHelper_ImageSize::calculate($cachedPathOrUrl);
                 if (!empty($imageSize['width'])) {
                     $width = $imageSize['width'];
                 }
@@ -32,18 +32,24 @@ class bdImage_Helper_Image
             }
         }
 
-        if (!empty($width)
-            && !empty($height)
-        ) {
-            return array(
-                $width,
-                $height
-            );
+        if ($width !== false) {
+            $width = intval($width);
+        }
+        if ($height !== false) {
+            $height = intval($height);
+        }
+
+        if ($width > 0 && $height > 0) {
+            return array($width, $height);
         } else {
             return false;
         }
     }
 
+    /**
+     * @param string $imageData
+     * @return string
+     */
     public static function getDataUriTransparentAtSameSize($imageData)
     {
         if (!function_exists('imagecreatetruecolor')) {
@@ -73,6 +79,11 @@ class bdImage_Helper_Image
         return 'data:image/png;base64,' . base64_encode($imageBytes);
     }
 
+    /**
+     * @param int $a
+     * @param int $b
+     * @return int
+     */
     protected static function _findGreatestCommonDivisor($a, $b)
     {
         $mod = $a % $b;

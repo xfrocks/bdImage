@@ -91,6 +91,6 @@ class bdImage_Deferred_Thread extends XenForo_Deferred_Abstract
             'attachmentHash' => false,
             'allAttachments' => !!bdImage_Option::get('allAttachments'),
         );
-        return bdImage_Integration::getBbCodeImage($firstPost['message'], $contentData, $threadModel);
+        return bdImage_Helper_BbCode::extractImage($firstPost['message'], $contentData, $threadModel);
     }
 }

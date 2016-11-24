@@ -75,14 +75,17 @@ class bdImage_WidgetRenderer_AttachmentsGrid extends WidgetFramework_WidgetRende
         $core = WidgetFramework_Core::getInstance();
         $visitor = XenForo_Visitor::getInstance();
 
+        /** @var XenForo_Model_Attachment $attachmentModel */
         $attachmentModel = $core->getModelFromCache('XenForo_Model_Attachment');
+        /** @var XenForo_Model_Node $nodeModel */
         $nodeModel = $core->getModelFromCache('XenForo_Model_Node');
 
         $forumIds = $this->_helperGetForumIdsFromOption($widget['options']['forums'], $params,
             empty($widget['options']['as_guest']) ? false : true);
         $forumIdsWithAttachmentView = array();
 
-        $nodePermissions = $nodeModel->getNodePermissionsForPermissionCombination(empty($widget['options']['as_guest']) ? $visitor['permission_combination_id'] : 1);
+        $permissionCombinationId = empty($widget['options']['as_guest']) ? $visitor['permission_combination_id'] : 1;
+        $nodePermissions = $nodeModel->getNodePermissionsForPermissionCombination($permissionCombinationId);
         foreach ($forumIds as $forumId) {
             $forumPermissions = (isset($nodePermissions[$forumId]) ? $nodePermissions[$forumId] : array());
 
@@ -90,7 +93,7 @@ class bdImage_WidgetRenderer_AttachmentsGrid extends WidgetFramework_WidgetRende
                 $forumIdsWithAttachmentView[] = $forumId;
             }
         }
-        if (empty($forumIdsWithAttachmentView)) {
+        if (count($forumIdsWithAttachmentView) === 0) {
             // no forum with attachment view permission?! Nothing to do here
             return '';
         }

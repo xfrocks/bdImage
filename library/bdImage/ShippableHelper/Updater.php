@@ -1,6 +1,6 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2016-08-08T19:01:09+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2016-11-23T09:20:21+00:00
 
 /**
  * Class bdImage_ShippableHelper_Updater
@@ -18,6 +18,9 @@ class bdImage_ShippableHelper_Updater
      * Verifies config to make sure the Updater should run.
      * 1. It has not been configured yet
      * 2. Or it has been enabled at some point
+     *
+     * Tips:
+     * 1. Wrap this call within a `if (isset($data['routesAdmin'])) { ... }` for small performance boost
      *
      * @param XenForo_Dependencies_Abstract $dependencies
      * @param string|null $apiUrl

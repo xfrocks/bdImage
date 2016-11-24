@@ -1,5 +1,6 @@
 <?php
 
+set_time_limit(0);
 $url = empty($_REQUEST['url']) ? false : $_REQUEST['url'];
 $size = intval(empty($_REQUEST['size']) ? 0 : $_REQUEST['size']);
 $mode = empty($_REQUEST['mode']) ? '' : $_REQUEST['mode'];
@@ -38,28 +39,20 @@ $dependencies = new XenForo_Dependencies_Public();
 $dependencies->preLoadData();
 
 $requestPaths = XenForo_Application::get('requestPaths');
-$requestPathRegex = '#' . preg_quote(bdImage_Integration::$generatorDirName, '#') . '/?$#';
+$requestPathRegex = '#' . preg_quote(bdImage_Listener::$generatorDirName, '#') . '/?$#';
 $requestPaths['basePath'] = preg_replace($requestPathRegex, '', $requestPaths['basePath']);
 $requestPaths['fullBasePath'] = preg_replace($requestPathRegex, '', $requestPaths['fullBasePath']);
 XenForo_Application::set('requestPaths', $requestPaths);
 
-if (empty($size)
-    || bdImage_Helper_Data::computeHash($url, $size, $mode) != $hash
-) {
+if (empty($size) || bdImage_Helper_Data::computeHash($url, $size, $mode) != $hash) {
     // invalid request, we may issue 401 but this is more of a security feature
     // so we are issuing 403 response now...
     header('HTTP/1.0 403 Forbidden');
     exit;
 }
 
-$accessibleUri = bdImage_Integration::getAccessibleUri($url);
-if (empty($accessibleUri)) {
-    header('HTTP/1.0 404 Not Found');
-    exit;
-}
-
 try {
-    $thumbnailUri = bdImage_Helper_Thumbnail::getThumbnailUri($url, $accessibleUri, $size, $mode, $hash);
+    $thumbnailUri = bdImage_Helper_Thumbnail::getThumbnailUri($url, $size, $mode, $hash);
 } catch (XenForo_Exception $e) {
     if (XenForo_Application::debugMode()) {
         XenForo_Error::logException($e, false);

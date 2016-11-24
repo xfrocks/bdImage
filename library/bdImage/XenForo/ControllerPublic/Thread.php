@@ -34,7 +34,7 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
                 'attachmentHash' => false,
                 'allAttachments' => true,
             );
-            $params['bdImage_images'] = bdImage_Integration::getBbCodeImages($firstPost['message'], $contentData, null);
+            $params['bdImage_images'] = bdImage_Helper_BbCode::extractImages($firstPost['message'], $contentData, null);
         }
 
         return $response;

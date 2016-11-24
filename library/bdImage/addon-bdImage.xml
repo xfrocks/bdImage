@@ -495,14 +495,22 @@ html.bdImage_hasCover .titleBar {
 
 </style>
 </xen:container>]]></template>
-    <template title="bdimage_node_forum_last_thread_image" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:require css="bdimage.css" />
-<img src="{xen:helper bdImage_thumbnail, $forum.bdimage_last_post_image,
-	{xen:property bdImage_forumLastThread_imageSize}}" width="{xen:property bdImage_forumLastThread_imageSize}" <xen:comment>
-	</xen:comment>height="{xen:property bdImage_forumLastThread_imageSize}" class="bdImage_lastThreadImage"{xen:if $debugMode,
-	' data-full={xen:helper bdImage_fullSize, $forum.bdimage_last_post_image}'} />]]></template>
-    <template title="bdimage_picker" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:require css="bdimage.css" />
+    <template title="bdimage_node_forum_last_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$forum.bdimage_last_post_image}"><xen:set var="$bdImage_nodeForumLastThreadImage"><xen:callback
+	class="bdImage_Option" method="get" params="{xen:array
+	'0=node_forum_last_thread_image'}">template</xen:callback></xen:set><xen:if
+	is="{$bdImage_nodeForumLastThreadImage}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
+	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
+	'0={xen:property bdImage_forumLastThread_imageSize}'}">{xen:raw $forum.bdimage_last_post_image}</xen:callback></xen:set><xen:if
+	is="{$bdImage_thumbnailUrl}"><xen:require css="bdimage.css" /><img src="{$bdImage_thumbnailUrl}" <xen:comment>
+	</xen:comment>width="{xen:property bdImage_forumLastThread_imageSize}" height="{xen:property bdImage_forumLastThread_imageSize}" <xen:comment>
+	</xen:comment>class="bdImage_lastThreadImage"{xen:if $debugMode,
+	' data-image="{xen:jsescape $forum.bdimage_last_post_image}"'} /></xen:if></xen:if></xen:if>]]></template>
+    <template title="bdimage_picker" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:require css="bdimage.css" />
 
-<xen:set var="$currentImageUrl">{xen:helper bdImage_image, $currentImageData}</xen:set>
+<xen:set var="$currentImageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
+	params="{xen:array '0=url'}">{xen:raw $currentImageData}</xen:callback></xen:set><xen:set
+	var="$currentImageIsCover"><xen:callback class="bdImage_Helper_Data" method="get"
+	params="{xen:array '0=is_cover'}">{xen:raw $currentImageData}</xen:callback></xen:set>
 
 <dl class="ctrlUnit">
 	<dt>
@@ -518,23 +526,25 @@ html.bdImage_hasCover .titleBar {
 					<xen:set var="$currentImageFound">0</xen:set>
 
 					<xen:foreach loop="$images" value="$imageData">
-					<xen:set var="$imageUrl">{xen:helper bdImage_image, $imageData}</xen:set>
-					<xen:set var="$imageWidth">{xen:helper bdImage_getData, $imageData, width}</xen:set>
-					<xen:set var="$imageHeight">{xen:helper bdImage_getData, $imageData, height}</xen:set>
-					<xen:set var="$imageType">{xen:helper bdImage_getData, $imageData, type}</xen:set>
-					<xen:set var="$imageTooltip">{$imageType}{xen:if '{$imageWidth}
-						&& {$imageHeight}', ' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</xen:set>
-					<xen:if is="{$imageUrl} == {$currentImageUrl}">
-						<xen:set var="$currentImageFound">1</xen:set>
-					</xen:if>
+					<xen:set var="$imageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
+						params="{xen:array '0=url'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+						var="$imageWidth"><xen:callback class="bdImage_Helper_Data" method="get"
+						params="{xen:array '0=width'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+						var="$imageHeight"><xen:callback class="bdImage_Helper_Data" method="get"
+						params="{xen:array '0=height'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+						var="$imageType"><xen:callback class="bdImage_Helper_Data" method="get"
+						params="{xen:array '0=type'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+						var="$imageTooltip">{$imageType}{xen:if '{$imageWidth} && {$imageHeight}',
+						' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</xen:set><xen:set
+						var="$imageThumbnail"><xen:callback class="bdImage_Helper_Template" method="getThumbnailUrl"
+						params="{xen:array '0={xen:property bdImage_threadList_imageSize}'}">{xen:raw $imageData}</xen:callback></xen:set>
+					<xen:if is="{$imageUrl} == {$currentImageUrl}"><xen:set var="$currentImageFound">1</xen:set></xen:if>
 
 					<li class="image">
 						<label{xen:if $imageTooltip, ' title="{xen:jsescape $imageTooltip}" class="Tooltip"'}>
 							<input type="radio" name="bdimage_image" value="{$imageUrl}" {xen:checked
-								'{$imageUrl} == {$currentImageUrl}'} />
-							<img src="{xen:helper bdImage_thumbnail,
-								$imageData, {xen:property bdImage_threadList_imageSize}}" {xen:helper bdImage_imgAttribs,
-								$imageData, {xen:property bdImage_threadList_imageSize}} />
+								'{$imageUrl} == {$currentImageUrl}'} /><img src="{$imageThumbnail}" <xen:comment>
+								</xen:comment>width="{xen:property bdImage_threadList_imageSize}" />
 						</label>
 					</li>
 					</xen:foreach>
@@ -562,8 +572,7 @@ html.bdImage_hasCover .titleBar {
 			</xen:if>
 			<li>
 				<label>
-					<input type="checkbox" name="bdimage_extra_data[is_cover]" value="1" {xen:checked
-						'{xen:helper bdImage_getData, $currentImageData, is_cover}'} />
+					<input type="checkbox" name="bdimage_extra_data[is_cover]" value="1" {xen:checked $currentImageIsCover} />
 					{xen:phrase bdimage_is_cover}
 				</label>
 			</li>
@@ -574,38 +583,43 @@ html.bdImage_hasCover .titleBar {
 </dl>
 
 <xen:edithint template="bdimage_picker_simple" />]]></template>
-    <template title="bdimage_picker_simple" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:set var="$currentImageUrl">{xen:helper bdImage_image, $currentImageData}</xen:set>
+    <template title="bdimage_picker_simple" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:set var="$currentImageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
+	params="{xen:array '0=url'}">{xen:raw $currentImageData}</xen:callback></xen:set><xen:set
+	var="$currentImageIsCover"><xen:callback class="bdImage_Helper_Data" method="get"
+	params="{xen:array '0=is_cover'}">{xen:raw $currentImageData}</xen:callback></xen:set>
 
 <xen:if is="{$images} || {$currentImageUrl}">
 
 <label>
-	<xen:if is="{xen:helper bdImage_getData, $currentImageData, is_cover}">
+	<xen:if is="{$currentImageIsCover}">
 	{xen:phrase bdimage_thread_cover_image}:
 	<input type="hidden" name="bdimage_extra_data[is_cover]" value="1" />
 	<xen:else />
 	{xen:phrase bdimage_thread_image}:
 	</xen:if>
 
-	<select {xen:if '{$id}', 'id="{$id}"'} name="bdimage_image" class="textCtrl bdImage_Picker">
+	<select{xen:if $id, ' id="{$id}"'} name="bdimage_image" class="textCtrl bdImage_Picker">
 		<option value=""></option>
 
 		<xen:set var="$currentImageFound">0</xen:set>
 		<xen:foreach loop="$images" value="$imageData">
-			<xen:set var="$imageUrl">{xen:helper bdImage_image, $imageData}</xen:set>
-			<xen:set var="$imageWidth">{xen:helper bdImage_getData, $imageData, width}</xen:set>
-			<xen:set var="$imageHeight">{xen:helper bdImage_getData, $imageData, height}</xen:set>
+			<xen:set var="$imageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
+				params="{xen:array '0=url'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+				var="$imageWidth"><xen:callback class="bdImage_Helper_Data" method="get"
+				params="{xen:array '0=width'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+				var="$imageHeight"><xen:callback class="bdImage_Helper_Data" method="get"
+				params="{xen:array '0=height'}">{xen:raw $imageData}</xen:callback></xen:set>
 			<xen:if is="{$imageUrl} == {$currentImageUrl}">
 				<xen:set var="$currentImageFound">1</xen:set>
 			</xen:if>
 
-			<option value="{$imageUrl}" {xen:selected
-				'{$imageUrl} == {$currentImageUrl}'}>{$imageUrl}{xen:if '{$imageWidth}
+			<option value="{$imageUrl}" {xen:selected '{$imageUrl} == {$currentImageUrl}'}>{$imageUrl}{xen:if '{$imageWidth}
 				&& {$imageHeight}', ' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</option>
 		</xen:foreach>
 
 		<xen:if is="{$currentImageFound} == 0 && {$currentImageUrl}">
 			<option value="{$currentImage}" selected="selected">
-				{xen:helper bdImage_filename, $currentImageUrl}
+				{$currentImageUrl}
 			</option>
 		</xen:if>
 	</select>
@@ -614,19 +628,23 @@ html.bdImage_hasCover .titleBar {
 <input type="hidden" name="bdimage_picker" value="1" />
 
 </xen:if>]]></template>
-    <template title="bdimage_search_result_thread_image" version_id="1020100" version_string="1.2.1"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
-	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image,
-		{xen:property bdImage_searchResult_imageSize}}" width="{xen:property bdImage_searchResult_imageSize}" <xen:comment>
-		</xen:comment>height="{xen:property bdImage_searchResult_imageSize}"{xen:if $debugMode,
-		' data-full={xen:helper bdImage_fullSize, $thread.bdimage_image}'} />
-</a>]]></template>
+    <template title="bdimage_search_result_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_searchResultThreadImage"><xen:callback
+	class="bdImage_Option" method="get" params="{xen:array
+	'0=search_result_thread_image'}">template</xen:callback></xen:set><xen:if
+	is="{$bdImage_searchResultThreadImage}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
+	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
+	'0={xen:property bdImage_searchResult_imageSize}'}">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:if
+	is="{$bdImage_thumbnailUrl}"><a href="{xen:link threads, $thread}" class="avatar NoOverlay"><xen:comment>
+	</xen:comment><img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_searchResult_imageSize}" <xen:comment>
+	</xen:comment>height="{xen:property bdImage_searchResult_imageSize}"{xen:if $debugMode,
+	' data-image="{xen:jsescape $thread.bdimage_image}"'} /></a></xen:if></xen:if></xen:if>]]></template>
     <template title="bdimage_template_modifications" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:edithint template="bdimage_thread_list_item_thread_image" />
 <xen:edithint template="bdimage_thread_view_open_graph_meta" />
 <xen:edithint template="bdimage_node_forum_last_thread_image" />
 <xen:edithint template="bdimage_search_result_thread_image" />
 <xen:edithint template="bdimage_wf_widget_threads_full_thread_image" />
 <xen:edithint template="bdimage_wf_widget_threads_thread_image" />]]></template>
-    <template title="bdimage_thread_cover" version_id="30" version_string="1.0.4"><![CDATA[<xen:require css="bdimage.css" />
+    <template title="bdimage_thread_cover" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:require css="bdimage.css" />
 
 <xen:set var="$coverTitleEscaped">{$thread.title}</xen:set>
 <xen:set var="$coverDescriptionEscaped">{xen:phrase bdimage_discussion_in_x_started_by_y_date_z_replies_m_views_n,
@@ -635,6 +653,8 @@ html.bdImage_hasCover .titleBar {
 	'date=<a href="{xen:link threads, $bdImage_thread}">{xen:datetime $thread.post_date, html}</a>',
 	'replies={xen:number $thread.reply_count}',
 	'views={xen:number $thread.view_count}'}</xen:set>
+<xen:set var="$coverOriginalUrl"><xen:callback class="bdImage_Integration"
+	method="getOriginalUrl">{xen:raw $thread.bdimage_image}</xen:callback></xen:set>
 
 <div class="bdImage_coverContainer position-{$position}">
 	<p class="title coverContent">{xen:raw $coverTitleEscaped}</p>
@@ -645,10 +665,9 @@ html.bdImage_hasCover .titleBar {
 		</xen:if>
 		<xen:if is="{$dataUri}">
 			<img class="cover" src="{xen:raw $dataUri}"
-				 style="background-image: url({xen:helper bdImage_fullSize,
-						$thread.bdimage_image}); background-size: cover;" />
+				 style="background-image: url({$coverOriginalUrl}); background-size: cover;" />
 		<xen:else />
-			<img class="cover" src="{xen:helper bdImage_fullSize, $thread.bdimage_image}" />
+			<img class="cover" src="{$coverOriginalUrl}" />
 		</xen:if>
 		<div class="bg coverContent">
 			<p class="title">{xen:raw $coverTitleEscaped}</p>
@@ -669,11 +688,16 @@ html.bdImage_hasCover .titleBar {
 
 <xen:edithint template="PAGE_CONTAINER" />
 ]]></template>
-    <template title="bdimage_thread_list_item_thread_image" version_id="1020100" version_string="1.2.1"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay"{xen:if $debugMode,
-   ' data-full={xen:helper bdImage_fullSize, $thread.bdimage_image}'}>
-	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image,
-		{xen:property bdImage_threadList_imageSize}}" width="{xen:property bdImage_threadList_imageSize}" height="{xen:property bdImage_threadList_imageSize}" />
-</a>]]></template>
+    <template title="bdimage_thread_list_item_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_threadListItemThreadImage"><xen:callback
+	class="bdImage_Option" method="get" params="{xen:array
+	'0=thread_list_item_thread_image'}">template</xen:callback></xen:set><xen:if
+	is="{$bdImage_threadListItemThreadImage}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
+	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
+	'0={xen:property bdImage_threadList_imageSize}'}">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:if
+	is="{$bdImage_thumbnailUrl}"><a href="{xen:link threads, $thread}" class="avatar NoOverlay"><xen:comment>
+	</xen:comment><img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_threadList_imageSize}" <xen:comment>
+	</xen:comment>height="{xen:property bdImage_threadList_imageSize}"{xen:if $debugMode,
+	' data-image="{xen:jsescape $thread.bdimage_image}"'} /></a></xen:if></xen:if></xen:if>]]></template>
     <template title="bdimage_thread_test" version_id="1020270" version_string="1.2.2"><![CDATA[<xen:title>{xen:phrase bdimage_thread_image}</xen:title>
 
 <form action="{xen:link threads/bd-image/test}" method="post" class="xenForm">
@@ -719,48 +743,56 @@ html.bdImage_hasCover .titleBar {
 	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 	<input type="hidden" name="_xfConfirm" value="1" />
 </form>]]></template>
-    <template title="bdimage_thread_view_open_graph_meta" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:if is="{xen:helper bdImage_getOption, template, thread_view_open_graph_meta}
-	AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
-<xen:set var="$width">{xen:helper bdImage_width, $thread.bdimage_image}</xen:set>
-<xen:set var="$height">{xen:helper bdImage_height, $thread.bdimage_image}</xen:set>
-<meta property="og:image" content="{xen:helper bdImage_fullSize, $thread.bdimage_image}" />
-<meta property="og:image:width" content="{$width}" />
-<meta property="og:image:height" content="{$height}" />
-</xen:if>]]></template>
-    <template title="bdimage_wf_widget_threads_full_thread_image" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:require css="bdimage.css" />
+    <template title="bdimage_thread_view_open_graph_meta" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_threadViewOpenGraphMeta"><xen:callback
+	class="bdImage_Option" method="get" params="{xen:array
+	'0=thread_view_open_graph_meta'}">template</xen:callback></xen:set><xen:if
+	is="{$bdImage_threadViewOpenGraphMeta}"><xen:set var="$bdImage_originalUrl"><xen:callback
+	class="bdImage_Integration" method="getOriginalUrl">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:if
+	is="{$bdImage_originalUrl}"><xen:set var="$bdImage_width"><xen:callback class="bdImage_Integration"
+	method="getImageWidth">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:set
+	var="$bdImage_height"><xen:callback class="bdImage_Integration" method="getImageHeight">{xen:raw
+	$thread.bdimage_image}</xen:callback></xen:set><xen:if is="{$debugMode}">
+<meta property="og-image-generator" content="bdImage" /></xen:if>
+<meta property="og:image" content="{$bdImage_originalUrl}" /><xen:if is="{$bdImage_width} && {$bdImage_height}">
+<meta property="og:image:width" content="{$bdImage_width}" />
+<meta property="og:image:height" content="{$bdImage_height}" /></xen:if>
+<meta property="twitter:image" content="{$bdImage_originalUrl}" /><xen:if is="{$bdImage_width} && {$bdImage_height}">
+<meta property="twitter:image:width" content="{$bdImage_width}" />
+<meta property="twitter:image:height" content="{$bdImage_height}" /></xen:if></xen:if></xen:if></xen:if>]]></template>
+    <template title="bdimage_wf_widget_threads_full_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_wfWidgetThreadsThreadImage"><xen:callback
+	class="bdImage_Option" method="get" params="{xen:array
+	'0=wf_widget_threads_thread_image'}">template</xen:callback></xen:set><xen:if
+	is="{$bdImage_wfWidgetThreadsThreadImage}"><xen:set var="$bdImage_thumbnailUrl"><xen:if
+	is="{xen:property bdImage_wfThreadsFull_imageWidth} && {xen:property bdImage_wfThreadsFull_imageHeight}"><xen:callback
+	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
+	'0={xen:property bdImage_wfThreadsFull_imageWidth}', '1={xen:property bdImage_wfThreadsFull_imageHeight}'}">{xen:raw
+	$thread.bdimage_image}</xen:callback><xen:elseif is="{xen:property bdImage_wfThreadsFull_imageWidth}" /><xen:callback
+	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
+	'0={xen:property bdImage_wfThreadsFull_imageWidth}'}">{xen:raw $thread.bdimage_image}</xen:callback><xen:elseif
+	is="{xen:property bdImage_wfThreadsFull_imageHeight}" /><xen:callback class="bdImage_Helper_Template" method="getThumbnailUrl"
+	params="{xen:array '0={xen:property bdImage_wfThreadsFull_imageHeight}', '1=sw'}">{xen:raw $thread.bdimage_image}</xen:callback><xen:else
+	/><xen:callback class="bdImage_Integration" method="getOriginalUrl">{xen:raw
+	$thread.bdimage_image}</xen:callback></xen:if></xen:set><xen:if is="{$bdImage_thumbnailUrl}"><xen:require css="bdimage.css"
+	/>
 
 <div class="bdImage_threadImage">
 	<a href="{xen:link threads, $thread}">
-		<xen:if is="{xen:property bdImage_wfThreadsFull_imageWidth} AND {xen:property bdImage_wfThreadsFull_imageHeight}">
-			<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image,
-				{xen:property bdImage_wfThreadsFull_imageWidth}, {xen:property bdImage_wfThreadsFull_imageHeight}}" <xen:comment>
-				</xen:comment>width="{xen:property bdImage_wfThreadsFull_imageWidth}" <xen:comment>
-				</xen:comment>height="{xen:property bdImage_wfThreadsFull_imageHeight}"{xen:if $debugMode,
-				' data-full={xen:helper bdImage_fullSize, $thread.bdimage_image}'} />
-		<xen:elseif is="{xen:property bdImage_wfThreadsFull_imageWidth}" />
-			<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image,
-				{xen:property bdImage_wfThreadsFull_imageWidth}, sh}" {xen:helper bdImage_imgAttribs,
-				$thread.bdimage_image, {xen:property bdImage_wfThreadsFull_imageWidth}, sh}{xen:if $debugMode,
-				' data-full={xen:helper bdImage_fullSize, $thread.bdimage_image}'} />
-		<xen:elseif is="{xen:property bdImage_wfThreadsFull_imageHeight}" />
-			<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image,
-				{xen:property bdImage_wfThreadsFull_imageHeight}, sw}" {xen:helper bdImage_imgAttribs,
-				$thread.bdimage_image, {xen:property bdImage_wfThreadsFull_imageHeight}, sw}{xen:if $debugMode,
-				' data-full={xen:helper bdImage_fullSize, $thread.bdimage_image}'} />
-		<xen:else />
-			<img src="{xen:helper bdImage_fullSize, $thread.bdimage_image}" width="{xen:helper
-				bdImage_width, $thread.bdimage_image}" height="{xen:helper
-				bdImage_height, $thread.bdimage_image}" />
-		</xen:if>
+		<img src="{$bdImage_thumbnailUrl}"{xen:if {xen:property bdImage_wfThreadsFull_imageWidth},
+			' width="{xen:property bdImage_wfThreadsFull_imageWidth}"'}{xen:if {xen:property bdImage_wfThreadsFull_imageHeight},
+			' height="{xen:property bdImage_wfThreadsFull_imageHeight}"'}{xen:if $debugMode,
+			' data-image="{xen:jsescape $thread.bdimage_image}"'} />
 	</a>
-</div>]]></template>
-    <template title="bdimage_wf_widget_threads_thread_image" version_id="1020100" version_string="1.2.1"><![CDATA[<a href="{xen:link threads, $thread}" class="avatar NoOverlay">
-	<img src="{xen:helper bdImage_thumbnail, $thread.bdimage_image,
-		{xen:property bdImage_wfThreadsSidebar_imageSize}}" <xen:comment>
-		</xen:comment>width="{xen:property bdImage_wfThreadsSidebar_imageSize}" <xen:comment>
-		</xen:comment>height="{xen:property bdImage_wfThreadsSidebar_imageSize}"{xen:if $debugMode,
-		' data-full={xen:helper bdImage_fullSize, $thread.bdimage_image}'} />
-</a>]]></template>
+</div></xen:if></xen:if></xen:if>]]></template>
+    <template title="bdimage_wf_widget_threads_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_wfWidgetThreadsThreadImage"><xen:callback
+	class="bdImage_Option" method="get" params="{xen:array
+	'0=wf_widget_threads_thread_image'}">template</xen:callback></xen:set><xen:if
+	is="{$bdImage_wfWidgetThreadsThreadImage}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
+	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
+	'0={xen:property bdImage_wfThreadsSidebar_imageSize}'}">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:if
+	is="{$bdImage_thumbnailUrl}"><a href="{xen:link threads, $thread}" class="avatar NoOverlay"><xen:comment>
+	</xen:comment><img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_wfThreadsSidebar_imageSize}" <xen:comment>
+	</xen:comment>height="{xen:property bdImage_wfThreadsSidebar_imageSize}"{xen:if $debugMode,
+	' data-image="{xen:jsescape $thread.bdimage_image}"'} /></a></xen:if></xen:if></xen:if>]]></template>
     <template title="bdimage_widget.css" version_id="30" version_string="1.0.4"><![CDATA[.bdImage_Widget_Slider_Container
 {
 	overflow: hidden;
@@ -871,8 +903,8 @@ ul.bdImage_Widget_Grid
 		display: block;
 	}
 ]]></template>
-    <template title="bdimage_widget_attachments_grid" version_id="19" version_string="0.10.0-dev"><![CDATA[<xen:if hascontent="true">
-	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
+    <template title="bdimage_widget_attachments_grid" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if hascontent="true">
+	<xen:set var="$cssClass">bdImage_WidgetRenderer_AttachmentsGrid-{$widget.widget_id}</xen:set>
 	<xen:include template="bdimage_grid_inline_css" />
 	<xen:require css="bdimage_widget.css" />
 
@@ -882,10 +914,11 @@ ul.bdImage_Widget_Grid
 				<xen:foreach loop="$posts" value="$post">
 					<li>
 						<a href="{xen:link posts, $post}" title="{$post.title}" class="Tooltip">
-							<img src="{xen:helper bdImage_thumbnail,
-								$post.attachmentUri,
-								{$widget.options.thumbnail_width},
-								{$widget.options.thumbnail_height}}" />
+							<img <xen:callback class="bdImage_Helper_Template"
+								method="renderImgAttributes" params="{xen:array
+								'0={$widget.options.thumbnail_width}',
+								'1={$widget.options.thumbnail_height}'}">{xen:raw
+								$post.attachmentUri}</xen:callback> />
 						</a>
 					</li>
 				</xen:foreach>
@@ -893,7 +926,7 @@ ul.bdImage_Widget_Grid
 		</ul>
 	</div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_slider_threads" version_id="1020270" version_string="1.2.2"><![CDATA[<xen:if hascontent="true">	
+    <template title="bdimage_widget_slider_threads" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if hascontent="true">	
 <xen:require css="bdimage_widget.css" />
 <xen:require js="js/bdImage/widget_slider.min.js" />
 <xen:require js="js/bdImage/owl.carousel/owl.carousel{xen:if '!{$debugMode}', .min}.js" />
@@ -902,8 +935,7 @@ ul.bdImage_Widget_Grid
 <link rel="stylesheet" href="{xen:helper javascriptUrl, 'js/bdImage/owl.carousel/assets/owl.theme.default{xen:if '!{$debugMode}', .min}.css'}">
 </xen:container>
 
-<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads_Container {xen:helper
-			bdImage_Widget_Slider_CssClass, $widget}"
+<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads_Container"
 	 data-layout="owlcarousel"
 	 data-layout-options='{xen:helper json, {xen:array
 						  'items={$widget.options.visible_count}',
@@ -919,7 +951,7 @@ ul.bdImage_Widget_Grid
 </xen:if>
 
 <xen:edithint template="bdimage_widget_slider_threads_2" />]]></template>
-    <template title="bdimage_widget_slider_threads_2" version_id="1020270" version_string="1.2.2"><![CDATA[<xen:if hascontent="true">
+    <template title="bdimage_widget_slider_threads_2" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if hascontent="true">
 <xen:require css="bdimage_widget.css" />
 <xen:require js="js/bdImage/widget_slider.min.js" />
 <xen:require js="js/bdImage/jquery.bxslider/jquery.bxslider{xen:if '!{$debugMode}', .min}.js" />
@@ -927,8 +959,7 @@ ul.bdImage_Widget_Grid
 <link rel="stylesheet" href="{xen:helper javascriptUrl, js/bdImage/jquery.bxslider/jquery.bxslider.css}">
 </xen:container>
 
-<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads2_Container {xen:helper
-			bdImage_Widget_Slider_CssClass, $widget}"
+<div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads2_Container"
 	 style="max-width: {$widget.options.thumbnail_width}px;"
 	 data-layout="bxslider"
 	 data-layout-options='{xen:helper json, {xen:array
@@ -944,8 +975,8 @@ ul.bdImage_Widget_Grid
 	</ul>
 </div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_threads" version_id="26" version_string="1.0.1-dev"><![CDATA[<xen:if hascontent="true">
-	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
+    <template title="bdimage_widget_threads" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if hascontent="true">
+	<xen:set var="$cssClass">bdImage_WidgetRenderer_Threads-{$widget.widget_id}</xen:set>
 	<xen:container var="$head.{$cssClass}">
 <style>
 .{$cssClass}
@@ -1021,8 +1052,8 @@ ul.bdImage_Widget_Grid
         </ul>
     </div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_threads_grid" version_id="19" version_string="0.10.0-dev"><![CDATA[<xen:if hascontent="true">
-	<xen:set var="$cssClass">{xen:helper bdImage_Widget_Slider_CssClass, $widget}</xen:set>
+    <template title="bdimage_widget_threads_grid" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if hascontent="true">
+	<xen:set var="$cssClass">bdImage_WidgetRenderer_ThreadsGrid-{$widget.widget_id}</xen:set>
 	<xen:include template="bdimage_grid_inline_css" />
 	<xen:require css="bdimage_widget.css" />
 
@@ -1032,10 +1063,11 @@ ul.bdImage_Widget_Grid
 				<xen:foreach loop="$threads" value="$thread">
 					<li>
 						<a href="{xen:link threads, $thread}" title="{$thread.title}" class="Tooltip">
-							<img src="{xen:helper bdImage_thumbnail,
-								$thread.bdimage_image,
-								{$widget.options.thumbnail_width},
-								{$widget.options.thumbnail_height}}" />
+							<img <xen:callback class="bdImage_Helper_Template"
+								method="renderImgAttributes" params="{xen:array
+								'0={$widget.options.thumbnail_width}',
+								'1={$widget.options.thumbnail_height}'}">{xen:raw
+								$thread.bdimage_image}</xen:callback> />
 						</a>
 					</li>
 				</xen:foreach>
@@ -1043,7 +1075,7 @@ ul.bdImage_Widget_Grid
 		</ul>
 	</div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_threads_two" version_id="1020270" version_string="1.2.2"><![CDATA[<xen:set var="$cssClass">bdImage_WidgetRenderer_ThreadsTwo-{$widget.widget_id}</xen:set>
+    <template title="bdimage_widget_threads_two" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:set var="$cssClass">bdImage_WidgetRenderer_ThreadsTwo-{$widget.widget_id}</xen:set>
 <xen:container var="$head.{$cssClass}">
 <style>
 	.{$cssClass}
@@ -1094,13 +1126,11 @@ ul.bdImage_Widget_Grid
 	<div class="bdImage_Feature">
 		<div class="thumbnail">
 			<a href="{xen:link threads, $firstThread}">
-				<img src="{xen:helper bdImage_thumbnail,
-					$firstThread.bdimage_image,
-					{$widget.options.feature_width},
-					{$widget.options.feature_height}}" {xen:helper bdImage_imgAttribs,
-					$firstThread.bdimage_image,
-					{$widget.options.feature_width},
-					{$widget.options.feature_height}} />
+				<img <xen:callback class="bdImage_Helper_Template"
+					method="renderImgAttributes" params="{xen:array
+					'0={$widget.options.feature_width}',
+					'1={$widget.options.feature_height}'}">{xen:raw
+					$firstThread.bdimage_image}</xen:callback> />
 			</a>
 		</div>
 		<div class="text">
@@ -1122,13 +1152,11 @@ ul.bdImage_Widget_Grid
 					<xen:if is="{$widget.options.small_size}">
 						<div class="thumbnail">
 							<a href="{xen:link threads, $thread}">
-								<img src="{xen:helper bdImage_thumbnail,
-									$thread.bdimage_image,
-									{$widget.options.small_size},
-									{$widget.options.small_size}}" {xen:helper bdImage_imgAttribs,
-									$thread.bdimage_image,
-									{$widget.options.small_size},
-									{$widget.options.small_size}} />
+								<img <xen:callback class="bdImage_Helper_Template"
+									method="renderImgAttributes" params="{xen:array
+									'0={$widget.options.small_size}',
+									'1={$widget.options.small_size}'}">{xen:raw
+									$thread.bdimage_image}</xen:callback> />
 							</a>
 						</div>
 					</xen:if>
@@ -1139,7 +1167,7 @@ ul.bdImage_Widget_Grid
 		</ul>
 	</div>
 </div>]]></template>
-    <template title="bdimage_widget_thread_item" version_id="30" version_string="1.0.4"><![CDATA[<xen:foreach loop="$threads" value="$thread">
+    <template title="bdimage_widget_thread_item" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:foreach loop="$threads" value="$thread">
 <xen:if is="{$thread.bdimage_image}">
 <li>
 	<a href="{xen:link threads, $thread}"
@@ -1148,14 +1176,12 @@ ul.bdImage_Widget_Grid
 		data-offsetx="10" data-offsety="{xen:calc '5 - {$widget.options.thumbnail_height}'}"
 		</xen:if>
 		>
-		<img src="{xen:helper bdImage_thumbnail,
-			$thread.bdimage_image,
-			{$widget.options.thumbnail_width},
-			{$widget.options.thumbnail_height}}" {xen:helper bdImage_imgAttribs,
-			$thread.bdimage_image,
-			{$widget.options.thumbnail_width},
-			{$widget.options.thumbnail_height}}
-			{xen:if '{$bdImageWidgetThread_showImgTitle}', 'title="{xen:helper snippet, $thread.title, $bdImageWidgetThread_showImgTitle}"'}/>
+		<img <xen:callback class="bdImage_Helper_Template"
+			method="renderImgAttributes" params="{xen:array
+			'0={$widget.options.thumbnail_width}',
+			'1={$widget.options.thumbnail_height}'}">{xen:raw
+			$thread.bdimage_image}</xen:callback>{xen:if $bdImageWidgetThread_showImgTitle,
+			' title="{xen:helper snippet, $thread.title, $bdImageWidgetThread_showImgTitle}"'} />
 	</a>
 
 	<xen:if is="{$bdImageWidgetThread_showTitle}">
@@ -1202,11 +1228,7 @@ ul.bdImage_Widget_Grid
       <find><![CDATA[<xen:elseif is="{$forum.lastPost.date}" />]]></find>
       <replace><![CDATA[$0
 
-<xen:if is="{xen:helper bdImage_getOption, template, node_forum_last_thread_image} AND !!{xen:helper bdImage_image, $forum.bdimage_last_post_image}">
-
-	<xen:include template="bdimage_node_forum_last_thread_image" />
-
-</xen:if>]]></replace>
+<xen:include template="bdimage_node_forum_last_thread_image" />]]></replace>
     </modification>
     <modification template="open_graph_meta" modification_key="bdimage_open_graph_meta_insert" description="Insert our image(s)." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[{xen:raw $ogExtraHtml}]]></find>
@@ -1218,22 +1240,18 @@ ul.bdImage_Widget_Grid
     </modification>
     <modification template="search_result_thread" modification_key="bdimage_search_result_thread_image" description="Template Modification: Thread Image in search result." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:avatar user="$thread" size="s" img="true" />]]></find>
-      <replace><![CDATA[<xen:if is="{xen:helper bdImage_getOption, template, search_result_thread_image} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
-
-	<xen:include template="bdimage_search_result_thread_image" />
-
-<xen:else />
-	$0
-</xen:if>]]></replace>
+      <replace><![CDATA[<xen:if hascontent="true"><xen:contentcheck><xen:include
+	template="bdimage_search_result_thread_image"
+	/></xen:contentcheck><xen:else />$0</xen:if>]]></replace>
     </modification>
     <modification template="thread_edit" modification_key="bdimage_thread_edit_picker" description="Insert image picker into thread_edit form." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<dl class="ctrlUnit submitUnit">]]></find>
-      <replace><![CDATA[<xen:if is="{xen:helper bdImage_getOption, template, picker}">
-<xen:include template="bdimage_picker">
+      <replace><![CDATA[<xen:set var="$bdImage_picker"><xen:callback class="bdImage_Option"
+	method="get" params="{xen:array '0=picker'}">template</xen:callback></xen:set><xen:if
+	is="{$bdImage_picker}"><xen:include template="bdimage_picker">
 	<xen:map from="$bdImage_images" to="$images" />
 	<xen:set var="$currentImageData">{xen:raw $thread.bdimage_image}</xen:set>
-</xen:include>
-</xen:if>
+</xen:include></xen:if>
 
 $0]]></replace>
     </modification>
@@ -1242,12 +1260,12 @@ $0]]></replace>
       <replace><![CDATA[<xen:if hascontent="true">
 <div class="bdImage_imageEdit editBlock">
 	<xen:contentcheck>
-	<xen:if is="{xen:helper bdImage_getOption, template, picker}">
-	<xen:include template="bdimage_picker_simple">
+	<xen:set var="$bdImage_picker"><xen:callback class="bdImage_Option"
+		method="get" params="{xen:array '0=picker'}">template</xen:callback></xen:set><xen:if
+		is="{$bdImage_picker}"><xen:include template="bdimage_picker_simple">
 		<xen:map from="$bdImage_images" to="$images" />
 		<xen:set var="$currentImageData">{xen:raw $thread.bdimage_image}</xen:set>
-	</xen:include>
-	</xen:if>
+	</xen:include></xen:if>
 	</xen:contentcheck>
 </div>
 </xen:if>
@@ -1259,13 +1277,9 @@ $0]]></replace>
       <find><![CDATA[#(<span class="avatarContainer">[^<]+)(<xen:avatar.+/>)#]]></find>
       <replace><![CDATA[$1
 
-<xen:if is="{xen:helper bdImage_getOption, template, thread_list_item_thread_image} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
-
-	<xen:include template="bdimage_thread_list_item_thread_image" />
-
-<xen:else />
-	$2
-</xen:if>]]></replace>
+<xen:if hascontent="true"><xen:contentcheck><xen:include
+	template="bdimage_thread_list_item_thread_image"
+	/></xen:contentcheck><xen:else />$2</xen:if>]]></replace>
     </modification>
     <modification template="thread_view" modification_key="bdimage_thread_view_open_graph_meta" description="Template Modification: Open Graph Image in Thread View." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:include template="open_graph_meta">]]></find>
@@ -1277,21 +1291,13 @@ $0]]></replace>
       <find><![CDATA[<blockquote class="messageText ugc baseHtml">]]></find>
       <replace><![CDATA[$0
 
-<xen:if is="{xen:helper bdImage_getOption, template, wf_widget_threads_thread_image} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
-
-	<xen:include template="bdimage_wf_widget_threads_full_thread_image" />
-
-</xen:if>]]></replace>
+<xen:include template="bdimage_wf_widget_threads_full_thread_image" />]]></replace>
     </modification>
     <modification template="wf_widget_threads_thread_sidebar" modification_key="bdimage_wf_widget_threads_thread_image" description="Template Modification: Thread Image in [bd] Widget Framework Threads widget." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:avatar user="$thread" size="s" img="true" />]]></find>
-      <replace><![CDATA[<xen:if is="{xen:helper bdImage_getOption, template, wf_widget_threads_thread_image} AND !!{xen:helper bdImage_image, $thread.bdimage_image}">
-
-	<xen:include template="bdimage_wf_widget_threads_thread_image" />
-
-<xen:else />
-	$0
-</xen:if>]]></replace>
+      <replace><![CDATA[<xen:if hascontent="true"><xen:contentcheck><xen:include
+	template="bdimage_wf_widget_threads_thread_image"
+	/></xen:contentcheck><xen:else />$0</xen:if>]]></replace>
     </modification>
   </public_template_modifications>
   <bb_code_media_sites/>

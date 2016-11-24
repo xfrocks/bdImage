@@ -14,6 +14,93 @@ class bdImage_Helper_File
     const THUMBNAIL_ERROR_FILE_LENGTH = 9;
 
     /**
+     * @param string $uri
+     * @param int $size
+     * @param int|string $mode
+     * @param string $hash
+     * @param bool $pathPrefix
+     * @return string
+     */
+    public static function getCachePath($uri, $size, $mode, $hash, $pathPrefix = false)
+    {
+        if ($pathPrefix === false) {
+            $pathPrefix = XenForo_Helper_File::getExternalDataPath();
+        }
+
+        $uriExt = XenForo_Helper_File::getFileExtension($uri);
+        switch ($uriExt) {
+            case 'gif':
+            case 'png':
+                $ext = $uriExt;
+                break;
+            default:
+                $ext = 'jpg';
+        }
+
+        $divider = substr(md5($hash), 0, 2);
+
+        return sprintf('%s/%s/cache/%s_%s/%s/%s.%s', $pathPrefix,
+            bdImage_Listener::$generatorDirName, $size, $mode, $divider, $hash, $ext);
+    }
+
+    /**
+     * @param string $uri
+     * @param int $size
+     * @param int|string $mode
+     * @param string $hash
+     * @return string
+     */
+    public static function getCacheUrl($uri, $size, $mode, $hash)
+    {
+        return self::getCachePath($uri, $size, $mode, $hash, XenForo_Application::$externalDataUrl);
+    }
+
+    /**
+     * @param string $uri
+     * @param bool $pathPrefix
+     * @return string
+     */
+    public static function getOriginalCachePath($uri, $pathPrefix = false)
+    {
+        if ($pathPrefix === false) {
+            $pathPrefix = XenForo_Helper_File::getInternalDataPath();
+        }
+
+        return sprintf('%s/%s/cache/%s/%s.orig', $pathPrefix,
+            bdImage_Listener::$generatorDirName, gmdate('Ym'), md5($uri));
+    }
+
+    /**
+     * @param $imageData
+     * @return string
+     */
+    public static function getImageCachedPathOrUrl($imageData)
+    {
+        $url = bdImage_Helper_Data::get($imageData, 'url');
+        if (!is_string($url) || strlen($url) < 0) {
+            return '';
+        }
+
+        if (self::existsAndNotEmpty($url)) {
+            return $url;
+        }
+
+        /** @var XenForo_Application $application */
+        $application = XenForo_Application::getInstance();
+        $path = $application->getRootDir() . '/' . $url;
+        if (self::existsAndNotEmpty($path)) {
+            return realpath($path);
+        }
+
+        $originalCachePath = self::getOriginalCachePath($url);
+        if (self::existsAndNotEmpty($originalCachePath)) {
+            return $originalCachePath;
+        } else {
+            return $url;
+        }
+    }
+
+    /**
      * @param string $path
      * @return bool
      */
@@ -43,6 +130,10 @@ class bdImage_Helper_File
         return $pathStat['size'];
     }
 
+    /**
+     * @param string $path
+     * @return array
+     */
     public static function getThumbnailError($path)
     {
         $data = array(
@@ -82,6 +173,11 @@ class bdImage_Helper_File
         return $data;
     }
 
+    /**
+     * @param string $path
+     * @param array $data
+     * @return int
+     */
     public static function saveThumbnailError($path, array $data = array())
     {
         $attemptCount = 0;

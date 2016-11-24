@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2016-07-11T10:36:41+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2016-11-23T07:40:06+00:00
 
 /**
  * Class bdImage_ShippableHelper_ImageSize
- * @version 8
+ * @version 9
  * @see DevHelper_Helper_ShippableHelper_ImageSize
  */
 class bdImage_ShippableHelper_ImageSize
@@ -299,12 +299,12 @@ class bdImage_ShippableHelper_ImageSize
 
                 case 'sof':
                     $b = $this->getByte();
-                    if (in_array($b, range(0xe0, 0xef))) {
+                    if (in_array($b, range(0xe0, 0xef), true)) {
                         $state = 'skipframe';
-                    } elseif (in_array($b,
-                        array_merge(range(0xC0, 0xC3), range(0xC5, 0xC7), range(0xC9, 0xCB), range(0xCD, 0xCF)))) {
+                    } elseif (in_array($b, array_merge(range(0xC0, 0xC3), range(0xC5, 0xC7),
+                        range(0xC9, 0xCB), range(0xCD, 0xCF)), true)) {
                         $state = 'readsize';
-                    } elseif ($b == 0xFF) {
+                    } elseif ($b === 0xFF) {
                         $state = 'sof';
                     } else {
                         $state = 'skipframe';
@@ -428,6 +428,10 @@ class bdImage_ShippableHelper_ImageSize
     private function getByte()
     {
         $c = $this->getChars(1);
+        if (!is_string($c) || strlen($c) === 0) {
+            return false;
+        }
+
         $b = unpack('C', $c);
 
         return reset($b);
@@ -436,9 +440,7 @@ class bdImage_ShippableHelper_ImageSize
     private function readInt($str)
     {
         $size = unpack('C*', $str);
-        if (!isset($size[1])
-            || !isset($size[2])
-        ) {
+        if (!isset($size[1]) || !isset($size[2])) {
             return 0;
         }
 

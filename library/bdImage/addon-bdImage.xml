@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="bdImage" title="[bd] Image" version_string="1.2.2" version_id="1020270" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="bdImage" title="[bd] Image" version_string="2.0.0" version_id="2000000" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>

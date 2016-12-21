@@ -9,6 +9,46 @@ class bdImage_Helper_Thumbnail
     const ERROR_DOWNLOAD_REMOTE_URI = '/download/remote/uri.error';
     const HASH_FALLBACK = 'default';
 
+    public static function main()
+    {
+        if (headers_sent()) {
+            die(1);
+        }
+
+        set_time_limit(0);
+        $url = filter_input(INPUT_GET, 'url');
+        $size = filter_input(INPUT_GET, 'size', FILTER_VALIDATE_INT);
+        $mode = filter_input(INPUT_GET, 'mode');
+        $hash = filter_input(INPUT_GET, 'hash');
+
+        if (strlen($url) === 0
+            || !is_int($size) || $size === 0
+            || strlen($mode) === 0
+            || strlen($hash) === 0
+            || bdImage_Helper_Data::computeHash($url, $size, $mode) != $hash
+        ) {
+            // invalid request, we may issue 401 but this is more of a security feature
+            // so we are issuing 403 response now...
+            header('HTTP/1.0 403 Forbidden');
+        }
+
+        try {
+            $thumbnailUri = bdImage_Helper_Thumbnail::getThumbnailUri($url, $size, $mode, $hash);
+            header('Location: ' . $thumbnailUri, true, 302);
+        } catch (bdImage_Exception_WithImage $ewi) {
+            XenForo_Error::logException($ewi, false);
+            $ewi->output();
+        } catch (XenForo_Exception $e) {
+            if (XenForo_Application::debugMode()) {
+                XenForo_Error::logException($e, false);
+            }
+
+            header('HTTP/1.0 500 Internal Server Error');
+        }
+
+        die(0);
+    }
+
     /**
      * @param string $url
      * @param int $size
@@ -157,6 +197,10 @@ class bdImage_Helper_Thumbnail
         }
 
         $tempFile = tempnam(XenForo_Helper_File::getTempDir(), 'xf');
+        if (!is_string($tempFile)) {
+            throw new bdImage_Exception_WithImage(sprintf('tempnam() returns %s',
+                var_export($tempFile, true)), $imageObj);
+        }
 
         $outputImageType = self::_guessImageTypeByFileExtension($cachePath);
         $imageObj->output($outputImageType, $tempFile);

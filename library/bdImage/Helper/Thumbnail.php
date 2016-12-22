@@ -21,15 +21,16 @@ class bdImage_Helper_Thumbnail
         $mode = filter_input(INPUT_GET, 'mode');
         $hash = filter_input(INPUT_GET, 'hash');
 
-        if (strlen($url) === 0
+        if (!is_string($url) || strlen($url) === 0
             || !is_int($size) || $size === 0
-            || strlen($mode) === 0
-            || strlen($hash) === 0
+            || !is_string($mode) || strlen($mode) === 0
+            || !is_string($hash) || strlen($hash) === 0
             || bdImage_Helper_Data::computeHash($url, $size, $mode) != $hash
         ) {
             // invalid request, we may issue 401 but this is more of a security feature
             // so we are issuing 403 response now...
             header('HTTP/1.0 403 Forbidden');
+            die(1);
         }
 
         try {

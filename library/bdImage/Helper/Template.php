@@ -3,6 +3,44 @@
 class bdImage_Helper_Template
 {
     /**
+     * @param string $key
+     * @param array $container
+     * @return string
+     */
+    public static function getImageData($key, array $container)
+    {
+        $keys = array();
+        if (!empty($key)) {
+            $keys[] = $key;
+        } else {
+            $keys = array(
+                'bdimage_image',            // ours on `xf_thread`
+                'bdimage_last_post_image',  // ours on `xf_forum`
+                'tinhte_thumbnail_url',     // [Tinhte] Thread Thumbnail on `xf_thread`
+            );
+        }
+
+        foreach ($keys as $_key) {
+            if (!empty($container[$_key])) {
+                return $container[$_key];
+            }
+        }
+    }
+
+    /**
+     * @param string $text
+     * @return string "PREFIX" if $text is "[PREFIX] Something else", full $text otherwise
+     */
+    public static function getTextPrefix($text)
+    {
+        if (preg_match('#^\[(?<prefix>.+?)\]#', $text, $matches)) {
+            return $matches['prefix'];
+        }
+
+        return $text;
+    }
+
+    /**
      * @param string $imageData
      * @param array $params
      * @return string

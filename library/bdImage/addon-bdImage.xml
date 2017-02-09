@@ -497,7 +497,7 @@ html.bdImage_hasCover .titleBar {
 
 </style>
 </xen:container>]]></template>
-    <template title="bdimage_hero_image.css" version_id="2000000" version_string="2.0.0"><![CDATA[<xen:set var="$heroImageSpacingHuge">45px</xen:set>
+    <template title="bdimage_hero_image.css" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$heroImageSpacingHuge">45px</xen:set>
 <xen:set var="$heroImageSpacingLarge">30px</xen:set>
 <xen:set var="$heroImageSpacingMedium">15px</xen:set>
 <xen:set var="$heroImageSpacingSmall">10px</xen:set>
@@ -542,6 +542,8 @@ html.bdImage_hasCover .titleBar {
 }
 
 .bdImage_heroImage img.hero {
+	background-position: center center;
+	background-size: cover;
 	display: block;
 	height: auto;
 	width: 100%;
@@ -771,7 +773,7 @@ html.bdImage_hasCover .titleBar {
 	</xen:comment><img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_searchResult_imageSize}" <xen:comment>
 	</xen:comment>height="{xen:property bdImage_searchResult_imageSize}"{xen:if $debugMode,
 	' data-image="{xen:jsescape $thread.bdimage_image}"'} /></a></xen:if></xen:if></xen:if>]]></template>
-    <template title="bdimage_stylized_grid.css" version_id="2000000" version_string="2.0.0"><![CDATA[<xen:set var="$widthNarrow">720px</xen:set>
+    <template title="bdimage_stylized_grid.css" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$widthNarrow">720px</xen:set>
 <xen:set var="$widthWide">960px</xen:set>
 <xen:set var="$spacingHuge">40px</xen:set>
 <xen:set var="$spacingLarge">25px</xen:set>
@@ -818,17 +820,9 @@ html.bdImage_hasCover .titleBar {
 	.bdImage_stylizedGrid .cell.position-5 { width: 39.99%; }
 	.bdImage_stylizedGrid .cell.position-0 { width: 100%; }
 
-.bdImage_stylizedGrid .cell.position-2 {
-	bottom: 0;
-	position: absolute;
-	top: 0;
-}
-	.bdImage_stylizedGrid .cell.position-2 .thread {
-		bottom: 0;
-		overflow: hidden;
-		position: absolute;
-		top: 0;
-	}
+.bdImage_stylizedGrid .cell.position-2,
+.bdImage_stylizedGrid .cell.position-2 .thread,
+.bdImage_stylizedGrid .cell.position-2 .spacing { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 	.bdImage_stylizedGrid .cell.position-2 .forum { display: none; }
 	.bdImage_stylizedGrid .cell.position-3 { float: right; }
 
@@ -839,12 +833,8 @@ html.bdImage_hasCover .titleBar {
 		right: 0;
 		top: 0;
 	}
-	.bdImage_stylizedGrid .cell.position-5 .thread {
-		bottom: 0;
-		overflow: hidden;
-		position: absolute;
-		top: 0;
-	}
+	.bdImage_stylizedGrid .cell.position-5 .thread,
+	.bdImage_stylizedGrid .cell.position-5 .spacing { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 	.bdImage_stylizedGrid .cell.position-5 .forum { display: none; }
 
 .bdImage_stylizedGrid .row.position-0 {
@@ -859,7 +849,12 @@ html.bdImage_hasCover .titleBar {
 	}
 
 .bdImage_stylizedGrid .thread {
+	width: 100%;
+}
+
+.bdImage_stylizedGrid .spacing {
 	margin: {$spacingSmall};
+	overflow: hidden;
 	position: relative;
 }
 
@@ -871,6 +866,10 @@ html.bdImage_hasCover .titleBar {
 	position: relative;
 	width: 100%;
 }
+	.bdImage_stylizedGrid .thread-image a {
+		background-position: center center;
+		background-size: cover;
+	}
 
 .bdImage_stylizedGrid .gradient {
 	opacity: .7;
@@ -952,7 +951,7 @@ html.bdImage_hasCover .titleBar {
 <xen:if is="{xen:property enableResponsive}">
 @media screen and (max-width: {$widthBreakPoint}) {
 	.bdImage_stylizedGrid { margin: 0 -{$spacingEdge}; }
-	.bdImage_stylizedGrid .thread { margin: {$spacingEdge}; }
+	.bdImage_stylizedGrid .spacing { margin: {$spacingEdge}; }
 
 	.Responsive .bdImage_stylizedGrid .image-text-container { bottom: {$spacingSmall}; }
 	.Responsive .bdImage_stylizedGrid .image-text { margin: 0 {$spacingSmall}; }
@@ -1372,8 +1371,11 @@ ul.bdImage_Widget_Grid
         </ul>
     </div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_threads_custom" version_id="2000000" version_string="2.0.0"><![CDATA[<xen:edithint template="bdimage_widget_threads_hero_image" />
-<xen:edithint template="bdimage_widget_threads_stylized_grid" />]]></template>
+    <template title="bdimage_widget_threads_custom" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:edithint template="bdimage_widget_threads_hero_image" />
+<xen:edithint template="bdimage_hero_image.css" />
+
+<xen:edithint template="bdimage_widget_threads_stylized_grid" />
+<xen:edithint template="bdimage_stylized_grid.css" />]]></template>
     <template title="bdimage_widget_threads_grid" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if hascontent="true">
 	<xen:set var="$cssClass">bdImage_WidgetRenderer_ThreadsGrid-{$widget.widget_id}</xen:set>
 	<xen:include template="bdimage_grid_inline_css" />
@@ -1397,15 +1399,18 @@ ul.bdImage_Widget_Grid
 		</ul>
 	</div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_threads_hero_image" version_id="2000000" version_string="2.0.0"><![CDATA[<xen:if hascontent="true"><xen:require css="bdimage_hero_image.css" /><xen:comment>	
+    <template title="bdimage_widget_threads_hero_image" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:if hascontent="true"><xen:require css="bdimage_hero_image.css" /><xen:comment>	
 
 	</xen:comment><xen:contentcheck><xen:set var="$imageData" /><xen:foreach loop="$threads"
 		value="$thread"><xen:if is="{$imageData} === ''"><xen:set
 			var="$imageData"><xen:callback class="bdImage_Helper_Template" method="getImageData" params="{$thread}"
 			/></xen:set><xen:if is="{$imageData}">
 		<div id="hero-post-{$thread.first_post_id}" class="bdImage_heroImage" data-author="{$thread.username}">
-			<img src="<xen:callback class="bdImage_Integration"
-				method="getOriginalUrl">{xen:raw $imageData}</xen:callback>" class="hero" />
+			<xen:set var="$originalUrl"><xen:callback class="bdImage_Integration"
+				method="getOriginalUrl">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+				var="$transparentDataUri"><xen:callback class="bdImage_ShippableHelper_ImageSize"
+				method="getDataUriMatchesRatio">{xen:raw $originalUrl}</xen:callback></xen:set><xen:comment>
+				</xen:comment><img src="{xen:raw $transparentDataUri}" class="hero" style="background-image: url('{xen:raw $originalUrl}')" />
 
 			<div class="text">
 				<div class="gradient"></div>
@@ -1455,7 +1460,7 @@ ul.bdImage_Widget_Grid
 			</div><!-- .text -->
 		</div><!-- .bdImage_heroImage -->
 </xen:if></xen:if></xen:foreach></xen:contentcheck></xen:if>]]></template>
-    <template title="bdimage_widget_threads_stylized_grid" version_id="2000000" version_string="2.0.0"><![CDATA[<xen:if hascontent="true"><xen:require css="bdimage_stylized_grid.css" /><xen:comment>	
+    <template title="bdimage_widget_threads_stylized_grid" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:if hascontent="true"><xen:require css="bdimage_stylized_grid.css" /><xen:comment>	
 
 </xen:comment>
 <div class="bdImage_stylizedGrid"><xen:contentcheck><xen:set
@@ -1481,55 +1486,59 @@ var="$threadsCount">{xen:count $threads}</xen:set><xen:foreach
 	<xen:if is="{$posPrefix.{$positionId}} === '1'"><div class="row width-wide position-{$positionId}"></xen:if>
 	<div class="cell position-{$positionId}">
 		<div id="post-{$thread.first_post_id}" class="thread" data-author="{$thread.username}">
-			<xen:if is="{$imageData}"><xen:if is="{$positionWidth} === '0'"><xen:set var="$positionWidth"><xen:callback
-				class="bdImage_Integration" method="getImageWidth">{xen:raw $imageData}</xen:callback></xen:set></xen:if><xen:if
-				is="{$positionHeight} === '0'"><xen:set var="$positionHeight"><xen:callback class="bdImage_Integration"
-				method="getImageHeight">{xen:raw $imageData}</xen:callback></xen:set></xen:if><div class="thread-image">
-				<a href="{xen:link threads, $thread}">
-					<img src="<xen:callback class="bdImage_Helper_Template"
-						method="getThumbnailUrl" params="{xen:array 'width={$positionWidth}',
-						'height={$positionHeight}'}">{xen:raw $imageData}</xen:callback>" width="{$positionWidth}" height="{$positionHeight}" />
-					<div class="gradient"></div>
-				</a>
-			</div></xen:if>
+			<div class="spacing">
+				<xen:if is="{$imageData}"><xen:if is="{$positionWidth} === '0'"><xen:set var="$positionWidth"><xen:callback
+					class="bdImage_Integration" method="getImageWidth">{xen:raw $imageData}</xen:callback></xen:set></xen:if><xen:if
+					is="{$positionHeight} === '0'"><xen:set var="$positionHeight"><xen:callback class="bdImage_Integration"
+					method="getImageHeight">{xen:raw $imageData}</xen:callback></xen:set></xen:if><xen:set
+					var="$thumbnailUrl"><xen:callback class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
+					'width={$positionWidth}', 'height={$positionHeight}'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+					var="$transparentDataUri"><xen:callback class="bdImage_Helper_Template" method="getTransparentDataUri" params="{xen:array
+					'width={$positionWidth}', 'height={$positionHeight}'}">{xen:raw $thumbnailUrl}</xen:callback></xen:set><div class="thread-image">
+					<a href="{xen:link threads, $thread}" style="background-image: url('{xen:raw $thumbnailUrl}')">
+						<img src="{xen:raw $transparentDataUri}" />
+						<div class="gradient"></div>
+					</a>
+				</div></xen:if>
 
-			<div class="image-text-container">
-				<div class="width-wide">
-					<div class="thread-title image-text">
-						<a href="{xen:link threads, $thread}">
-							{xen:helper snippet, $thread.title, $threadTitleMaxLength}
-						</a>
-					</div><!-- .thread-title -->
+				<div class="image-text-container">
+					<div class="width-wide">
+						<div class="thread-title image-text">
+							<a href="{xen:link threads, $thread}">
+								{xen:helper snippet, $thread.title, $threadTitleMaxLength}
+							</a>
+						</div><!-- .thread-title -->
 
-					<div class="thread-info image-text">
-						<span class="poster-avatar">
-							<xen:avatar user="$thread" size="m" img="true" />
-						</span>
-						<span class="poster">
-							<xen:username user="$thread" />
-						</span>
+						<div class="thread-info image-text">
+							<span class="poster-avatar">
+								<xen:avatar user="$thread" size="m" img="true" />
+							</span>
+							<span class="poster">
+								<xen:username user="$thread" />
+							</span>
 
-						<span class="post-date"><xen:set var="$deltaTime">{xen:calc
-							'{$serverTime} - {$thread.post_date}'}</xen:set><xen:if
-							is="{$deltaTime} > 0 && {$deltaTime} < 86400">
-							<a href="{xen:link threads, $thread}" class="Tooltip" title="{xen:datetime
-								$thread.post_date, absolute}">{xen:datetime $thread.post_date, relative}</a><xen:else
-						/>
-							<a href="{xen:link threads, $thread}">{xen:datetime $thread.post_date, absolute}</a>
-						</xen:if></span>
+							<span class="post-date"><xen:set var="$deltaTime">{xen:calc
+								'{$serverTime} - {$thread.post_date}'}</xen:set><xen:if
+								is="{$deltaTime} > 0 && {$deltaTime} < 86400">
+								<a href="{xen:link threads, $thread}" class="Tooltip" title="{xen:datetime
+									$thread.post_date, absolute}">{xen:datetime $thread.post_date, relative}</a><xen:else
+							/>
+								<a href="{xen:link threads, $thread}">{xen:datetime $thread.post_date, absolute}</a>
+							</xen:if></span>
 
-						<xen:if is="{$thread.forum.node_id} > 0"><span class="forum"><xen:set
-							var="$forumTitleOriginal">{$thread.forum.title}</xen:set><xen:set
-							var="$forumTitlePrefix"><xen:callback class="bdImage_Helper_Template"
-								method="getTextPrefix">{xen:raw $forumTitleOriginal}</xen:callback></xen:set>
-							<span>{xen:phrase in_forum}</span>
-							<a href="{xen:link forums, $thread.forum}"{xen:if
-								'{$forumTitleOriginal} !== {$forumTitlePrefix}',
-								' title="{xen:raw $forumTitleOriginal}" class="Tooltip"'}>{xen:raw $forumTitlePrefix}</a>
-						</span></xen:if>
-					</div><!-- .thread-info -->
-				</div><!-- .width-wide -->
-			</div><!-- .image-text-container -->
+							<xen:if is="{$thread.forum.node_id} > 0"><span class="forum"><xen:set
+								var="$forumTitleOriginal">{$thread.forum.title}</xen:set><xen:set
+								var="$forumTitlePrefix"><xen:callback class="bdImage_Helper_Template"
+									method="getTextPrefix">{xen:raw $forumTitleOriginal}</xen:callback></xen:set>
+								<span>{xen:phrase in_forum}</span>
+								<a href="{xen:link forums, $thread.forum}"{xen:if
+									'{$forumTitleOriginal} !== {$forumTitlePrefix}',
+									' title="{xen:raw $forumTitleOriginal}" class="Tooltip"'}>{xen:raw $forumTitlePrefix}</a>
+							</span></xen:if>
+						</div><!-- .thread-info -->
+					</div><!-- .width-wide -->
+				</div><!-- .image-text-container -->
+			</div><!-- .spacing -->
 		</div><!-- .thread -->
 	</div><!-- .cell -->
 	<xen:if is="{$posSuffix.{$positionId}} === '1'"></div><!-- .row --></xen:if>

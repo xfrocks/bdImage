@@ -54,6 +54,20 @@ class bdImage_Helper_Template
     }
 
     /**
+     * @param string $contents
+     * @param array $params with `width` and `height`
+     * @return string
+     */
+    public static function getTransparentDataUri($contents, array $params)
+    {
+        if (empty($params['width']) || empty($params['height'])) {
+            return $contents;
+        }
+
+        return bdImage_ShippableHelper_ImageSize::getDataUriAtSize($params['width'], $params['height']);
+    }
+
+    /**
      * @param string $imageData
      * @param array $params
      * @return string

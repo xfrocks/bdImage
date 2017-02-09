@@ -95,6 +95,8 @@ class bdImage_Helper_Thumbnail
      * @param int|string $mode
      * @param string $hash
      * @return string
+     *
+     * @throws bdImage_Exception_WithImage
      */
     protected static function _buildThumbnailLink($url, $size, $mode, $hash)
     {

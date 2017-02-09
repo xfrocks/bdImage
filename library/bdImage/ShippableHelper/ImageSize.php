@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2016-11-24T05:08:32+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2016-12-21T06:49:08+00:00
 
 /**
  * Class bdImage_ShippableHelper_ImageSize
- * @version 10
+ * @version 13
  * @see DevHelper_Helper_ShippableHelper_ImageSize
  */
 class bdImage_ShippableHelper_ImageSize
@@ -15,6 +15,20 @@ class bdImage_ShippableHelper_ImageSize
             && __CLASS__ !== 'bdImage_ShippableHelper_ImageSize'
         ) {
             return bdImage_ShippableHelper_ImageSize::calculate($uri, $ttl);
+        }
+
+        if (empty($uri)
+            // http://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
+            || strlen($uri) > 2000
+            || strpos($uri, ' ') !== false
+            || strpos($uri, 'data:') === 0
+        ) {
+            return array(
+                'uri' => $uri,
+                'width' => 0,
+                'height' => 0,
+                'timestamp' => time(),
+            );
         }
 
         $cacheId = __CLASS__ . md5($uri);
@@ -76,7 +90,7 @@ class bdImage_ShippableHelper_ImageSize
         }
 
         $calculated = self::calculate($uri);
-        if ($calculated['width'] === 0 || $calculated['height'] === 0) {
+        if ($calculated['width'] < 1 || $calculated['height'] < 1) {
             return '';
         }
 
@@ -85,7 +99,7 @@ class bdImage_ShippableHelper_ImageSize
 
     public static function getDataUriAtSize($width, $height, $rgba = null)
     {
-        if (!function_exists('imagecreatetruecolor')) {
+        if (!function_exists('imagecreatetruecolor') || $width < 1 || $height < 1) {
             return '';
         }
 
@@ -123,7 +137,12 @@ class bdImage_ShippableHelper_ImageSize
 
         $startTime = microtime(true);
 
-        if (preg_match('#attachments/(.+\.)*(?<id>\d+)/$#', $uri, $matches)) {
+        if (preg_match('#^(?<prefix>.+)?attachments/(.+\.)*(?<id>\d+)/#', $uri, $matches)
+            && ($matches['prefix'] === ''
+                || strpos($matches['prefix'], XenForo_Link::buildPublicLink('full:index')) === 0
+                || strpos($matches['prefix'], XenForo_Link::buildPublicLink('canonical:index')) === 0
+            )
+        ) {
             $attachmentResult = self::_calculateForAttachment($uri, $matches['id']);
             if (!empty($attachmentResult['width'])
                 && !empty($attachmentResult['height'])
@@ -139,17 +158,18 @@ class bdImage_ShippableHelper_ImageSize
             $instance->load($uri);
         }
 
-        $size = $instance->getSize();
+        list($width, $height) = $instance->getSize();
 
         if (XenForo_Application::debugMode()) {
             $elapsedTime = microtime(true) - $startTime;
-            XenForo_Helper_File::log(__CLASS__, sprintf('$uri=%s; $elapsedTime=%.6f', $uri, $elapsedTime));
+            XenForo_Helper_File::log(__CLASS__, sprintf('$uri=%s; $width=%d, $height=%d; $elapsedTime=%.6f',
+                $uri, $width, $height, $elapsedTime));
         }
 
         return array(
             'uri' => $uri,
-            'width' => ($size ? intval($size[0]) : 0),
-            'height' => ($size ? intval($size[1]) : 0),
+            'width' => $width,
+            'height' => $height,
             'timestamp' => time(),
         );
     }
@@ -170,18 +190,27 @@ class bdImage_ShippableHelper_ImageSize
             $attachments[$attachmentId] = $attachmentModel->getAttachmentById($attachmentId);
         }
 
+        $width = 0;
+        if (!empty($attachments[$attachmentId]['width'])) {
+            $width = intval($attachments[$attachmentId]['width']);
+        }
+
+        $height = 0;
+        if (!empty($attachments[$attachmentId]['height'])) {
+            $height = intval($attachments[$attachmentId]['height']);
+        }
 
         if (XenForo_Application::debugMode()) {
             $elapsedTime = microtime(true) - $startTime;
-            XenForo_Helper_File::log(__CLASS__, sprintf('$attachmentId=%d; $elapsedTime=%.6f',
-                $attachmentId, $elapsedTime));
+            XenForo_Helper_File::log(__CLASS__, sprintf('$uri=%s; $attachmentId=%d, $width=%d, $height=%d;'
+                . ' $elapsedTime=%.6f', $uri, $attachmentId, $width, $height, $elapsedTime));
         }
 
         return array(
             'uri' => $uri,
             'attachmentId' => $attachmentId,
-            'width' => ($attachments[$attachmentId] ? $attachments[$attachmentId]['width'] : ''),
-            'height' => ($attachments[$attachmentId] ? $attachments[$attachmentId]['height'] : ''),
+            'width' => $width,
+            'height' => $height,
             'timestamp' => time(),
         );
     }
@@ -260,11 +289,16 @@ class bdImage_ShippableHelper_ImageSize
     private function getSize()
     {
         $this->pos = 0;
-        if ($this->getType()) {
-            return array_values($this->parseSize());
+        if (!$this->getType()) {
+            return array(0, 0);
         }
 
-        return false;
+        $size = $this->parseSize();
+        if (!is_array($size) || count($size) < 2) {
+            return array(0, 0);
+        }
+
+        return array_map('intval', array_values($size));
     }
 
     private function getType()

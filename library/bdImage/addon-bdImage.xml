@@ -497,9 +497,9 @@ html.bdImage_hasCover .titleBar {
 
 </style>
 </xen:container>]]></template>
-    <template title="bdimage_hero_image.css" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$heroImageSpacingHuge">45px</xen:set>
+    <template title="bdimage_hero_image.css" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$heroImageSpacingHuge">40px</xen:set>
 <xen:set var="$heroImageSpacingLarge">30px</xen:set>
-<xen:set var="$heroImageSpacingMedium">15px</xen:set>
+<xen:set var="$heroImageSpacingMedium">20px</xen:set>
 <xen:set var="$heroImageSpacingSmall">10px</xen:set>
 <xen:set var="$heroImageSpacingEdge">5px</xen:set>
 <xen:set var="$heroImageGradientColor">#343434</xen:set>
@@ -512,12 +512,14 @@ html.bdImage_hasCover .titleBar {
 <xen:set var="$heroImagePosterColor">#fbfbfb</xen:set>
 <xen:set var="$heroImagePosterFontSize">18pt</xen:set>
 <xen:set var="$heroImageForumColor">#098bf9</xen:set>
-<xen:set var="$heroImagePosterImgSize">32px</xen:set>
+<xen:set var="$heroImagePosterImgSize">40px</xen:set>
 
 .bdImage_heroImage {
 	display: block;
+	margin: 0 0 {$heroImageSpacingLarge} 0;
 	max-height: 90vh; <xen:comment>http://caniuse.com/#feat=viewport-units</xen:comment>
 	overflow: hidden;
+	padding: 0;
 	position: relative;
 	width: 100%;
 }
@@ -562,7 +564,9 @@ html.bdImage_hasCover .titleBar {
 	color: {$heroImageThreadTitleColor};
 	font-size: {$heroImageThreadTitleFontSize};
 	font-weight: 700;
-	margin-bottom: {$heroImageSpacingLarge};
+	line-height: 1em;
+	margin-bottom: {$heroImageSpacingHuge};
+	max-height: 2em;
 }
 
 .bdImage_heroImage .post-body {
@@ -613,6 +617,12 @@ html.bdImage_hasCover .titleBar {
 		color: {$heroImageForumColor};
 		font-weight: 400;
 	}
+
+.bdImage_heroImage .spacing-edge {
+	display: block;
+	height: {$heroImageSpacingEdge};
+	width: 100%;
+}
 
 <xen:if is="{xen:property enableResponsive}">
 @media (max-width:{xen:property maxResponsiveMediumWidth}) {
@@ -773,34 +783,33 @@ html.bdImage_hasCover .titleBar {
 	</xen:comment><img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_searchResult_imageSize}" <xen:comment>
 	</xen:comment>height="{xen:property bdImage_searchResult_imageSize}"{xen:if $debugMode,
 	' data-image="{xen:jsescape $thread.bdimage_image}"'} /></a></xen:if></xen:if></xen:if>]]></template>
-    <template title="bdimage_stylized_grid.css" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$widthNarrow">720px</xen:set>
-<xen:set var="$widthWide">960px</xen:set>
-<xen:set var="$spacingHuge">40px</xen:set>
-<xen:set var="$spacingLarge">25px</xen:set>
-<xen:set var="$spacingMedium">15px</xen:set>
-<xen:set var="$spacingSmall">10px</xen:set>
-<xen:set var="$spacingEdge">5px</xen:set>
-<xen:set var="$widthBreakPoint">{xen:calc 'intval({$widthWide}) + intval({$spacingEdge}) * 2'}px</xen:set>
+    <template title="bdimage_stylized_grid.css" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$stylizedGridSpacingHuge">35px</xen:set>
+<xen:set var="$stylizedGridSpacingLarge">25px</xen:set>
+<xen:set var="$stylizedGridSpacingMedium">20px</xen:set>
+<xen:set var="$stylizedGridSpacingSmall">10px</xen:set>
+<xen:set var="$stylizedGridSpacingEdge">5px</xen:set>
+<xen:set var="$widthWide">{xen:calc '960 + 2 * intval({$stylizedGridSpacingSmall})'}px</xen:set>
+<xen:set var="$widthBreakPoint">{xen:calc 'intval({$widthWide}) + intval({$stylizedGridSpacingEdge}) * 2'}px</xen:set>
 
-<xen:set var="$heroImageThreadTitleColor">#d9e4ed</xen:set>
-<xen:set var="$heroImageThreadTitleFontSize">26pt</xen:set>
-<xen:set var="$heroImageThreadTitleBiggerFontSize">36pt</xen:set>
-<xen:set var="$heroImageThreadInfoColor">#d1d5d6</xen:set>
-<xen:set var="$heroImageThreadInfoFontSize">14pt</xen:set>
-<xen:set var="$heroImagePosterColor">#fbfbfb</xen:set>
-<xen:set var="$heroImagePosterFontSize">18pt</xen:set>
-<xen:set var="$heroImageForumColor">#098bf9</xen:set>
-<xen:set var="$heroImagePosterImgSize">32px</xen:set>
+<xen:set var="$stylizedGridGradientFrom">#f3f5f6</xen:set>
+<xen:set var="$stylizedGridGradientTo">#19202e</xen:set>
+<xen:set var="$stylizedGridThreadTitleColor">#d9e4ed</xen:set>
+<xen:set var="$stylizedGridThreadTitleFontSize">26pt</xen:set>
+<xen:set var="$stylizedGridThreadTitleBiggerFontSize">36pt</xen:set>
+<xen:set var="$stylizedGridThreadInfoColor">#d1d5d6</xen:set>
+<xen:set var="$stylizedGridThreadInfoFontSize">14pt</xen:set>
+<xen:set var="$stylizedGridPosterColor">#fbfbfb</xen:set>
+<xen:set var="$stylizedGridPosterFontSize">18pt</xen:set>
+<xen:set var="$stylizedGridForumColor">#098bf9</xen:set>
+<xen:set var="$stylizedGridPosterImgSize">40px</xen:set>
 
 .bdImage_stylizedGrid {
-	margin: 0 -{$spacingSmall};
+	margin: 0 -{$stylizedGridSpacingSmall} {xen:calc '(intval({$stylizedGridSpacingLarge}) + intval({$stylizedGridSpacingEdge})) * 2'}px -{$stylizedGridSpacingSmall};
 }
 	.bdImage_stylizedGrid a { background: none; border: 0; color: inherit; font-size: inherit; font-weight: inherit; }
 
-.bdImage_stylizedGrid .width-narrow { margin: 0 {$spacingLarge}; }
 .bdImage_stylizedGrid .width-wide { margin: 0; }
 @media screen and (min-width: {$widthBreakPoint}) {
-	.bdImage_stylizedGrid .width-narrow { margin: 0 auto; max-width: {$widthNarrow}; }
 	.bdImage_stylizedGrid .width-wide { margin: 0 auto; max-width: {$widthWide}; }
 }
 
@@ -814,15 +823,15 @@ html.bdImage_hasCover .titleBar {
 	padding: 0;
 }
 	.bdImage_stylizedGrid .cell.position-1 { width: 100%;   }
-	.bdImage_stylizedGrid .cell.position-2 { width: 39.99%; }
-	.bdImage_stylizedGrid .cell.position-3 { width: 60%; }
-	.bdImage_stylizedGrid .cell.position-4 { width: 60%; }
-	.bdImage_stylizedGrid .cell.position-5 { width: 39.99%; }
+	.bdImage_stylizedGrid .cell.position-2 { width: 38.69%; }
+	.bdImage_stylizedGrid .cell.position-3 { width: 61.3%; }
+	.bdImage_stylizedGrid .cell.position-4 { width: 61.3%; }
+	.bdImage_stylizedGrid .cell.position-5 { width: 38.69%; }
 	.bdImage_stylizedGrid .cell.position-0 { width: 100%; }
 
 .bdImage_stylizedGrid .cell.position-2,
 .bdImage_stylizedGrid .cell.position-2 .thread,
-.bdImage_stylizedGrid .cell.position-2 .spacing { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+.bdImage_stylizedGrid .cell.position-2 .spacing-border { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 	.bdImage_stylizedGrid .cell.position-2 .forum { display: none; }
 	.bdImage_stylizedGrid .cell.position-3 { float: right; }
 
@@ -834,10 +843,11 @@ html.bdImage_hasCover .titleBar {
 		top: 0;
 	}
 	.bdImage_stylizedGrid .cell.position-5 .thread,
-	.bdImage_stylizedGrid .cell.position-5 .spacing { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+	.bdImage_stylizedGrid .cell.position-5 .spacing-border { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 	.bdImage_stylizedGrid .cell.position-5 .forum { display: none; }
 
 .bdImage_stylizedGrid .row.position-0 {
+	margin-bottom: {xen:calc 'intval({$stylizedGridSpacingLarge}) + intval({$stylizedGridSpacingEdge})'}px;
 	max-width: initial;
 	width: 100%; 
 }
@@ -852,8 +862,8 @@ html.bdImage_hasCover .titleBar {
 	width: 100%;
 }
 
-.bdImage_stylizedGrid .spacing {
-	margin: {$spacingSmall};
+.bdImage_stylizedGrid .spacing-border {
+	margin: {$stylizedGridSpacingSmall};
 	overflow: hidden;
 	position: relative;
 }
@@ -879,50 +889,55 @@ html.bdImage_hasCover .titleBar {
 		bottom: 0;
 		left: 0;
 
-	/* http://colorzilla.com/gradient-editor/#8b939a+0,2a3944+100 */
-	background: #8b939a; /* Old browsers */
-	background: -moz-linear-gradient(top,  #8b939a 0%, #2a3944 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top,  #8b939a 0%,#2a3944 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom,  #8b939a 0%,#2a3944 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8b939a', endColorstr='#2a3944',GradientType=0 ); /* IE6-9 */
+	<xen:comment>http://colorzilla.com/gradient-editor/</xen:comment>
+	background: {$stylizedGridGradientFrom}; /* Old browsers */
+	background: -moz-linear-gradient(top,  {$stylizedGridGradientFrom} 0%, {$stylizedGridGradientTo} 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  {$stylizedGridGradientFrom} 0%, {$stylizedGridGradientTo} 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  {$stylizedGridGradientFrom} 0%, {$stylizedGridGradientTo} 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='{$stylizedGridGradientFrom}', endColorstr='{$stylizedGridGradientTo}',GradientType=0 ); /* IE6-9 */
 }
 
 .bdImage_stylizedGrid .image-text-container {
-	bottom: {$spacingLarge};
+	bottom: {$stylizedGridSpacingLarge};
 	left: 0;
 	position: absolute;
 	right: 0;
 }
+	.bdImage_stylizedGrid .position-0 .image-text-container,
+	.bdImage_stylizedGrid .position-1 .image-text-container {
+		margin-bottom: {$stylizedGridSpacingHuge};
+	}
 
-.bdImage_stylizedGrid .image-text { margin: 0 {$spacingLarge}; }
+.bdImage_stylizedGrid .image-text { margin: 0 {$stylizedGridSpacingLarge}; }
 
 .bdImage_stylizedGrid .thread-title {
-	color: {$heroImageThreadTitleColor};
-	font-size: {$heroImageThreadTitleFontSize};
+	color: {$stylizedGridThreadTitleColor};
+	font-size: {$stylizedGridThreadTitleFontSize};
 	font-weight: 700;
-	line-height: 1.3em;
-	margin-bottom: {$spacingMedium};
-	max-height: 2.6em;
+	line-height: 1em;
+	margin-bottom: {$stylizedGridSpacingMedium};
+	max-height: 2em;
 	overflow: hidden;
 }
 	.bdImage_stylizedGrid .position-0 .thread-title,
 	.bdImage_stylizedGrid .position-1 .thread-title {
-		font-size: {$heroImageThreadTitleBiggerFontSize};
+		font-size: {$stylizedGridThreadTitleBiggerFontSize};
+		margin-bottom: {$stylizedGridSpacingLarge};
 	}
 
 .bdImage_stylizedGrid .thread-info {
-	color: {$heroImageThreadInfoColor};
-	font-size: {$heroImageThreadInfoFontSize};
-	height: {$heroImagePosterImgSize};
-	line-height: {$heroImagePosterImgSize};
+	color: {$stylizedGridThreadInfoColor};
+	font-size: {$stylizedGridThreadInfoFontSize};
+	height: {$stylizedGridPosterImgSize};
+	line-height: {$stylizedGridPosterImgSize};
 	overflow: hidden;
-	padding-left: {xen:calc 'intval({$heroImagePosterImgSize}) + intval({$spacingMedium})'}px;
+	padding-left: {xen:calc 'intval({$stylizedGridPosterImgSize}) + intval({$stylizedGridSpacingMedium})'}px;
 	position: relative;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 	.bdImage_stylizedGrid .thread-info > span {
-		margin-right: {$spacingSmall};
+		margin-right: {$stylizedGridSpacingSmall};
 	}
 	.bdImage_stylizedGrid .poster-avatar {
 		line-height: 0;
@@ -932,29 +947,29 @@ html.bdImage_hasCover .titleBar {
 	.bdImage_stylizedGrid .poster-avatar img {
 		background: none;
 		border: 0;
-		border-radius: {$heroImagePosterImgSize};
-		height: {$heroImagePosterImgSize};
+		border-radius: {$stylizedGridPosterImgSize};
+		height: {$stylizedGridPosterImgSize};
 		margin: 0;
 		padding: 0;
-		width: {$heroImagePosterImgSize};
+		width: {$stylizedGridPosterImgSize};
 	}
 	.bdImage_stylizedGrid .poster {
-		color: {$heroImagePosterColor};
-		font-size: {$heroImagePosterFontSize};
+		color: {$stylizedGridPosterColor};
+		font-size: {$stylizedGridPosterFontSize};
 		font-weight: 400;
 	}
 	.bdImage_stylizedGrid .forum a {
-		color: {$heroImageForumColor};
+		color: {$stylizedGridForumColor};
 		font-weight: 400;
 	}
 
 <xen:if is="{xen:property enableResponsive}">
 @media screen and (max-width: {$widthBreakPoint}) {
-	.bdImage_stylizedGrid { margin: 0 -{$spacingEdge}; }
-	.bdImage_stylizedGrid .spacing { margin: {$spacingEdge}; }
+	.bdImage_stylizedGrid { margin: 0 -{$stylizedGridSpacingEdge} {$stylizedGridSpacingHuge} -{$stylizedGridSpacingEdge}; }
+	.bdImage_stylizedGrid .spacing-border { margin: {$stylizedGridSpacingEdge}; }
 
-	.Responsive .bdImage_stylizedGrid .image-text-container { bottom: {$spacingSmall}; }
-	.Responsive .bdImage_stylizedGrid .image-text { margin: 0 {$spacingSmall}; }
+	.Responsive .bdImage_stylizedGrid .image-text-container { bottom: {$stylizedGridSpacingSmall}; }
+	.Responsive .bdImage_stylizedGrid .image-text { margin: 0 {$stylizedGridSpacingSmall}; }
 }
 </xen:if>]]></template>
     <template title="bdimage_template_modifications" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:edithint template="bdimage_thread_list_item_thread_image" />
@@ -1456,6 +1471,7 @@ ul.bdImage_Widget_Grid
 								' title="{xen:raw $forumTitleOriginal}" class="Tooltip"'}>{xen:raw $forumTitlePrefix}</a>
 						</span></xen:if>
 					</div><!-- .thread-info -->
+					<div class="spacing-edge"></div>
 				</div><!-- .text-inner -->
 			</div><!-- .text -->
 		</div><!-- .bdImage_heroImage -->
@@ -1465,10 +1481,10 @@ ul.bdImage_Widget_Grid
 </xen:comment>
 <div class="bdImage_stylizedGrid"><xen:contentcheck><xen:set
 var="$widths.1">960</xen:set><xen:set var="$heights.1">450</xen:set><xen:set
-var="$widths.2">365</xen:set><xen:set var="$heights.2">350</xen:set><xen:set
+var="$widths.2">350</xen:set><xen:set var="$heights.2">350</xen:set><xen:set
 var="$widths.3">580</xen:set><xen:set var="$heights.3">350</xen:set><xen:set
 var="$widths.4">580</xen:set><xen:set var="$heights.4">350</xen:set><xen:set
-var="$widths.5">365</xen:set><xen:set var="$heights.5">350</xen:set><xen:set
+var="$widths.5">350</xen:set><xen:set var="$heights.5">350</xen:set><xen:set
 var="$widths.0">0</xen:set><xen:set var="$heights.0">0</xen:set><xen:set
 var="$posPrefix.0">1</xen:set><xen:set var="$posSuffix.0">1</xen:set><xen:set
 var="$posPrefix.1">1</xen:set><xen:set var="$posSuffix.1">1</xen:set><xen:set
@@ -1486,7 +1502,7 @@ var="$threadsCount">{xen:count $threads}</xen:set><xen:foreach
 	<xen:if is="{$posPrefix.{$positionId}} === '1'"><div class="row width-wide position-{$positionId}"></xen:if>
 	<div class="cell position-{$positionId}">
 		<div id="post-{$thread.first_post_id}" class="thread" data-author="{$thread.username}">
-			<div class="spacing">
+			<div class="spacing-border">
 				<xen:if is="{$imageData}"><xen:if is="{$positionWidth} === '0'"><xen:set var="$positionWidth"><xen:callback
 					class="bdImage_Integration" method="getImageWidth">{xen:raw $imageData}</xen:callback></xen:set></xen:if><xen:if
 					is="{$positionHeight} === '0'"><xen:set var="$positionHeight"><xen:callback class="bdImage_Integration"

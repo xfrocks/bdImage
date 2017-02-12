@@ -56,9 +56,13 @@ class bdImage_WidgetRenderer_ThreadsTwo extends bdImage_WidgetRenderer_ThreadsBa
         return 'bdimage_widget_threads_two';
     }
 
-    protected function _getLayoutOptions($widget, $positionCode, $params, $layout)
-    {
-        $layoutOptions = parent::_getLayoutOptions($widget, $positionCode, $params, $layout);
+    protected function _getLayoutOptions(
+        array $widget,
+        $positionCode,
+        array $params,
+        XenForo_Template_Abstract $renderTemplateObject
+    ) {
+        $layoutOptions = parent::_getLayoutOptions($widget, $positionCode, $params, $renderTemplateObject);
 
         if (!empty($widget['options']['feature_body'])) {
             $layoutOptions['getPosts'] = true;

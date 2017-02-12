@@ -1390,7 +1390,10 @@ ul.bdImage_Widget_Grid
 <xen:edithint template="bdimage_hero_image.css" />
 
 <xen:edithint template="bdimage_widget_threads_stylized_grid" />
-<xen:edithint template="bdimage_stylized_grid.css" />]]></template>
+<xen:edithint template="bdimage_stylized_grid.css" />
+
+<xen:edithint template="wf_widget_threads" />
+<xen:edithint template="wf_widget_threads_pagenav" />]]></template>
     <template title="bdimage_widget_threads_grid" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if hascontent="true">
 	<xen:set var="$cssClass">bdImage_WidgetRenderer_ThreadsGrid-{$widget.widget_id}</xen:set>
 	<xen:include template="bdimage_grid_inline_css" />
@@ -1476,10 +1479,13 @@ ul.bdImage_Widget_Grid
 			</div><!-- .text -->
 		</div><!-- .bdImage_heroImage -->
 </xen:if></xen:if></xen:foreach></xen:contentcheck></xen:if>]]></template>
-    <template title="bdimage_widget_threads_stylized_grid" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:if hascontent="true"><xen:require css="bdimage_stylized_grid.css" /><xen:comment>	
+    <template title="bdimage_widget_threads_stylized_grid" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:if hascontent="true"><xen:require js="js/WidgetFramework/default.min.js" /><xen:comment>
+</xen:comment><xen:require css="bdimage_stylized_grid.css" /><xen:comment>
 
 </xen:comment>
-<div class="bdImage_stylizedGrid"><xen:contentcheck><xen:set
+<div class="WidgetFramework_WidgetRenderer_Threads bdImage_stylizedGrid"{xen:if $loadMoreUrl,
+	' data-content-selector=".bdImage_stylizedGrid" data-load-more-url="{xen:jsescape
+	$loadMoreUrl}" data-times="{$layoutOptions.loadMoreTimes}"'}><xen:contentcheck><xen:set
 var="$widths.1">960</xen:set><xen:set var="$heights.1">450</xen:set><xen:set
 var="$widths.2">350</xen:set><xen:set var="$heights.2">350</xen:set><xen:set
 var="$widths.3">580</xen:set><xen:set var="$heights.3">350</xen:set><xen:set
@@ -1491,14 +1497,13 @@ var="$posPrefix.1">1</xen:set><xen:set var="$posSuffix.1">1</xen:set><xen:set
 var="$posPrefix.2">1</xen:set><xen:set var="$posSuffix.2">0</xen:set><xen:set
 var="$posPrefix.3">0</xen:set><xen:set var="$posSuffix.3">1</xen:set><xen:set
 var="$posPrefix.4">1</xen:set><xen:set var="$posSuffix.4">0</xen:set><xen:set
-var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:set
-var="$threadsCount">{xen:count $threads}</xen:set><xen:foreach
+var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreach
 	loop="$threads" i="$i" value="$thread"><xen:set
 	var="$positionId">{xen:calc '{$i} % 6'}</xen:set><xen:set
 	var="$positionWidth">{$widths.{$positionId}}</xen:set><xen:set
 	var="$positionHeight">{$heights.{$positionId}}</xen:set><xen:set var="$imageData"><xen:callback
 	class="bdImage_Helper_Template" method="getImageData" params="{$thread}"/></xen:set><xen:if
-	is="{$posSuffix.{$positionId}} === '1' || {$i} < {$threadsCount}">
+	is="{$posSuffix.{$positionId}} === '1' || {$i} < {xen:count $threads}">
 	<xen:if is="{$posPrefix.{$positionId}} === '1'"><div class="row width-wide position-{$positionId}"></xen:if>
 	<div class="cell position-{$positionId}">
 		<div id="post-{$thread.first_post_id}" class="thread" data-author="{$thread.username}">
@@ -1559,6 +1564,7 @@ var="$threadsCount">{xen:count $threads}</xen:set><xen:foreach
 	</div><!-- .cell -->
 	<xen:if is="{$posSuffix.{$positionId}} === '1'"></div><!-- .row --></xen:if>
 </xen:if></xen:foreach></xen:contentcheck>
+<xen:include template="wf_widget_threads_pagenav" />
 </div><!-- .bdImage_stylizedGrid -->
 </xen:if>]]></template>
     <template title="bdimage_widget_threads_two" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:set var="$cssClass">bdImage_WidgetRenderer_ThreadsTwo-{$widget.widget_id}</xen:set>

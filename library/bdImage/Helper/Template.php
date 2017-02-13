@@ -84,6 +84,32 @@ class bdImage_Helper_Template
     }
 
     /**
+     * @param string $templateKey
+     * @param array $params
+     * @return mixed|string
+     */
+    public static function renderTemplateWithExtraParams($templateKey, array $params)
+    {
+        if (empty($templateKey)) {
+            $templateKey = 'template';
+        }
+
+        if (!isset($params[$templateKey])) {
+            return '';
+        }
+
+        $template = $params[$templateKey];
+        unset($params[$templateKey]);
+        if (!($template instanceof XenForo_Template_Abstract)) {
+            return '';
+        }
+
+        $template->setParams($params);
+
+        return $template;
+    }
+
+    /**
      * @param string $imageData
      * @param int $size
      * @param int|string $mode

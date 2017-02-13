@@ -442,6 +442,7 @@ html.bdImage_hasCover .titleBar {
 </xen:if>
 
 <xen:edithint template="bdimage_hero_image.css" />]]></template>
+    <template title="bdimage_editor_contents_hero_image.css" version_id="2010000" version_string="2.1.0"><![CDATA[html { background: none; }]]></template>
     <template title="bdimage_grid_inline_css" version_id="19" version_string="0.10.0-dev"><![CDATA[<xen:set var="$gridWidth">{xen:calc '({$widget.options.thumbnail_width} + {$widget.options.gap}) * {$widget.options.grid_columns}'}</xen:set>
 <xen:set var="$maxWidthInSidebar">{xen:calc '{xen:property sidebar.width} - {xen:property secondaryContent.padding-left} - {xen:property secondaryContent.padding-right}'}</xen:set>
 <xen:container var="$head.{$cssClass}">
@@ -513,6 +514,21 @@ html.bdImage_hasCover .titleBar {
 <xen:set var="$heroImagePosterFontSize">18pt</xen:set>
 <xen:set var="$heroImageForumColor">#098bf9</xen:set>
 <xen:set var="$heroImagePosterImgSize">40px</xen:set>
+
+<xen:set var="$threadViewMaxWidth">960px</xen:set>
+<xen:set var="$threadViewColor">#dfe5e9</xen:set>
+<xen:set var="$threadViewControlColor">#098bf9</xen:set>
+<xen:set var="$threadViewFirstPostMessageTextFontSize">18pt</xen:set>
+
+<xen:set var="$threadViewRepliesHeaderFontSize">18pt</xen:set>
+<xen:set var="$threadViewRepliesBorderColor">#bed0da</xen:set>
+<xen:set var="$threadViewRepliesBorderThickness">6px</xen:set>
+<xen:set var="$threadViewRepliesAvatarImgSize">70px</xen:set>
+<xen:set var="$threadViewRepliesUsernameColor">#fbfbfb</xen:set>
+<xen:set var="$threadViewRepliesUsernameFontSize">22pt</xen:set>
+<xen:set var="$threadViewRepliesUserTitleColor">#979d9e</xen:set>
+<xen:set var="$threadViewRepliesUserTitleFontSize">14pt</xen:set>
+<xen:set var="$threadViewRepliesMessageTextFontSize">16pt</xen:set>
 
 .bdImage_heroImage {
 	display: block;
@@ -624,6 +640,79 @@ html.bdImage_hasCover .titleBar {
 	width: 100%;
 }
 
+.bdimage_thread_view_hero_image,
+.wf-container-simple #content.bdimage_thread_view_hero_image {
+	background: {$heroImageGradientColor} !important;
+	color: {$threadViewColor};
+}
+
+.bdimage_thread_view_hero_image .text-inner.pageWidth {
+	margin: 0 auto;
+	max-width: {$threadViewMaxWidth};
+	width: 100%;
+}
+
+.bdimage_thread_view_hero_image .bdImage_heroImage .thread-info,
+.bdimage_thread_view_hero_image .bdImage_heroImage .thread-title {
+	margin-bottom: {$heroImageSpacingEdge};
+}
+
+.bdImage_heroImagePosts {
+	margin: {$heroImageSpacingEdge} 0;
+}
+
+.bdImage_heroImagePosts .messageList .message,
+.bdImage_heroImagePosts .messageList .messageInfo,
+.bdImage_heroImagePosts .messageList .messageUserBlock,
+.bdImage_heroImagePosts .__reset { background: none !important; border: 0 !important; margin: 0 !important; padding: 0 !important; }
+.bdImage_heroImagePosts .messageList .messageContent { min-height: 0; }
+.bdImage_heroImagePosts a.muted { display: block; }
+.bdImage_heroImagePosts a.control { color: {$threadViewControlColor}; }
+
+.bdImage_heroImagePosts .messageList .message { padding: {$heroImageSpacingMedium} 0; }
+.bdImage_heroImagePosts .messageUserInfo { float: none; margin-bottom: {$heroImageSpacingMedium}; width: 100%; }
+.bdImage_heroImagePosts .messageUserBlock { background: none; border: 0; }
+{xen:helper clearfix, '.bdImage_heroImagePosts .messageUserBlock'}
+.bdImage_heroImagePosts .messageUserBlock .arrow { display: none; }
+.bdImage_heroImagePosts .messageUserBlock .avatarHolder { background: none; border-radius: 0; float: left; margin: 0; padding: 0; }
+.bdImage_heroImagePosts .messageUserBlock  .avatar img { background: none; border-radius: {$heroImageSpacingSmall}; height: {$threadViewRepliesAvatarImgSize}; margin: 0; padding: 0; width: {$threadViewRepliesAvatarImgSize}; }
+.bdImage_heroImagePosts .messageUserBlock  .userText { margin-left: {xen:calc 'intval({$threadViewRepliesAvatarImgSize}) + intval({$heroImageSpacingSmall})'}px; }
+.bdImage_heroImagePosts .messageUserBlock  .userText > * { display: none !important; line-height: 1em; }
+.bdImage_heroImagePosts .messageUserBlock  .userText > .username { color: {$threadViewRepliesUsernameColor}; display: block !important; font-size: {$threadViewRepliesUsernameFontSize}; }
+.bdImage_heroImagePosts .messageUserBlock  .userText > .userTitle { color: {$threadViewRepliesUserTitleColor}; display: block !important; font-size: {$threadViewRepliesUserTitleFontSize}; }
+.bdImage_heroImagePosts .messageText { font-family: inherit; font-size: {$threadViewRepliesMessageTextFontSize}; }
+
+.bdImage_heroImagePosts.first-post .messageUserInfo { display: none; }
+.bdImage_heroImagePosts.first-post .messageText { font-family: inherit; font-size: {$threadViewFirstPostMessageTextFontSize}; }
+
+.bdImage_heroImagePosts.replies h3 { font-size: {$threadViewRepliesHeaderFontSize}; margin-bottom: {$heroImageSpacingEdge}; }
+.bdImage_heroImagePosts.replies .messageList {
+	border-left: {$threadViewRepliesBorderThickness} solid {$threadViewRepliesBorderColor};
+	padding-left: {$heroImageSpacingMedium};
+}
+
+.bdImage_heroImagePosts.quickReplyContainer { margin: {$heroImageSpacingHuge} 0; }
+.bdImage_heroImagePosts .quickReply { border: 0; margin: 0; padding: 0; }
+.bdImage_heroImagePosts.quickReplyContainer .messageUserInfo { display: none; }
+.bdImage_heroImagePosts #QuickReply { margin-left: 0; }
+.bdImage_heroImagePosts .redactor_box { border: 0; border-radius: {$heroImageSpacingEdge}; }
+.bdImage_heroImagePosts .redactor_toolbar { background: #5887d5; border: 0; }
+.bdImage_heroImagePosts .redactor_toolbar li.redactor_btn_group ul { background: none; border: 0; box-shadow: none; }
+html { background: none !important; }
+.bdImage_heroImagePosts .redactor_box .placeholder span { color: #18202e; }
+.bdImage_heroImagePosts .redactor_MessageEditor { background: #aec2cc; }
+.bdImage_heroImagePosts #QuickReply .submitUnit { margin-top: {$heroImageSpacingSmall}; }
+.bdImage_heroImagePosts #QuickReply .button {
+	background: #4fa2e8;
+	border: 0;
+	border-radius: {$heroImageSpacingEdge};
+	box-shadow: none;
+	height: auto;
+	line-height: 1em;
+	padding: {$heroImageSpacingSmall} {$heroImageSpacingLarge};
+}
+.bdImage_heroImagePosts #QuickReply .button.primary { background: #104cc6; color: #fff; }
+
 <xen:if is="{xen:property enableResponsive}">
 @media (max-width:{xen:property maxResponsiveMediumWidth}) {
 	.Responsive .bdImage_heroImage .post-body { display: none; }
@@ -634,9 +723,15 @@ html.bdImage_hasCover .titleBar {
 	.Responsive .bdImage_heroImage .text { bottom: inherit; position: inherit; }
 	.Responsive .bdImage_heroImage .gradient { display: none; }
 	.Responsive .bdImage_heroImage .thread-title { color: inherit; font-size: 2em; margin: 0; margin-top: {$heroImageSpacingMedium}; }
+		.Responsive .bdimage_thread_view_hero_image .bdImage_heroImage .thread-title { margin-top: 0; }
 	.Responsive .bdImage_heroImage .thread-info { color: inherit; font-size: inherit; margin: 0; padding: 0; }
 	.Responsive .bdImage_heroImage .poster-avatar { display: none; }
+		.Responsive .bdImage_heroImage .thread-info { height: initial; line-height: initial; }
 	.Responsive .bdImage_heroImage .poster { color: inherit; font-size: inherit; }
+}
+
+@media screen and (max-width: {xen:calc 'intval({$threadViewMaxWidth}) + 2 * intval({$heroImageSpacingSmall})'}px) {
+	.Responsive .bdimage_thread_view_hero_image .text-inner.pageWidth { margin: 0 {$heroImageSpacingSmall}; width: initial; }
 }
 </xen:if>
 ]]></template>
@@ -978,7 +1073,7 @@ html.bdImage_hasCover .titleBar {
 <xen:edithint template="bdimage_search_result_thread_image" />
 <xen:edithint template="bdimage_wf_widget_threads_full_thread_image" />
 <xen:edithint template="bdimage_wf_widget_threads_thread_image" />]]></template>
-    <template title="bdimage_thread_cover" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:require css="bdimage.css" />
+    <template title="bdimage_thread_cover" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:require css="bdimage.css" />
 
 <xen:set var="$coverTitleEscaped">{$thread.title}</xen:set>
 <xen:set var="$coverDescriptionEscaped">{xen:phrase bdimage_discussion_in_x_started_by_y_date_z_replies_m_views_n,
@@ -1020,8 +1115,7 @@ html.bdImage_hasCover .titleBar {
 	</div>
 </div>
 
-<xen:edithint template="PAGE_CONTAINER" />
-]]></template>
+<xen:edithint template="PAGE_CONTAINER" />]]></template>
     <template title="bdimage_thread_list_item_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_threadListItemThreadImage"><xen:callback
 	class="bdImage_Option" method="get" params="{xen:array
 	'0=thread_list_item_thread_image'}">template</xen:callback></xen:set><xen:if
@@ -1077,6 +1171,118 @@ html.bdImage_hasCover .titleBar {
 	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 	<input type="hidden" name="_xfConfirm" value="1" />
 </form>]]></template>
+    <template title="bdimage_thread_view_hero_image" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$threadView"><xen:include template="thread_view" /></xen:set><xen:set
+	var="$imageData"><xen:callback class="bdImage_Helper_Template"
+	method="getImageData" params="{$thread}" /></xen:set><xen:set
+	var="$originalUrl"><xen:callback class="bdImage_Integration"
+	method="getOriginalUrl">{xen:raw $imageData}</xen:callback></xen:set><xen:if is="{$originalUrl}"><xen:set
+	var="$transparentDataUri"><xen:callback class="bdImage_ShippableHelper_ImageSize"
+	method="getDataUriMatchesRatio">{xen:raw $originalUrl}</xen:callback></xen:set><xen:require css="bdimage_hero_image.css" /><xen:comment>
+	
+</xen:comment><div class="bdImage_heroImage">
+	<img src="{xen:raw $transparentDataUri}" class="hero" style="background-image: url('{xen:raw $originalUrl}')" />
+
+	<div class="text">
+		<div class="gradient"></div>
+		<div class="text-inner pageWidth">
+			<div class="thread-info">
+				<span class="poster-avatar">
+					<xen:avatar user="$thread" size="m" img="true" />
+				</span>
+				<span class="poster">
+					<xen:username user="$thread" />
+				</span>
+
+				<span class="post-date"><xen:set var="$deltaTime">{xen:calc
+					'{$serverTime} - {$thread.post_date}'}</xen:set><xen:if
+					is="{$deltaTime} > 0 && {$deltaTime} < 86400">
+					<a href="{xen:link threads, $thread}" class="Tooltip" title="{xen:datetime
+						$thread.post_date, absolute}">{xen:datetime $thread.post_date, relative}</a><xen:else
+				/>
+					<a href="{xen:link threads, $thread}">{xen:datetime $thread.post_date, absolute}</a>
+				</xen:if></span>
+
+				<xen:if is="{$thread.forum.node_id} > 0"><span class="forum"><xen:set
+					var="$forumTitleOriginal">{$thread.forum.title}</xen:set><xen:set
+					var="$forumTitlePrefix"><xen:callback class="bdImage_Helper_Template"
+						method="getTextPrefix">{xen:raw $forumTitleOriginal}</xen:callback></xen:set>
+					<span>{xen:phrase in_forum}</span>
+					<a href="{xen:link forums, $thread.forum}"{xen:if
+						'{$forumTitleOriginal} !== {$forumTitlePrefix}',
+						' title="{xen:raw $forumTitleOriginal}" class="Tooltip"'}>{xen:raw $forumTitlePrefix}</a>
+				</span></xen:if>
+			</div><!-- .thread-info -->
+
+			<div class="thread-title">
+				<a href="{xen:link threads, $thread}">{$thread.title}</a>
+			</div><!-- .thread-title -->
+			
+			<div class="spacing-edge"></div>
+		</div><!-- .text-inner -->
+	</div><!-- .text -->
+</div>
+
+<xen:if is="isset({$posts.{$thread.first_post_id}})"><div class="bdImage_heroImagePosts first-post">
+	<div class="text">
+		<div class="text-inner pageWidth">
+			<ol class="messageList">
+				<xen:include template="post">
+					<xen:map from="{$posts.{$thread.first_post_id}}" to="$post" />
+				</xen:include>
+			</ol>
+		</div>
+	</div>
+</div></xen:if>
+
+<xen:if hascontent="true"><div class="bdImage_heroImagePosts replies">
+	<div class="text">
+		<div class="text-inner pageWidth">
+			<h3>{xen:phrase replies}</h3>
+
+			<ol class="messageList" id="messageList">
+				<xen:contentcheck><xen:foreach loop="$posts" value="$post"><xen:if
+					is="{$post.post_id} != {$thread.first_post_id}"><xen:include template="post"
+					/></xen:if></xen:foreach></xen:contentcheck>
+			</ol>
+
+			<xen:pagenav link="threads" linkdata="{$thread}"
+				page="{$page}" perpage="{$postsPerPage}" total="{$totalPosts}"
+				unreadlink="{$unreadLink}"
+			/>
+		</div>
+	</div>
+</div></xen:if>
+
+<xen:if is="{$canQuickReply}"><div class="bdImage_heroImagePosts quickReplyContainer">
+	<div class="text">
+		<div class="text-inner pageWidth">
+			<xen:include template="quick_reply">
+				<xen:set var="$formAction">{xen:link 'threads/add-reply', $thread}</xen:set>
+				<xen:set var="$lastDate">{$lastPost.post_date}</xen:set>
+				<xen:set var="$lastKnownDate">{$thread.last_post_date}</xen:set>
+				<xen:set var="$showMoreOptions">1</xen:set>
+				<xen:set var="$multiQuoteAction">{xen:link 'threads/multi-quote', $thread, 'formId=#QuickReply'}</xen:set>
+				<xen:set var="$qrEditor"><xen:callback class="bdImage_Helper_Template"
+					method="renderTemplateWithExtraParams" params="{xen:array
+					'template={$qrEditor}', 'bdImage_editorContentsHeroImage=1'}" /></xen:set>
+			</xen:include>
+		</div>
+	</div>
+</div></xen:if>
+	
+<xen:container var="$bdImage_threadWithCover"></xen:container>
+<xen:container var="$Tinhte_ThreadThumbnail_thread"></xen:container>
+<xen:container var="$bodyClasses">{xen:helper nodeClasses, $nodeBreadCrumbs, $forum} wf-no-logo-block wf-no-header-proxy</xen:container>
+<xen:container var="$widgetPageOptionsBreakContainer">1</xen:container>
+
+<xen:else />{xen:raw $threadView}</xen:if>
+
+<xen:edithint template="bdimage_editor_contents_hero_image" />
+<xen:edithint template="bdimage_thread_cover" />
+<xen:edithint template="bdimage_widget_threads_hero_image" />
+<xen:edithint template="message" />
+<xen:edithint template="post" />
+<xen:edithint template="wf_PAGE_CONTAINER_simple" />]]></template>
     <template title="bdimage_thread_view_open_graph_meta" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_threadViewOpenGraphMeta"><xen:callback
 	class="bdImage_Option" method="get" params="{xen:array
 	'0=thread_view_open_graph_meta'}">template</xen:callback></xen:set><xen:if
@@ -1715,6 +1921,10 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 		<xen:map from="$bdImage_threadWithCover.forum" to="$forum" />
 	</xen:include>
 </xen:if>]]></replace>
+    </modification>
+    <modification template="editor" modification_key="bdimage_editor_contents_hero_image" description="Include our css template for editor." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[=editor_contents]]></find>
+      <replace><![CDATA[$0{xen:if $bdImage_editorContentsHeroImage, ',bdimage_editor_contents_hero_image'}]]></replace>
     </modification>
     <modification template="node_forum_level_2" modification_key="bdimage_node_forum_last_thread_image" description="Template Modification: Last Thread Image in Forum List." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:elseif is="{$forum.lastPost.date}" />]]></find>

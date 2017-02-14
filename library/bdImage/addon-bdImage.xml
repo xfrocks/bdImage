@@ -505,13 +505,14 @@ html.bdImage_hasCover .titleBar {
 <xen:set var="$heroImageSpacingEdge">5px</xen:set>
 <xen:set var="$heroImageGradientColor">#343434</xen:set>
 <xen:set var="$heroImageThreadTitleColor">#ebf0f3</xen:set>
-<xen:set var="$heroImageThreadTitleFontSize">40pt</xen:set>
+<xen:set var="$heroImageThreadTitleFontSize">26pt</xen:set>
+<xen:set var="$heroImageThreadTitleSmallerFontSize">16pt</xen:set>
 <xen:set var="$heroImageMessageTextColor">#a4afb8</xen:set>
-<xen:set var="$heroImageMessageTextFontSize">20pt</xen:set>
+<xen:set var="$heroImageMessageTextFontSize">16pt</xen:set>
 <xen:set var="$heroImageThreadInfoColor">#979d9e</xen:set>
-<xen:set var="$heroImageThreadInfoFontSize">14pt</xen:set>
+<xen:set var="$heroImageThreadInfoFontSize">12pt</xen:set>
 <xen:set var="$heroImagePosterColor">#fbfbfb</xen:set>
-<xen:set var="$heroImagePosterFontSize">18pt</xen:set>
+<xen:set var="$heroImagePosterFontSize">14pt</xen:set>
 <xen:set var="$heroImageForumColor">#098bf9</xen:set>
 <xen:set var="$heroImagePosterImgSize">40px</xen:set>
 
@@ -580,19 +581,18 @@ html.bdImage_hasCover .titleBar {
 	color: {$heroImageThreadTitleColor};
 	font-size: {$heroImageThreadTitleFontSize};
 	font-weight: 700;
-	line-height: 1em;
-	margin-bottom: {$heroImageSpacingHuge};
-	max-height: 2em;
+	line-height: 1.3em;
+	margin-bottom: {$heroImageSpacingMedium};
+	max-height: 2.6em;
 }
 
 .bdImage_heroImage .post-body {
-	margin-bottom: {$heroImageSpacingLarge};
+	margin-bottom: {$heroImageSpacingMedium};
 }
 	.bdImage_heroImage .messageText {
 		color: {$heroImageMessageTextColor};
 		font-family: inherit;
 		font-size: {$heroImageMessageTextFontSize};
-		font-weight: 700;
 		line-height: 1.3em;
 		max-height: 3.9em;
 		overflow: hidden;
@@ -602,7 +602,7 @@ html.bdImage_hasCover .titleBar {
 	color: {$heroImageThreadInfoColor};
 	font-size: {$heroImageThreadInfoFontSize};
 	height: {$heroImagePosterImgSize};
-	margin-bottom: {$heroImageSpacingHuge};
+	margin-bottom: {$heroImageSpacingLarge};
 	line-height: {$heroImagePosterImgSize};
 	padding-left: {xen:calc 'intval({$heroImagePosterImgSize}) + intval({$heroImageSpacingMedium})'}px;
 	position: relative;
@@ -714,27 +714,19 @@ html { background: none !important; }
 .bdImage_heroImagePosts #QuickReply .button.primary { background: #104cc6; color: #fff; }
 
 <xen:if is="{xen:property enableResponsive}">
-@media (max-width:{xen:property maxResponsiveMediumWidth}) {
+@media screen and (max-width: {xen:property maxResponsiveWideWidth}) {
+	.Responsive .bdImage_heroImage { margin-bottom: 10px; }
+	.Responsive .bdImage_heroImage .pageWidth { margin: 0; padding: 0 20px; }
 	.Responsive .bdImage_heroImage .post-body { display: none; }
 	.Responsive .bdImage_heroImage .post-date { display: none; }
 }
 
-@media (max-width:{xen:property maxResponsiveNarrowWidth}) {
-	.Responsive .bdImage_heroImage .text { bottom: inherit; position: inherit; }
-	.Responsive .bdImage_heroImage .gradient { display: none; }
-	.Responsive .bdImage_heroImage .thread-title { color: inherit; font-size: 2em; margin: 0; margin-top: {$heroImageSpacingMedium}; }
-		.Responsive .bdimage_thread_view_hero_image .bdImage_heroImage .thread-title { margin-top: 0; }
-	.Responsive .bdImage_heroImage .thread-info { color: inherit; font-size: inherit; margin: 0; padding: 0; }
-	.Responsive .bdImage_heroImage .poster-avatar { display: none; }
-		.Responsive .bdImage_heroImage .thread-info { height: initial; line-height: initial; }
-	.Responsive .bdImage_heroImage .poster { color: inherit; font-size: inherit; }
+@media screen and (max-width: {xen:property maxResponsiveNarrowWidth}) {
+	.Responsive .bdImage_heroImage > img { height: 0; padding-bottom: 85%; }
+	.Responsive .bdImage_heroImage .thread-title { font-size: {$heroImageThreadTitleSmallerFontSize}; max-height: initial; }
+	.Responsive .bdImage_heroImage .thread-info { display: none; }
 }
-
-@media screen and (max-width: {xen:calc 'intval({$threadViewMaxWidth}) + 2 * intval({$heroImageSpacingSmall})'}px) {
-	.Responsive .bdimage_thread_view_hero_image .text-inner.pageWidth { margin: 0 {$heroImageSpacingSmall}; width: initial; }
-}
-</xen:if>
-]]></template>
+</xen:if>]]></template>
     <template title="bdimage_node_forum_last_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$forum.bdimage_last_post_image}"><xen:set var="$bdImage_nodeForumLastThreadImage"><xen:callback
 	class="bdImage_Option" method="get" params="{xen:array
 	'0=node_forum_last_thread_image'}">template</xen:callback></xen:set><xen:if
@@ -878,28 +870,28 @@ html { background: none !important; }
 	</xen:comment><img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_searchResult_imageSize}" <xen:comment>
 	</xen:comment>height="{xen:property bdImage_searchResult_imageSize}"{xen:if $debugMode,
 	' data-image="{xen:jsescape $thread.bdimage_image}"'} /></a></xen:if></xen:if></xen:if>]]></template>
-    <template title="bdimage_stylized_grid.css" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$stylizedGridSpacingHuge">35px</xen:set>
-<xen:set var="$stylizedGridSpacingLarge">25px</xen:set>
+    <template title="bdimage_stylized_grid.css" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$stylizedGridSpacingHuge">40px</xen:set>
+<xen:set var="$stylizedGridSpacingLarge">30px</xen:set>
 <xen:set var="$stylizedGridSpacingMedium">20px</xen:set>
 <xen:set var="$stylizedGridSpacingSmall">10px</xen:set>
 <xen:set var="$stylizedGridSpacingEdge">5px</xen:set>
 <xen:set var="$widthWide">{xen:calc '960 + 2 * intval({$stylizedGridSpacingSmall})'}px</xen:set>
 <xen:set var="$widthBreakPoint">{xen:calc 'intval({$widthWide}) + intval({$stylizedGridSpacingEdge}) * 2'}px</xen:set>
 
-<xen:set var="$stylizedGridGradientFrom">#f3f5f6</xen:set>
-<xen:set var="$stylizedGridGradientTo">#19202e</xen:set>
+<xen:set var="$stylizedGridGradientFrom">rgba(0,0,0,0)</xen:set>
+<xen:set var="$stylizedGridGradientTo">#1c2432</xen:set>
 <xen:set var="$stylizedGridThreadTitleColor">#d9e4ed</xen:set>
-<xen:set var="$stylizedGridThreadTitleFontSize">26pt</xen:set>
-<xen:set var="$stylizedGridThreadTitleBiggerFontSize">36pt</xen:set>
+<xen:set var="$stylizedGridThreadTitleFontSize">22pt</xen:set>
+<xen:set var="$stylizedGridThreadTitleBiggerFontSize">26pt</xen:set>
 <xen:set var="$stylizedGridThreadInfoColor">#d1d5d6</xen:set>
-<xen:set var="$stylizedGridThreadInfoFontSize">14pt</xen:set>
+<xen:set var="$stylizedGridThreadInfoFontSize">12pt</xen:set>
 <xen:set var="$stylizedGridPosterColor">#fbfbfb</xen:set>
-<xen:set var="$stylizedGridPosterFontSize">18pt</xen:set>
+<xen:set var="$stylizedGridPosterFontSize">16pt</xen:set>
 <xen:set var="$stylizedGridForumColor">#098bf9</xen:set>
 <xen:set var="$stylizedGridPosterImgSize">40px</xen:set>
 
 .bdImage_stylizedGrid {
-	margin: 0 -{$stylizedGridSpacingSmall} {xen:calc '(intval({$stylizedGridSpacingLarge}) + intval({$stylizedGridSpacingEdge})) * 2'}px -{$stylizedGridSpacingSmall};
+	margin: 0 -{$stylizedGridSpacingSmall} {$stylizedGridSpacingHuge} -{$stylizedGridSpacingSmall};
 }
 	.bdImage_stylizedGrid a { background: none; border: 0; color: inherit; font-size: inherit; font-weight: inherit; }
 
@@ -942,7 +934,7 @@ html { background: none !important; }
 	.bdImage_stylizedGrid .cell.position-5 .forum { display: none; }
 
 .bdImage_stylizedGrid .row.position-0 {
-	margin-bottom: {xen:calc 'intval({$stylizedGridSpacingLarge}) + intval({$stylizedGridSpacingEdge})'}px;
+	margin-bottom: {$stylizedGridSpacingHuge};
 	max-width: initial;
 	width: 100%; 
 }
@@ -958,9 +950,17 @@ html { background: none !important; }
 }
 
 .bdImage_stylizedGrid .spacing-border {
+	box-shadow: 0px 1px 5px 0px rgba(175, 186, 198, 0.9);
 	margin: {$stylizedGridSpacingSmall};
+	max-height: 450px;
 	overflow: hidden;
 	position: relative;
+}
+
+.bdImage_stylizedGrid .spacing-edge {
+	display: block;
+	height: {$stylizedGridSpacingEdge};
+	width: 100%;
 }
 
 .bdImage_stylizedGrid .thread-image a,
@@ -977,11 +977,11 @@ html { background: none !important; }
 	}
 
 .bdImage_stylizedGrid .gradient {
-	opacity: .7;
+	opacity: .8;
 	position: absolute;
-		top: 0;
+		top: 30%;
 		right: 0;
-		bottom: 0;
+		bottom: -5px;
 		left: 0;
 
 	<xen:comment>http://colorzilla.com/gradient-editor/</xen:comment>
@@ -993,15 +993,11 @@ html { background: none !important; }
 }
 
 .bdImage_stylizedGrid .image-text-container {
-	bottom: {$stylizedGridSpacingLarge};
+	bottom: {$stylizedGridSpacingMedium};
 	left: 0;
 	position: absolute;
 	right: 0;
 }
-	.bdImage_stylizedGrid .position-0 .image-text-container,
-	.bdImage_stylizedGrid .position-1 .image-text-container {
-		margin-bottom: {$stylizedGridSpacingHuge};
-	}
 
 .bdImage_stylizedGrid .image-text { margin: 0 {$stylizedGridSpacingLarge}; }
 
@@ -1009,15 +1005,15 @@ html { background: none !important; }
 	color: {$stylizedGridThreadTitleColor};
 	font-size: {$stylizedGridThreadTitleFontSize};
 	font-weight: 700;
-	line-height: 1em;
-	margin-bottom: {$stylizedGridSpacingMedium};
-	max-height: 2em;
+	line-height: 1.3em;
+	margin-bottom: {$stylizedGridSpacingSmall};
+	max-height: 2.6em;
 	overflow: hidden;
 }
 	.bdImage_stylizedGrid .position-0 .thread-title,
 	.bdImage_stylizedGrid .position-1 .thread-title {
 		font-size: {$stylizedGridThreadTitleBiggerFontSize};
-		margin-bottom: {$stylizedGridSpacingLarge};
+		margin-bottom: {$stylizedGridSpacingMedium};
 	}
 
 .bdImage_stylizedGrid .thread-info {
@@ -1058,13 +1054,42 @@ html { background: none !important; }
 		font-weight: 400;
 	}
 
-<xen:if is="{xen:property enableResponsive}">
-@media screen and (max-width: {$widthBreakPoint}) {
-	.bdImage_stylizedGrid { margin: 0 -{$stylizedGridSpacingEdge} {$stylizedGridSpacingHuge} -{$stylizedGridSpacingEdge}; }
-	.bdImage_stylizedGrid .spacing-border { margin: {$stylizedGridSpacingEdge}; }
 
+<xen:if is="{xen:property enableResponsive}"><xen:comment>Switch to single column for iPad portrait and smaller</xen:comment>
+@media screen and (max-width: {xen:property maxResponsiveWideWidth}) {
+	.Responsive .bdImage_stylizedGrid { margin-left: 0; margin-right: 0; }
+
+	.Responsive .bdImage_stylizedGrid .row { margin-bottom: 0; }
+	.Responsive .bdImage_stylizedGrid .row:after { display: none; }
+
+	.Responsive .bdImage_stylizedGrid .cell,
+	.Responsive .bdImage_stylizedGrid .cell .thread,
+	.Responsive .bdImage_stylizedGrid .cell .spacing-border {
+		float: none;
+		margin-left: 0;
+		margin-right: 0;
+		position: relative;
+		width: 100%;
+	}
+
+	.Responsive .bdImage_stylizedGrid .thread-image img {
+		display: block;
+		height: 0;
+		padding-bottom: 55%;
+		width: 100%;
+	}
+
+	.Responsive .bdImage_stylizedGrid .thread-title { font-size: 20pt; margin-bottom: {$stylizedGridSpacingSmall}; }
 	.Responsive .bdImage_stylizedGrid .image-text-container { bottom: {$stylizedGridSpacingSmall}; }
-	.Responsive .bdImage_stylizedGrid .image-text { margin: 0 {$stylizedGridSpacingSmall}; }
+	.Responsive .bdImage_stylizedGrid .image-text { margin-left: {$stylizedGridSpacingMedium}; margin-right: {$stylizedGridSpacingMedium}; }
+	.Responsive .bdImage_stylizedGrid .thread-info { font-size: 12pt; padding-left: {xen:calc 'intval({$stylizedGridPosterImgSize}) + intval({$stylizedGridSpacingSmall})'}px; }
+	.Responsive .bdImage_stylizedGrid .poster { font-size: 16pt; }
+	.Responsive .bdImage_stylizedGrid .forum { display: none; }
+}
+@media screen and (max-width: {xen:property maxResponsiveNarrowWidth}) {
+	.Responsive .bdImage_stylizedGrid .thread-title { font-size: 16pt; }
+	.Responsive .bdImage_stylizedGrid .thread-info { font-size: 8pt; }
+	.Responsive .bdImage_stylizedGrid .poster { font-size: 12pt; }
 }
 </xen:if>]]></template>
     <template title="bdimage_template_modifications" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:edithint template="bdimage_thread_list_item_thread_image" />
@@ -1651,6 +1676,7 @@ ul.bdImage_Widget_Grid
 									'stripImage=1', 'stripLink=1', 'stripFrame=1', 'stripScript=1'}}</a>
 							</blockquote>
 						</article>
+						<div class="spacing-edge"></div>
 					</div><!-- .post-body -->
 
 					<div class="thread-info">
@@ -1697,7 +1723,7 @@ var="$widths.2">350</xen:set><xen:set var="$heights.2">350</xen:set><xen:set
 var="$widths.3">580</xen:set><xen:set var="$heights.3">350</xen:set><xen:set
 var="$widths.4">580</xen:set><xen:set var="$heights.4">350</xen:set><xen:set
 var="$widths.5">350</xen:set><xen:set var="$heights.5">350</xen:set><xen:set
-var="$widths.0">0</xen:set><xen:set var="$heights.0">0</xen:set><xen:set
+var="$widths.0">960</xen:set><xen:set var="$heights.0">450</xen:set><xen:set
 var="$posPrefix.0">1</xen:set><xen:set var="$posSuffix.0">1</xen:set><xen:set
 var="$posPrefix.1">1</xen:set><xen:set var="$posSuffix.1">1</xen:set><xen:set
 var="$posPrefix.2">1</xen:set><xen:set var="$posSuffix.2">0</xen:set><xen:set
@@ -1714,19 +1740,15 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 	<div class="cell position-{$positionId}">
 		<div id="post-{$thread.first_post_id}" class="thread" data-author="{$thread.username}">
 			<div class="spacing-border">
-				<xen:if is="{$imageData}"><xen:if is="{$positionWidth} === '0'"><xen:set var="$positionWidth"><xen:callback
-					class="bdImage_Integration" method="getImageWidth">{xen:raw $imageData}</xen:callback></xen:set></xen:if><xen:if
-					is="{$positionHeight} === '0'"><xen:set var="$positionHeight"><xen:callback class="bdImage_Integration"
-					method="getImageHeight">{xen:raw $imageData}</xen:callback></xen:set></xen:if><xen:set
-					var="$thumbnailUrl"><xen:callback class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
-					'width={$positionWidth}', 'height={$positionHeight}'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+				<xen:set var="$thumbnailUrl" /><xen:if is="{$imageData}"><xen:set var="$originalUrl"><xen:callback class="bdImage_Integration"
+					method="getOriginalUrl">{xen:raw $imageData}</xen:callback></xen:set></xen:if><xen:set
 					var="$transparentDataUri"><xen:callback class="bdImage_Helper_Template" method="getTransparentDataUri" params="{xen:array
-					'width={$positionWidth}', 'height={$positionHeight}'}">{xen:raw $thumbnailUrl}</xen:callback></xen:set><div class="thread-image">
-					<a href="{xen:link threads, $thread}" style="background-image: url('{xen:raw $thumbnailUrl}')">
+					'width={$positionWidth}', 'height={$positionHeight}'}" /></xen:set><div class="thread-image">
+					<a href="{xen:link threads, $thread}"{xen:if $originalUrl, ' style="background-image: url({xen:raw $originalUrl})"'}>
 						<img src="{xen:raw $transparentDataUri}" />
 						<div class="gradient"></div>
 					</a>
-				</div></xen:if>
+				</div>
 
 				<div class="image-text-container">
 					<div class="width-wide">
@@ -1734,6 +1756,7 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 							<a href="{xen:link threads, $thread}">
 								{xen:helper snippet, $thread.title, $threadTitleMaxLength}
 							</a>
+							<div class="spacing-edge"></div>
 						</div><!-- .thread-title -->
 
 						<div class="thread-info image-text">
@@ -1750,7 +1773,7 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 								<a href="{xen:link threads, $thread}" class="Tooltip" title="{xen:datetime
 									$thread.post_date, absolute}">{xen:datetime $thread.post_date, relative}</a><xen:else
 							/>
-								<a href="{xen:link threads, $thread}">{xen:datetime $thread.post_date, absolute}</a>
+								<a href="{xen:link threads, $thread}">{xen:date $thread.post_date}</a>
 							</xen:if></span>
 
 							<xen:if is="{$thread.forum.node_id} > 0"><span class="forum"><xen:set
@@ -1764,6 +1787,7 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 							</span></xen:if>
 						</div><!-- .thread-info -->
 					</div><!-- .width-wide -->
+					<div class="spacing-edge"></div>
 				</div><!-- .image-text-container -->
 			</div><!-- .spacing -->
 		</div><!-- .thread -->

@@ -442,6 +442,71 @@ html.bdImage_hasCover .titleBar {
 </xen:if>
 
 <xen:edithint template="bdimage_hero_image.css" />]]></template>
+    <template title="bdimage_3_column.css" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$tresColumnSpacingHuge">40px</xen:set>
+<xen:set var="$tresColumnSpacingLarge">30px</xen:set>
+<xen:set var="$tresColumnSpacingMedium">20px</xen:set>
+<xen:set var="$tresColumnSpacingSmall">10px</xen:set>
+<xen:set var="$tresColumnSpacingEdge">5px</xen:set>
+
+<xen:set var="$tresColumnFontSize">13px</xen:set>
+
+.bdImage_3column .margin-r-edge { margin-right: {$tresColumnSpacingEdge}; }
+.bdImage_3column .margin-b-small { margin-bottom: {$tresColumnSpacingSmall}; }
+.bdImage_3column .margin-tb-small { margin-top: {$tresColumnSpacingSmall}; margin-bottom: {$tresColumnSpacingSmall}; }
+
+.bdImage_3column { font-size: {$tresColumnFontSize}; }
+.bdImage_3column .tres-column-ad { min-height: 1px; text-align: center; }
+
+.bdImage_3column .tres-column-image a,
+.bdImage_3column .tres-column-image img {
+	background-position: center center;
+	background-size: cover;
+	display: block;
+	width: 100%;
+}
+
+.bdImage_3column .tres-column-controls {
+	display: block;
+}
+	{xen:helper clearfix, '.bdImage_3column .tres-column-controls'}
+	.bdImage_3column .tres-column-controls .control {
+		display: none;
+		float: left;
+		overflow: hidden;
+		width: 25%;
+	}
+	.bdImage_3column .tres-column-controls .views { display: block; }
+	.bdImage_3column .tres-column-controls .replies { display: block; }
+
+<xen:if is="{xen:property enableResponsive}">
+@media screen and (min-width: {xen:property maxResponsiveNarrowWidth}) {
+	.Responsive .bdImage_3column .margin-lr-neg-edge-on-narrow { margin-left: -{$tresColumnSpacingEdge}; margin-right: -{$tresColumnSpacingEdge}; }
+	.Responsive .bdImage_3column .margin-lr-edge-on-narrow { margin-left: {$tresColumnSpacingEdge}; margin-right: {$tresColumnSpacingEdge}; }
+	.Responsive .bdImage_3column .margin-b-large-on-narrow { margin-bottom: {$tresColumnSpacingLarge}; }
+
+	.Responsive .bdImage_3column .container { display: block; }
+	{xen:helper clearfix, '.Responsive .bdImage_3column .container'}
+	.Responsive .bdImage_3column .column {
+		display: block;
+		float: left;
+		margin: 0;
+		padding: 0;
+		width: 50%;
+	}
+		.Responsive .bdImage_3column .column-3 { display: none; }
+	
+	.Responsive .bdImage_3column .tres-column-title { line-height: 1.3em; max-height: 2.6em; overflow: hidden; }
+}
+
+@media screen and (min-width: {xen:property maxResponsiveWideWidth}) {
+	.Responsive .bdImage_3column .margin-lr-neg-small-on-wide { margin-left: -{$tresColumnSpacingSmall}; margin-right: -{$tresColumnSpacingSmall}; }
+	.Responsive .bdImage_3column .margin-lr-small-on-wide { margin-left: {$tresColumnSpacingSmall}; margin-right: {$tresColumnSpacingSmall}; }
+	.Responsive .bdImage_3column .margin-b-huge-on-wide { margin-bottom: {$tresColumnSpacingHuge}; }
+	
+	.Responsive .bdImage_3column .column { width: 33.33%; }
+	.Responsive .bdImage_3column .column-3 { display: block; }
+}
+</xen:if>]]></template>
     <template title="bdimage_editor_contents_hero_image.css" version_id="2010000" version_string="2.1.0"><![CDATA[html { background: none; }]]></template>
     <template title="bdimage_grid_inline_css" version_id="19" version_string="0.10.0-dev"><![CDATA[<xen:set var="$gridWidth">{xen:calc '({$widget.options.thumbnail_width} + {$widget.options.gap}) * {$widget.options.grid_columns}'}</xen:set>
 <xen:set var="$maxWidthInSidebar">{xen:calc '{xen:property sidebar.width} - {xen:property secondaryContent.padding-left} - {xen:property secondaryContent.padding-right}'}</xen:set>
@@ -521,6 +586,7 @@ html.bdImage_hasCover .titleBar {
 <xen:set var="$threadViewMaxWidth">960px</xen:set>
 <xen:set var="$threadViewColor">#dfe5e9</xen:set>
 <xen:set var="$threadViewControlColor">#098bf9</xen:set>
+<xen:set var="$threadViewThreadControlsFontSize">80%</xen:set>
 <xen:set var="$threadViewFirstPostMessageTextFontSize">110%</xen:set>
 
 <xen:set var="$threadViewRepliesFontSize">80%</xen:set>
@@ -535,7 +601,9 @@ html.bdImage_hasCover .titleBar {
 <xen:set var="$threadViewRepliesUserTitleFontSize">80%</xen:set>
 <xen:set var="$threadViewRepliesMessageTextFontSize">100%</xen:set>
 
+.bdImage_heroImage .margin-r-edge { margin-right: {$heroImageSpacingEdge}; }
 .bdImage_heroImage .margin-r-small { margin-right: {$heroImageSpacingSmall}; }
+.bdImage_heroImage .margin-r-medium { margin-right: {$heroImageSpacingMedium}; }
 .bdImage_heroImage .margin-tb-edge { margin-top: {$heroImageSpacingEdge}; margin-bottom: {$heroImageSpacingEdge}; }
 .bdImage_heroImage .margin-tb-huge { margin-top: {$heroImageSpacingHuge}; margin-bottom: {$heroImageSpacingHuge}; }
 .bdImage_heroImage .margin-b-edge { margin-bottom: {$heroImageSpacingEdge}; }
@@ -551,7 +619,7 @@ html.bdImage_hasCover .titleBar {
 .bdImage_heroImage a.block:focus,
 .bdImage_heroImage a.block:active { background: none; box-shadow: none; text-decoration: none; top: 0; }
 
-.bdImage_heroImage .container {
+.bdImage_heroImage > .container {
 	max-height: 90vh; <xen:comment>http://caniuse.com/#feat=viewport-units</xen:comment>
 	overflow: hidden;
 	position: relative;
@@ -687,10 +755,11 @@ html.bdImage_hasCover .titleBar {
 .bdimage_thread_view_hero_image .messageUserBlock  .avatar img { background: none; border-radius: {$heroImageSpacingSmall}; height: {$threadViewRepliesAvatarImgSize}; margin: 0; padding: 0; width: {$threadViewRepliesAvatarImgSize}; }
 .bdimage_thread_view_hero_image .messageUserBlock  .userText { margin-left: {xen:calc 'intval({$threadViewRepliesAvatarImgSize}) + intval({$heroImageSpacingSmall})'}px; }
 .bdimage_thread_view_hero_image .messageUserBlock  .userText > * { display: none !important; line-height: 1em; }
-.bdimage_thread_view_hero_image .messageUserBlock  .userText > .username { color: {$threadViewRepliesUsernameColor}; display: block !important; font-size: {$threadViewRepliesUsernameFontSize}; line-height: 1.3em; }
-.bdimage_thread_view_hero_image .messageUserBlock  .userText > .userTitle { color: {$threadViewRepliesUserTitleColor}; display: block !important; font-size: {$threadViewRepliesUserTitleFontSize}; line-height: 1.3em; }
+.bdimage_thread_view_hero_image .messageUserBlock  .userText .username { color: {$threadViewRepliesUsernameColor}; display: block !important; font-size: {$threadViewRepliesUsernameFontSize}; line-height: 1.3em; }
+.bdimage_thread_view_hero_image .messageUserBlock  .userText .userTitle { color: {$threadViewRepliesUserTitleColor}; display: block !important; font-size: {$threadViewRepliesUserTitleFontSize}; line-height: 1.3em; }
 .bdimage_thread_view_hero_image .messageText { font-family: inherit; font-size: {$threadViewRepliesMessageTextFontSize}; }
 
+.bdimage_thread_view_hero_image .thread-controls { font-size: {$threadViewThreadControlsFontSize}; }
 .bdimage_thread_view_hero_image .first-post .messageUserInfo { display: none; }
 .bdimage_thread_view_hero_image .first-post .messageText { font-family: inherit; font-size: {$threadViewFirstPostMessageTextFontSize}; }
 
@@ -721,14 +790,12 @@ html { background: none !important; }
 <xen:if is="{xen:property enableResponsive}">
 @media screen and (min-width: {xen:property maxResponsiveNarrowWidth}) {
 	.Responsive .bdImage_heroImage img.hero { height: auto; padding-bottom: 0; }
-	.Responsive .bdImage_heroImage .thread-title {
-		line-height: 1.3em;
-		max-height: 2.6em;
-	}
+	.Responsive .bdImage_heroImage .thread-title { line-height: 1.3em; max-height: 2.6em; overflow: hidden; }
 	.Responsive .bdImage_heroImage .thread-info { display: block; }
 }
 
 @media screen and (min-width: {xen:property maxResponsiveWideWidth}) {
+	.Responsive .bdImage_heroImage .margin-r-large-on-wide { margin-right: {$heroImageSpacingLarge}; }
 	.Responsive .bdImage_heroImage .margin-b-large-on-wide { margin-bottom: {$heroImageSpacingLarge}; }
 	.Responsive .bdImage_heroImage .padding-l-medium-on-wide { padding-left: {$heroImageSpacingMedium}; }
 
@@ -1225,11 +1292,21 @@ html { background: none !important; }
 	<xen:if is="isset({$posts.{$thread.first_post_id}})"><div class="first-post margin-tb-edge">
 		<div class="text">
 			<div class="text-inner pageWidth">
+				<div class="thread-controls">
+					<xen:include template="bdimage_widget_thread_controls">
+						<xen:set var="$from">bdimage_thread_view_hero_image</xen:set>
+					</xen:include>
+				</div>
+
 				<ol class="messageList">
 					<xen:include template="post">
 						<xen:map from="{$posts.{$thread.first_post_id}}" to="$post" />
 					</xen:include>
 				</ol>
+				
+				<xen:hook name="bdimage_thread_view_hero_image_below_first_post"
+						  params="{xen:array 'thread={$thread}',
+								  'post={$firstPost}'}" />
 			</div>
 		</div>
 	</div></xen:if>
@@ -1593,12 +1670,49 @@ ul.bdImage_Widget_Grid
         </ul>
     </div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_threads_custom" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:edithint template="bdimage_widget_threads_hero_image" />
+    <template title="bdimage_widget_threads_3_column" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:if hascontent="true"><xen:require css="bdimage_3_column.css" /><xen:comment>
+
+</xen:comment>
+<div class="bdImage_3column"><div class="container margin-lr-neg-edge-on-narrow margin-b-large-on-narrow margin-lr-neg-small-on-wide margin-b-huge-on-wide"><xen:contentcheck><xen:set
+	var="$transparentDataUri"><xen:callback class="bdImage_Helper_Template" method="getTransparentDataUri"
+	params="{xen:array 'width=2', 'height=1'}" /></xen:set><xen:foreach
+	loop="$threads" i="$i" value="$thread"><xen:if is="{$i} <= 3"><xen:set var="$imageData"><xen:callback
+	class="bdImage_Helper_Template" method="getImageData" params="{$thread}"/></xen:set>
+	<div class="column column-{$i} margin-tb-small">
+		<xen:if hascontent="true"><div class="tres-column-ad"><xen:contentcheck><xen:hook name="bdimage_widget_threads_3_column_ad"
+			params="{xen:array 'thread={$thread}', 'column={$i}'}" /></xen:contentcheck></div><xen:else /><div id="post-{$thread.first_post_id}" class="thread margin-lr-edge-on-narrow margin-lr-small-on-wide" data-author="{$thread.username}">
+			<xen:if is="{$imageData}"><xen:set var="$originalUrl"><xen:callback class="bdImage_Integration"
+				method="getOriginalUrl">{xen:raw $imageData}</xen:callback></xen:set></xen:if><div class="tres-column-image margin-b-small">
+				<a href="{xen:link threads, $thread}"{xen:if $originalUrl, ' style="background-image: url({xen:raw $originalUrl})"'}>
+					<img src="{xen:raw $transparentDataUri}" />
+				</a>
+			</div>
+
+			<div class="tres-column-title margin-b-small">
+				<a href="{xen:link threads, $thread}">{$thread.title}</a>
+			</div>
+
+			<div class="tres-column-controls">
+				<xen:include template="bdimage_widget_thread_controls">
+					<xen:set var="$from">bdimage_widget_threads_3_column</xen:set>
+				</xen:include>
+			</div>
+		</div><!-- .thread --></xen:if>
+	</div><!-- .column -->
+</xen:if></xen:foreach></xen:contentcheck>
+</div></div><!-- .container + .bdImage_3column -->
+</xen:if>]]></template>
+    <template title="bdimage_widget_threads_custom" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:edithint template="bdimage_widget_threads_3_column" />
+<xen:edithint template="bdimage_3_column.css" />
+
+<xen:edithint template="bdimage_widget_threads_hero_image" />
+<xen:edithint template="bdimage_thread_view_hero_image" />
 <xen:edithint template="bdimage_hero_image.css" />
 
 <xen:edithint template="bdimage_widget_threads_stylized_grid" />
 <xen:edithint template="bdimage_stylized_grid.css" />
 
+<xen:edithint template="bdimage_widget_thread_controls" />
 <xen:edithint template="wf_widget_threads" />
 <xen:edithint template="wf_widget_threads_pagenav" />]]></template>
     <template title="bdimage_widget_threads_grid" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if hascontent="true">
@@ -1719,7 +1833,7 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 	<div class="cell position-{$positionId}">
 		<div id="post-{$thread.first_post_id}" class="thread" data-author="{$thread.username}">
 			<div class="thread-inner margin-tb-small margin-lr-small-if-wide">
-				<xen:set var="$thumbnailUrl" /><xen:if is="{$imageData}"><xen:set var="$originalUrl"><xen:callback class="bdImage_Integration"
+				<xen:if is="{$imageData}"><xen:set var="$originalUrl"><xen:callback class="bdImage_Integration"
 					method="getOriginalUrl">{xen:raw $imageData}</xen:callback></xen:set></xen:if><xen:set
 					var="$transparentDataUri"><xen:callback class="bdImage_Helper_Template" method="getTransparentDataUri" params="{xen:array
 					'width={$positionWidth}', 'height={$positionHeight}'}" /></xen:set><div class="thread-image">
@@ -1732,9 +1846,7 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 				<div class="image-text-container margin-b-small margin-b-medium-if-wide">
 					<div class="width-wide">
 						<div class="thread-title margin-lr-medium margin-lr-large-if-wide margin-b-small">
-							<a href="{xen:link threads, $thread}">
-								{xen:helper snippet, $thread.title, $threadTitleMaxLength}
-							</a>
+							<a href="{xen:link threads, $thread}">{$thread.title}</a>
 						</div><!-- .thread-title -->
 
 						<div class="thread-info margin-lr-medium margin-lr-large-if-wide">
@@ -1866,6 +1978,29 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 		</ul>
 	</div>
 </div>]]></template>
+    <template title="bdimage_widget_thread_controls" version_id="2010000" version_string="2.1.0"><![CDATA[<a href="{xen:link full:threads, $thread}" class="control views margin-r-medium margin-r-large-on-wide">
+	<span>
+		<i class="fa fa-eye margin-r-edge" aria-hidden="true" style="color: #3c70a2"></i>
+		<span class="counter" style="{xen:if '!{$thread.view_count}',
+			'display:none;'}">{xen:number $thread.view_count}</span>
+	</span>
+</a>
+
+<a href="{xen:link full:threads, $thread}#QuickReply" class="control replies margin-r-medium margin-r-large-on-wide">
+	<span>
+		<i class="fa fa-comment-o margin-r-edge" aria-hidden="true" style="color: #f70961"></i>
+		<span class="counter" style="{xen:if '!{$thread.reply_count}',
+			'display:none;'}">{xen:number $thread.reply_count}</span>
+	</span>
+</a>
+
+<span class="control sharing margin-r-medium margin-r-large-on-wide">
+	<a href="{xen:link full:posts/permalink, {xen:array 'post_id={$thread.first_post_id}'}}" class="control permalink OverlayTrigger">
+		<span>
+			<i class="fa fa-share-alt" aria-hidden="true"></i>
+		</span>
+	</a>
+</span>]]></template>
     <template title="bdimage_widget_thread_item" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:foreach loop="$threads" value="$thread">
 <xen:if is="{$thread.bdimage_image}">
 <li>

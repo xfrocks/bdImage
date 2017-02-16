@@ -568,7 +568,7 @@ html.bdImage_hasCover .titleBar {
 <xen:set var="$heroImageSpacingMedium">20px</xen:set>
 <xen:set var="$heroImageSpacingSmall">10px</xen:set>
 <xen:set var="$heroImageSpacingEdge">5px</xen:set>
-<xen:set var="$heroImageGradientColor">#343434</xen:set>
+<xen:set var="$heroImageGradientColor">#18202e</xen:set>
 
 <xen:set var="$heroImageFontSize">13px</xen:set>
 <xen:set var="$heroImageFontSizeWide">20px</xen:set>
@@ -584,13 +584,15 @@ html.bdImage_hasCover .titleBar {
 <xen:set var="$heroImagePosterImgSize">40px</xen:set>
 
 <xen:set var="$threadViewMaxWidth">960px</xen:set>
+<xen:set var="$threadViewFontSize">13px</xen:set>
+<xen:set var="$threadViewFontSizeWide">16px</xen:set>
 <xen:set var="$threadViewColor">#dfe5e9</xen:set>
 <xen:set var="$threadViewControlColor">#098bf9</xen:set>
-<xen:set var="$threadViewThreadControlsFontSize">80%</xen:set>
+<xen:set var="$threadViewThreadControlsFontSize">70%</xen:set>
 <xen:set var="$threadViewFirstPostMessageTextFontSize">110%</xen:set>
 
-<xen:set var="$threadViewRepliesFontSize">80%</xen:set>
-<xen:set var="$threadViewRepliesHeaderFontSize">130%</xen:set>
+<xen:set var="$threadViewRepliesFontSize">90%</xen:set>
+<xen:set var="$threadViewRepliesHeaderFontSize">140%</xen:set>
 <xen:set var="$threadViewRepliesBorderColor">#bed0da</xen:set>
 <xen:set var="$threadViewRepliesBorderThickness">3px</xen:set>
 <xen:set var="$threadViewRepliesBorderWideThickness">6px</xen:set>
@@ -629,9 +631,9 @@ html.bdImage_hasCover .titleBar {
 .bdImage_heroImage .gradient {
 	position: absolute;
 		top: -{$heroImageSpacingHuge};
-		right: 0;
+		right: -5px;
 		bottom: -5px;
-		left: 0;
+		left: -5px;
 
 	<xen:comment>http://colorzilla.com/gradient-editor/</xen:comment>
 	background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, {$heroImageGradientColor} 100%); /* FF3.6-15 */
@@ -721,6 +723,7 @@ html.bdImage_hasCover .titleBar {
 	background: {$heroImageGradientColor} !important;
 	color: {$threadViewColor};
 }
+	.bdimage_thread_view_hero_image .bdImage_heroImage { font-size: {$threadViewFontSize}; }
 	.bdimage_thread_view_hero_image .first-post .text,
 	.bdimage_thread_view_hero_image .replies .text,
 	.bdimage_thread_view_hero_image .quickReplyContainer .text,
@@ -753,7 +756,7 @@ html.bdImage_hasCover .titleBar {
 .bdimage_thread_view_hero_image .messageUserBlock .arrow { display: none; }
 .bdimage_thread_view_hero_image .messageUserBlock .avatarHolder { background: none; border-radius: 0; float: left; margin: 0; padding: 0; }
 .bdimage_thread_view_hero_image .messageUserBlock  .avatar img { background: none; border-radius: {$heroImageSpacingSmall}; height: {$threadViewRepliesAvatarImgSize}; margin: 0; padding: 0; width: {$threadViewRepliesAvatarImgSize}; }
-.bdimage_thread_view_hero_image .messageUserBlock  .userText { margin-left: {xen:calc 'intval({$threadViewRepliesAvatarImgSize}) + intval({$heroImageSpacingSmall})'}px; }
+.bdimage_thread_view_hero_image .messageUserBlock  .userText { margin-left: {xen:calc 'intval({$threadViewRepliesAvatarImgSize}) + intval({$heroImageSpacingSmall}) + intval({$heroImageSpacingEdge})'}px; }
 .bdimage_thread_view_hero_image .messageUserBlock  .userText > * { display: none !important; line-height: 1em; }
 .bdimage_thread_view_hero_image .messageUserBlock  .userText .username { color: {$threadViewRepliesUsernameColor}; display: block !important; font-size: {$threadViewRepliesUsernameFontSize}; line-height: 1.3em; }
 .bdimage_thread_view_hero_image .messageUserBlock  .userText .userTitle { color: {$threadViewRepliesUserTitleColor}; display: block !important; font-size: {$threadViewRepliesUserTitleFontSize}; line-height: 1.3em; }
@@ -799,13 +802,14 @@ html { background: none !important; }
 	.Responsive .bdImage_heroImage .margin-b-large-on-wide { margin-bottom: {$heroImageSpacingLarge}; }
 	.Responsive .bdImage_heroImage .padding-l-medium-on-wide { padding-left: {$heroImageSpacingMedium}; }
 
-	.bdImage_heroImage { font-size: {$heroImageFontSizeWide}; }
+	.Responsive .bdImage_heroImage { font-size: {$heroImageFontSizeWide}; }
 	.Responsive .bdImage_heroImage .post-body { display: block; }
 	.Responsive .bdImage_heroImage .post-date { display: inline; }
 
 	.Responsive .bdimage_thread_view_hero_image .text-inner.pageWidth { margin: 0 auto; max-width: {$threadViewMaxWidth}; padding: 0; }
-	.bdimage_thread_view_hero_image .messageList .message { padding: {$heroImageSpacingMedium} 0 !important; }
-	.bdimage_thread_view_hero_image .replies .messageList { border-left-width: {$threadViewRepliesBorderWideThickness}; }
+	.Responsive .bdimage_thread_view_hero_image .bdImage_heroImage { font-size: {$threadViewFontSizeWide}; }
+	.Responsive .bdimage_thread_view_hero_image .messageList .message { padding: {$heroImageSpacingMedium} 0 !important; }
+	.Responsive .bdimage_thread_view_hero_image .replies .messageList { border-left-width: {$threadViewRepliesBorderWideThickness}; }
 }
 </xen:if>]]></template>
     <template title="bdimage_node_forum_last_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$forum.bdimage_last_post_image}"><xen:set var="$bdImage_nodeForumLastThreadImage"><xen:callback
@@ -961,6 +965,7 @@ html { background: none !important; }
 
 <xen:set var="$stylizedGridFontSize">13px</xen:set>
 <xen:set var="$stylizedGridFontSizeWide">20px</xen:set>
+<xen:set var="$stylizedGridThreadImageDefaultColor">#3d68ae</xen:set>
 <xen:set var="$stylizedGridGradientFrom">rgba(0,0,0,0)</xen:set>
 <xen:set var="$stylizedGridGradientTo">#1c2432</xen:set>
 <xen:set var="$stylizedGridThreadTitleColor">#d9e4ed</xen:set>
@@ -987,13 +992,14 @@ html { background: none !important; }
 .bdImage_stylizedGrid a { background: none; border: 0; color: inherit; font-size: inherit; font-weight: inherit; }
 
 .bdImage_stylizedGrid .thread-inner {
-	box-shadow: 0px 1px 5px 0px rgba(175, 186, 198, 0.9);
+	box-shadow: 0px 1px 5px 0px rgba(23, 32, 40, 0.9);
 	max-height: 450px;
 	overflow: hidden;
 	position: relative;
 }
 
 .bdImage_stylizedGrid .thread-image a {
+	background-color: {$stylizedGridThreadImageDefaultColor};
 	background-position: center center;
 	background-size: cover;
 	display: block;
@@ -1013,9 +1019,9 @@ html { background: none !important; }
 	opacity: .8;
 	position: absolute;
 		top: 30%;
-		right: 0;
+		right: -5px;
 		bottom: -5px;
-		left: 0;
+		left: -5px;
 
 	<xen:comment>http://colorzilla.com/gradient-editor/</xen:comment>
 	background: {$stylizedGridGradientFrom}; /* Old browsers */
@@ -1269,15 +1275,15 @@ html { background: none !important; }
 						<a href="{xen:link threads, $thread}">{xen:datetime $thread.post_date, absolute}</a>
 					</xen:if></span>
 
-					<xen:if is="{$thread.forum.node_id} > 0"><span class="forum"><xen:set
-						var="$forumTitleOriginal">{$thread.forum.title}</xen:set><xen:set
+					<span class="forum"><xen:set
+						var="$forumTitleOriginal">{$forum.title}</xen:set><xen:set
 						var="$forumTitlePrefix"><xen:callback class="bdImage_Helper_Template"
 							method="getTextPrefix">{xen:raw $forumTitleOriginal}</xen:callback></xen:set>
 						<span>{xen:phrase in_forum}</span>
-						<a href="{xen:link forums, $thread.forum}"{xen:if
+						<a href="{xen:link forums, $forum}"{xen:if
 							'{$forumTitleOriginal} !== {$forumTitlePrefix}',
 							' title="{xen:raw $forumTitleOriginal}" class="Tooltip"'}>{xen:raw $forumTitlePrefix}</a>
-					</span></xen:if>
+					</span>
 				</div><!-- .thread-info -->
 
 				<div class="thread-title margin-b-edge">

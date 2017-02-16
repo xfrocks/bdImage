@@ -978,6 +978,11 @@ html { background: none !important; }
 <xen:set var="$stylizedGridForumColor">#098bf9</xen:set>
 <xen:set var="$stylizedGridPosterImgSize">40px</xen:set>
 
+<xen:set var="$iframeIndicatorHeight">35px</xen:set>
+<xen:set var="$iframeOverlayInfoHeight">60px</xen:set>
+<xen:set var="$iframeOverlayIconColor">#f6f8f7</xen:set>
+<xen:set var="$iframeOverlayIconBackgroundColor">#0bd2bd</xen:set>
+
 .bdImage_stylizedGrid .width-wide { margin: 0; }
 @media screen and (min-width: {$widthBreakPoint}) {
 	.bdImage_stylizedGrid .width-wide { margin: 0 auto; max-width: {$widthWide}; }
@@ -1038,6 +1043,18 @@ html { background: none !important; }
 	right: 0;
 }
 
+.bdImage_stylizedGrid .indicator-iframe { display: none; }
+.bdImage_stylizedGrid .with-iframe .indicator-iframe {
+	background: {$iframeOverlayIconBackgroundColor};
+	color: {$iframeOverlayIconColor};
+	display: inline-block;
+	height: {$iframeIndicatorHeight};
+	font-size: {xen:calc 'intval({$iframeIndicatorHeight}) * 0.6'}px;
+	line-height: {$iframeIndicatorHeight};
+	text-align: center;
+	width: {$iframeIndicatorHeight};
+}
+
 .bdImage_stylizedGrid .thread-title {
 	color: {$stylizedGridThreadTitleColor};
 	font-size: {$stylizedGridThreadTitleFontSize};
@@ -1083,6 +1100,74 @@ html { background: none !important; }
 		font-weight: 400;
 	}
 
+.bdImage_stylizedGrid_iframeOverlay a.close {
+	bottom: 100%;
+	left: 100%;
+	right: initial;
+	top: initial;
+}
+.bdImage_stylizedGrid_iframeOverlay .iframe-container {
+	height: 0;
+	overflow: hidden;
+	padding-bottom: 56.25%;<xen:comment>Default to use 16:9 ratio</xen:comment>
+	position: relative;
+	width: 100%;
+}
+.bdImage_stylizedGrid_iframeOverlay .iframe-container > iframe {
+	height: 100%;
+	position: absolute;
+	width: 100%;
+}
+.bdImage_stylizedGrid_iframeOverlay a.href,
+.bdImage_stylizedGrid_iframeOverlay a.href:hover, 
+.bdImage_stylizedGrid_iframeOverlay a.href:visited {
+	border: 0;
+	box-shadow: none;
+	color: inherit;
+	display: block;
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
+	position: relative;
+	text-decoration: none;
+}
+{xen:helper clearfix, '.bdImage_stylizedGrid_iframeOverlay a.primaryContent'}
+.bdImage_stylizedGrid_iframeOverlay .icon {
+	background: {$iframeOverlayIconBackgroundColor};
+	color: {$iframeOverlayIconColor};
+	float: left;
+	font-size: {xen:calc 'intval({$iframeOverlayInfoHeight}) * 0.4'}px;
+	line-height: {$iframeOverlayInfoHeight};
+	text-align: center;
+	width: {$iframeOverlayInfoHeight};
+}
+.bdImage_stylizedGrid_iframeOverlay .text-container {
+	line-height: {xen:calc 'intval({$iframeOverlayInfoHeight}) * 0.5'}px;
+	margin: 0 {$stylizedGridSpacingSmall} 0 {xen:calc 'intval({$iframeOverlayInfoHeight}) + intval({$stylizedGridSpacingSmall})'}px;
+	height: {$iframeOverlayInfoHeight};
+	overflow: hidden;
+}
+.bdImage_stylizedGrid_iframeOverlay .text-container > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bdImage_stylizedGrid_iframeOverlay .text-container h3 { margin: 0; padding: 0; }
+.bdImage_stylizedGrid_iframeOverlay .text-container em { font-style: normal; font-weight: normal; }
+.bdImage_stylizedGrid_iframeOverlay .gradient {
+	opacity: .5;
+	position: absolute;
+		top: -5px;
+		right: -5px;
+		bottom: 50%;
+		left: -5px;
+
+	<xen:comment>http://colorzilla.com/gradient-editor/</xen:comment>
+	background: -moz-linear-gradient(top,  {$stylizedGridGradientTo}, rgba(0,0,0,0) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  {$stylizedGridGradientTo}, rgba(0,0,0,0) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  {$stylizedGridGradientTo}, rgba(0,0,0,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='{$stylizedGridGradientTo}', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+}
+#bdImage_stylizedGridIframeMask {
+	background-color: {$stylizedGridGradientTo} !important;
+	opacity: .9 !important;
+}
 
 <xen:if is="{xen:property enableResponsive}">
 @media screen and (min-width: {xen:property maxResponsiveNarrowWidth}) {
@@ -1811,12 +1896,33 @@ ul.bdImage_Widget_Grid
 		</div><!-- .bdImage_heroImage -->
 </xen:if></xen:if></xen:foreach></xen:contentcheck></xen:if>]]></template>
     <template title="bdimage_widget_threads_stylized_grid" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:if hascontent="true"><xen:require js="js/WidgetFramework/default.min.js" /><xen:comment>
-</xen:comment><xen:require css="bdimage_stylized_grid.css" /><xen:comment>
+</xen:comment><xen:require js="js/bdImage/stylized_grid.min.js" /><xen:comment>
+</xen:comment><xen:require css="bdimage_stylized_grid.css" /><xen:set var="$iframeTemplate"><div class="bdImage_stylizedGrid_iframeOverlay">
+	<a class="close OverlayCloser"></a>
+	<div class="baseHtml">
+		<div class="iframe-container"></div>
+		<a class="href primaryContent">
+			<div class="gradient"></div>
+			<i class="fa fa-share-alt icon" aria-hidden="true"></i>
+			<div class="text-container">
+				<h3>
+					<span class="thread-title"></span>
+					<em>
+						<span>{xen:phrase by}</span>
+						<span class="author"></span>
+					</em>
+				</h3>
+				<p class="snippet-text"></p>
+			</div>
+		</a>
+	</div>
+</div></xen:set><xen:comment>
 
 </xen:comment>
 <div class="WidgetFramework_WidgetRenderer_Threads bdImage_stylizedGrid"{xen:if $loadMoreUrl,
-	' data-content-selector=".bdImage_stylizedGrid" data-load-more-url="{xen:jsescape
-	$loadMoreUrl}" data-times="{$layoutOptions.loadMoreTimes}"'}><div class="container margin-b-huge"><xen:contentcheck><xen:set
+	' data-content-selector=".bdImage_stylizedGrid" data-load-more-url="{xen:escape
+	$loadMoreUrl}" data-times="{$layoutOptions.loadMoreTimes}"'} data-iframe-template="{xen:escape
+	$iframeTemplate}"><div class="container margin-b-huge"><xen:contentcheck><xen:set
 var="$widths.1">960</xen:set><xen:set var="$heights.1">450</xen:set><xen:set
 var="$widths.2">350</xen:set><xen:set var="$heights.2">350</xen:set><xen:set
 var="$widths.3">580</xen:set><xen:set var="$heights.3">350</xen:set><xen:set
@@ -1837,7 +1943,8 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 	is="{$posSuffix.{$positionId}} === '1' || {$i} < {xen:count $threads}">
 	<xen:if is="{$posPrefix.{$positionId}} === '1'"><div class="row width-wide position-{$positionId}"></xen:if>
 	<div class="cell position-{$positionId}">
-		<div id="post-{$thread.first_post_id}" class="thread" data-author="{$thread.username}">
+		<div id="post-{$thread.first_post_id}" class="thread" data-author="{$thread.username}" data-snippet="{xen:escape
+			{xen:helper WidgetFramework_snippet, $thread.messageHtml, 350}}">
 			<div class="thread-inner margin-tb-small margin-lr-small-if-wide">
 				<xen:if is="{$imageData}"><xen:set var="$originalUrl"><xen:callback class="bdImage_Integration"
 					method="getOriginalUrl">{xen:raw $imageData}</xen:callback></xen:set></xen:if><xen:set
@@ -1851,6 +1958,10 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 
 				<div class="image-text-container margin-b-small margin-b-medium-if-wide">
 					<div class="width-wide">
+						<div class="thread-indicators margin-lr-medium margin-lr-large-if-wide margin-b-small">
+							<i class="indicator-iframe fa fa-play Tooltip" aria-hidden="true" title="{xen:phrase media}"></i>
+						</div>
+
 						<div class="thread-title margin-lr-medium margin-lr-large-if-wide margin-b-small">
 							<a href="{xen:link threads, $thread}">{$thread.title}</a>
 						</div><!-- .thread-title -->

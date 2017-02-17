@@ -448,7 +448,10 @@ html.bdImage_hasCover .titleBar {
 <xen:set var="$tresColumnSpacingSmall">10px</xen:set>
 <xen:set var="$tresColumnSpacingEdge">5px</xen:set>
 
-<xen:set var="$tresColumnFontSize">13px</xen:set>
+<xen:set var="$tresColumnFontSize">15px</xen:set>
+<xen:set var="$tresColumnThreadTitleColor">#d9e4ed</xen:set>
+<xen:set var="$tresColumnThreadControlsColor">#969696</xen:set>
+<xen:set var="$tresColumnThreadControlsFontSize">90%</xen:set>
 
 .bdImage_3column .margin-r-edge { margin-right: {$tresColumnSpacingEdge}; }
 .bdImage_3column .margin-b-small { margin-bottom: {$tresColumnSpacingSmall}; }
@@ -468,10 +471,11 @@ html.bdImage_hasCover .titleBar {
 .bdImage_3column .tres-column-controls {
 	display: block;
 }
-	{xen:helper clearfix, '.bdImage_3column .tres-column-controls'}
 	.bdImage_3column .tres-column-controls .control {
+		color: {$tresColumnThreadControlsColor};
 		display: none;
 		float: left;
+		font-size: {$tresColumnThreadControlsFontSize};
 		overflow: hidden;
 		width: 25%;
 	}
@@ -495,7 +499,12 @@ html.bdImage_hasCover .titleBar {
 	}
 		.Responsive .bdImage_3column .column-3 { display: none; }
 	
-	.Responsive .bdImage_3column .tres-column-title { line-height: 1.3em; max-height: 2.6em; overflow: hidden; }
+	.Responsive .bdImage_3column .tres-column-title {
+		color: {$tresColumnThreadTitleColor};
+		line-height: 1.6em;
+		height: 4.8em;
+		overflow: hidden;
+	}
 }
 
 @media screen and (min-width: {xen:property maxResponsiveWideWidth}) {
@@ -583,25 +592,35 @@ html.bdImage_hasCover .titleBar {
 <xen:set var="$heroImageForumColor">#098bf9</xen:set>
 <xen:set var="$heroImagePosterImgSize">40px</xen:set>
 
-<xen:set var="$threadViewMaxWidth">960px</xen:set>
+<xen:set var="$threadViewMaxWidth">800px</xen:set>
 <xen:set var="$threadViewFontSize">13px</xen:set>
 <xen:set var="$threadViewFontSizeWide">16px</xen:set>
 <xen:set var="$threadViewColor">#dfe5e9</xen:set>
 <xen:set var="$threadViewControlColor">#098bf9</xen:set>
 <xen:set var="$threadViewThreadControlsFontSize">70%</xen:set>
-<xen:set var="$threadViewFirstPostMessageTextFontSize">110%</xen:set>
+<xen:set var="$threadViewFirstPosterImgSize">30px</xen:set>
+<xen:set var="$threadViewFirstPostMessageTextColor">#dfe5e9</xen:set>
+<xen:set var="$threadViewFirstPostMessageTextFontSize">90%</xen:set>
 
 <xen:set var="$threadViewRepliesFontSize">90%</xen:set>
 <xen:set var="$threadViewRepliesHeaderFontSize">140%</xen:set>
 <xen:set var="$threadViewRepliesBorderColor">#bed0da</xen:set>
-<xen:set var="$threadViewRepliesBorderThickness">3px</xen:set>
-<xen:set var="$threadViewRepliesBorderWideThickness">6px</xen:set>
-<xen:set var="$threadViewRepliesAvatarImgSize">70px</xen:set>
+<xen:set var="$threadViewRepliesBorderThickness">2px</xen:set>
+<xen:set var="$threadViewRepliesBorderWideThickness">4px</xen:set>
+<xen:set var="$threadViewRepliesAvatarImgSize">50px</xen:set>
 <xen:set var="$threadViewRepliesUsernameColor">#fbfbfb</xen:set>
 <xen:set var="$threadViewRepliesUsernameFontSize">100%</xen:set>
 <xen:set var="$threadViewRepliesUserTitleColor">#979d9e</xen:set>
 <xen:set var="$threadViewRepliesUserTitleFontSize">80%</xen:set>
+<xen:set var="$threadViewRepliesMessageTextColor">{$threadViewFirstPostMessageTextColor}</xen:set>
 <xen:set var="$threadViewRepliesMessageTextFontSize">100%</xen:set>
+
+<xen:set var="$threadViewLikeTextColor">#aec2cc</xen:set>
+<xen:set var="$threadViewEditorToolbarBackgroundColor">#5887d5</xen:set>
+<xen:set var="$threadViewEditorPlaceholderColor">#18202e</xen:set>
+<xen:set var="$threadViewEditorBackgroundColor">#aec2cc</xen:set>
+<xen:set var="$threadViewEditorButtonColor">#4fa2e8</xen:set>
+<xen:set var="$threadViewEditorPrimaryButtonColor">#104cc6</xen:set>
 
 .bdImage_heroImage .margin-r-edge { margin-right: {$heroImageSpacingEdge}; }
 .bdImage_heroImage .margin-r-small { margin-right: {$heroImageSpacingSmall}; }
@@ -660,18 +679,17 @@ html.bdImage_hasCover .titleBar {
 		position: relative;
 	}
 
-.bdImage_heroImage .thread-title {
+.bdImage_heroImage .thread-title-base {
 	color: {$heroImageThreadTitleColor};
 	font-size: {$heroImageThreadTitleFontSize};
 	font-weight: 700;
 }
 
-.bdImage_heroImage .post-body {
+.bdImage_heroImage .post-snippet {
 	display: none;
 }
-	.bdImage_heroImage .messageText {
+	.bdImage_heroImage .post-snippet .messageText {
 		color: {$heroImageMessageTextColor};
-		font-family: inherit;
 		font-size: {$heroImageMessageTextFontSize};
 		line-height: 1.3em;
 		max-height: 3.9em;
@@ -719,11 +737,27 @@ html.bdImage_hasCover .titleBar {
 }
 
 .bdimage_thread_view_hero_image,
-.wf-container-simple #content.bdimage_thread_view_hero_image {
+.wf-container-simple #content.bdimage_thread_view_hero_image,
+.wf-container-simple.wf-no-header-proxy #content.bdimage_thread_view_hero_image {
 	background: {$heroImageGradientColor} !important;
 	color: {$threadViewColor};
 }
+	.bdimage_thread_view_hero_image .page-title {
+		line-height: 1.4em;
+	}
+
 	.bdimage_thread_view_hero_image .bdImage_heroImage { font-size: {$threadViewFontSize}; }
+	.bdimage_thread_view_hero_image .bdImage_heroImage .thread-info {
+		height: {$threadViewFirstPosterImgSize};
+		line-height: {$threadViewFirstPosterImgSize};
+		padding-left: {xen:calc 'intval({$threadViewFirstPosterImgSize}) + intval({$heroImageSpacingSmall})'}px;
+	}
+	.bdimage_thread_view_hero_image .bdImage_heroImage .poster-avatar img {
+		border-radius: {$threadViewFirstPosterImgSize};
+		height: {$threadViewFirstPosterImgSize};
+		width: {$threadViewFirstPosterImgSize};
+	}
+
 	.bdimage_thread_view_hero_image .first-post .text,
 	.bdimage_thread_view_hero_image .replies .text,
 	.bdimage_thread_view_hero_image .quickReplyContainer .text,
@@ -742,58 +776,110 @@ html.bdImage_hasCover .titleBar {
 	}
 
 .bdimage_thread_view_hero_image .messageList .message,
-.bdimage_thread_view_hero_image .messageList .messageInfo,
+.bdimage_thread_view_hero_image .messageList .messageUserInfo,
 .bdimage_thread_view_hero_image .messageList .messageUserBlock,
-.bdimage_thread_view_hero_image __reset { background: none !important; border: 0 !important; margin: 0 !important; padding: 0 !important; }
-.bdimage_thread_view_hero_image .messageList .messageContent { min-height: 0; }
+.bdimage_thread_view_hero_image .messageUserBlock,
+.bdimage_thread_view_hero_image .messageUserBlock > *,
+.bdimage_thread_view_hero_image .messageUserBlock .avatarHolder,
+.bdimage_thread_view_hero_image .messageUserBlock .avatar img,
+.bdimage_thread_view_hero_image .messageUserBlock .userText,
+.bdimage_thread_view_hero_image .messageUserBlock .userText > *,
+.bdimage_thread_view_hero_image .messageUserBlock .userText .username,
+.bdimage_thread_view_hero_image .messageUserBlock .userText .userTitle,
+.bdimage_thread_view_hero_image .messageList .messageInfo,
+.bdimage_thread_view_hero_image .messageList .messageContent,
+.bdimage_thread_view_hero_image .messageText,
+.bdimage_thread_view_hero_image .message .messageDetails .item,
+.bdimage_thread_view_hero_image .quickReply,
+.bdimage_thread_view_hero_image #QuickReply,
+.bdimage_thread_view_hero_image .redactor_box,
+.bdimage_thread_view_hero_image .redactor_toolbar,
+.bdimage_thread_view_hero_image .redactor_toolbar li.redactor_btn_group ul,
+.bdimage_thread_view_hero_image #QuickReply .button,
+.bdimage_thread_view_hero_image __reset { background: none !important; border: 0 !important; border-radius: 0 !important; color: inherit !important; clear: none !important; display: block !important; float: none !important; font-size: inherit !important; font-weight: inherit !important; height: initial !important; line-height: 1 !important; margin: 0 !important; max-height: initial !important; max-width: initial !important; min-height: 0 !important; min-width: 0 !important; padding: 0 !important; width: initial !important; }
 .bdimage_thread_view_hero_image .messageList a.muted { display: block; }
 .bdimage_thread_view_hero_image .messageList a.control { color: {$threadViewControlColor}; }
 
 .bdimage_thread_view_hero_image .messageList .message { padding: {$heroImageSpacingSmall} 0 !important; }
-.bdimage_thread_view_hero_image .messageUserInfo { float: none; margin-bottom: {$heroImageSpacingMedium}; width: 100%; }
-.bdimage_thread_view_hero_image .messageUserBlock { background: none; border: 0; }
+.bdimage_thread_view_hero_image .messageList .messageUserInfo { margin-bottom: {$heroImageSpacingMedium} !important; }
+
 {xen:helper clearfix, '.bdimage_thread_view_hero_image .messageUserBlock'}
-.bdimage_thread_view_hero_image .messageUserBlock .arrow { display: none; }
-.bdimage_thread_view_hero_image .messageUserBlock .avatarHolder { background: none; border-radius: 0; float: left; margin: 0; padding: 0; }
-.bdimage_thread_view_hero_image .messageUserBlock  .avatar img { background: none; border-radius: {$heroImageSpacingSmall}; height: {$threadViewRepliesAvatarImgSize}; margin: 0; padding: 0; width: {$threadViewRepliesAvatarImgSize}; }
-.bdimage_thread_view_hero_image .messageUserBlock  .userText { margin-left: {xen:calc 'intval({$threadViewRepliesAvatarImgSize}) + intval({$heroImageSpacingSmall}) + intval({$heroImageSpacingEdge})'}px; }
-.bdimage_thread_view_hero_image .messageUserBlock  .userText > * { display: none !important; line-height: 1em; }
-.bdimage_thread_view_hero_image .messageUserBlock  .userText .username { color: {$threadViewRepliesUsernameColor}; display: block !important; font-size: {$threadViewRepliesUsernameFontSize}; line-height: 1.3em; }
-.bdimage_thread_view_hero_image .messageUserBlock  .userText .userTitle { color: {$threadViewRepliesUserTitleColor}; display: block !important; font-size: {$threadViewRepliesUserTitleFontSize}; line-height: 1.3em; }
-.bdimage_thread_view_hero_image .messageText { font-family: inherit; font-size: {$threadViewRepliesMessageTextFontSize}; }
+.bdimage_thread_view_hero_image .messageUserBlock > * { display: none !important; }
+.bdimage_thread_view_hero_image .messageUserBlock .avatarHolder { float: left !important; }
+.bdimage_thread_view_hero_image .messageUserBlock .avatar img {
+	border-radius: {$heroImageSpacingSmall} !important;
+	height: {$threadViewRepliesAvatarImgSize} !important;
+	width: {$threadViewRepliesAvatarImgSize} !important;
+}
+.bdimage_thread_view_hero_image .messageUserBlock .avatarHolder .onlineMarker {
+	top: -1px;
+	left: -1px;
+}
+
+.bdimage_thread_view_hero_image .messageUserBlock .userText {
+	display: block !important;
+	margin-left: {xen:calc 'intval({$threadViewRepliesAvatarImgSize}) + intval({$heroImageSpacingSmall})'}px !important;
+}
+.bdimage_thread_view_hero_image .messageUserBlock .userText > * { display: none !important; }
+.bdimage_thread_view_hero_image .messageUserBlock .userText .username {
+	color: {$threadViewRepliesUsernameColor} !important;
+	display: block !important;
+	font-size: {$threadViewRepliesUsernameFontSize} !important;
+	font-weight: 700 !important;
+	line-height: 1.3em !important;
+}
+.bdimage_thread_view_hero_image .messageUserBlock .userText .userTitle {
+	color: {$threadViewRepliesUserTitleColor} !important;
+	display: block !important;
+	font-size: {$threadViewRepliesUserTitleFontSize} !important;
+	line-height: 1.3em !important;
+}
+
+.bdimage_thread_view_hero_image .message .messageDetails .item { display: inline-block !important; }
+.bdimage_thread_view_hero_image .message .messageDetails .postNumber { float: right !important; }
 
 .bdimage_thread_view_hero_image .thread-controls { font-size: {$threadViewThreadControlsFontSize}; }
-.bdimage_thread_view_hero_image .first-post .messageUserInfo { display: none; }
-.bdimage_thread_view_hero_image .first-post .messageText { font-family: inherit; font-size: {$threadViewFirstPostMessageTextFontSize}; }
+.bdimage_thread_view_hero_image .first-post .messageList .messageUserInfo { display: none !important; }
+.bdimage_thread_view_hero_image .first-post .messageText {
+	color: {$threadViewFirstPostMessageTextColor}  !important;
+	font-size: {$threadViewFirstPostMessageTextFontSize}  !important;
+	line-height: 1.7em  !important;
+}
 
 .bdimage_thread_view_hero_image .replies h3 { font-size: {$threadViewRepliesHeaderFontSize}; }
-.bdimage_thread_view_hero_image .replies .messageList { border-left: {$threadViewRepliesBorderThickness} solid {$threadViewRepliesBorderColor}; }
-
-.bdimage_thread_view_hero_image .quickReply { border: 0; margin: 0; padding: 0; }
-.bdimage_thread_view_hero_image .quickReplyContainer .messageUserInfo { display: none; }
-.bdimage_thread_view_hero_image #QuickReply { margin-left: 0; }
-.bdimage_thread_view_hero_image .redactor_box { border: 0; border-radius: {$heroImageSpacingEdge}; }
-.bdimage_thread_view_hero_image .redactor_toolbar { background: #5887d5; border: 0; }
-.bdimage_thread_view_hero_image .redactor_toolbar li.redactor_btn_group ul { background: none; border: 0; box-shadow: none; }
-html { background: none !important; }
-.bdimage_thread_view_hero_image .redactor_box .placeholder span { color: #18202e; }
-.bdimage_thread_view_hero_image .redactor_MessageEditor { background: #aec2cc; }
-.bdimage_thread_view_hero_image #QuickReply .submitUnit { margin-top: {$heroImageSpacingSmall}; }
-.bdimage_thread_view_hero_image #QuickReply .button {
-	background: #4fa2e8;
-	border: 0;
-	border-radius: {$heroImageSpacingEdge};
-	box-shadow: none;
-	height: auto;
-	line-height: 1em;
-	padding: {$heroImageSpacingSmall} {$heroImageSpacingLarge};
+.bdimage_thread_view_hero_image .replies .messageList-container { border-left: {$threadViewRepliesBorderThickness} solid {$threadViewRepliesBorderColor}  !important; }
+.bdimage_thread_view_hero_image .replies .messageText {
+	color: {$threadViewRepliesMessageTextColor} !important;
+	font-size: {$threadViewRepliesMessageTextFontSize} !important;
+	margin-bottom: {$heroImageSpacingSmall} !important;
+	margin-top: {$heroImageSpacingSmall} !important;
+	line-height: 1.5em !important;
 }
-.bdimage_thread_view_hero_image #QuickReply .button.primary { background: #104cc6; color: #fff; }
+.bdimage_thread_view_hero_image .replies .message .likesSummary { color: {$threadViewLikeTextColor} !important; }
+
+.bdimage_thread_view_hero_image .quickReplyContainer .messageUserInfo { display: none !important; }
+.bdimage_thread_view_hero_image .redactor_box { border-radius: {$heroImageSpacingEdge} !important; }
+.bdimage_thread_view_hero_image .redactor_toolbar { background: {$threadViewEditorToolbarBackgroundColor} !important; }
+.bdimage_thread_view_hero_image .redactor_box .placeholder span { color: {$threadViewEditorPlaceholderColor} !important; }
+.bdimage_thread_view_hero_image .redactor_MessageEditor { background: {$threadViewEditorBackgroundColor} !important; }
+.bdimage_thread_view_hero_image #QuickReply .submitUnit { margin-top: {$heroImageSpacingSmall} !important; }
+.bdimage_thread_view_hero_image #QuickReply .button {
+	background: {$threadViewEditorButtonColor} !important;
+	border-radius: {$heroImageSpacingEdge} !important;
+	display: inline-block !important;
+	font-size: 12px !important;
+	margin-left: {$heroImageSpacingEdge} !important;
+	padding: {$heroImageSpacingSmall} {$heroImageSpacingLarge} !important;
+}
+.bdimage_thread_view_hero_image #QuickReply .button.primary {
+	background: {$threadViewEditorPrimaryButtonColor} !important;
+	color: #fff !important;
+}
 
 <xen:if is="{xen:property enableResponsive}">
 @media screen and (min-width: {xen:property maxResponsiveNarrowWidth}) {
 	.Responsive .bdImage_heroImage img.hero { height: auto; padding-bottom: 0; }
-	.Responsive .bdImage_heroImage .thread-title { line-height: 1.3em; max-height: 2.6em; overflow: hidden; }
+	.Responsive .bdImage_heroImage .widget-title { line-height: 1.3em; max-height: 2.6em; overflow: hidden; }
 	.Responsive .bdImage_heroImage .thread-info { display: block; }
 }
 
@@ -803,13 +889,14 @@ html { background: none !important; }
 	.Responsive .bdImage_heroImage .padding-l-medium-on-wide { padding-left: {$heroImageSpacingMedium}; }
 
 	.Responsive .bdImage_heroImage { font-size: {$heroImageFontSizeWide}; }
-	.Responsive .bdImage_heroImage .post-body { display: block; }
+	.Responsive .bdImage_heroImage .post-snippet { display: block; }
 	.Responsive .bdImage_heroImage .post-date { display: inline; }
 
 	.Responsive .bdimage_thread_view_hero_image .text-inner.pageWidth { margin: 0 auto; max-width: {$threadViewMaxWidth}; padding: 0; }
 	.Responsive .bdimage_thread_view_hero_image .bdImage_heroImage { font-size: {$threadViewFontSizeWide}; }
 	.Responsive .bdimage_thread_view_hero_image .messageList .message { padding: {$heroImageSpacingMedium} 0 !important; }
-	.Responsive .bdimage_thread_view_hero_image .replies .messageList { border-left-width: {$threadViewRepliesBorderWideThickness}; }
+	.Responsive .bdimage_thread_view_hero_image .messageUserBlock .userText { margin-left: {xen:calc 'intval({$threadViewRepliesAvatarImgSize}) + intval({$heroImageSpacingSmall}) + intval({$heroImageSpacingEdge})'}px !important; }
+	.Responsive .bdimage_thread_view_hero_image .replies .messageList-container { border-left-width: {$threadViewRepliesBorderWideThickness} !important; }
 }
 </xen:if>]]></template>
     <template title="bdimage_node_forum_last_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$forum.bdimage_last_post_image}"><xen:set var="$bdImage_nodeForumLastThreadImage"><xen:callback
@@ -1343,7 +1430,7 @@ html { background: none !important; }
 		<div class="text">
 			<div class="gradient"></div>
 			<div class="text-inner pageWidth">
-				<div class="thread-info margin-b-edge">
+				<div class="thread-info margin-b-small">
 					<span class="poster-avatar">
 						<xen:avatar user="$thread" size="m" img="true" />
 					</span>
@@ -1371,7 +1458,7 @@ html { background: none !important; }
 					</span>
 				</div><!-- .thread-info -->
 
-				<div class="thread-title margin-b-edge">
+				<div class="page-title thread-title-base margin-b-edge">
 					<a href="{xen:link threads, $thread}">{$thread.title}</a>
 				</div><!-- .thread-title -->
 
@@ -1407,11 +1494,13 @@ html { background: none !important; }
 			<div class="text-inner pageWidth">
 				<h3 class="margin-b-edge">{xen:phrase replies}</h3>
 
-				<ol class="messageList padding-l-small padding-l-medium-on-wide" id="messageList">
-					<xen:contentcheck><xen:foreach loop="$posts" value="$post"><xen:if
-						is="{$post.post_id} != {$thread.first_post_id}"><xen:include template="post"
-						/></xen:if></xen:foreach></xen:contentcheck>
-				</ol>
+				<div class="messageList-container padding-l-small padding-l-medium-on-wide">
+					<ol class="messageList" id="messageList">
+						<xen:contentcheck><xen:foreach loop="$posts" value="$post"><xen:if
+							is="{$post.post_id} != {$thread.first_post_id}"><xen:include template="post"
+							/></xen:if></xen:foreach></xen:contentcheck>
+					</ol>
+				</div>
 
 				<xen:pagenav link="threads" linkdata="{$thread}"
 					page="{$page}" perpage="{$postsPerPage}" total="{$totalPosts}"
@@ -1847,11 +1936,11 @@ ul.bdImage_Widget_Grid
 				<div class="text">
 					<div class="gradient"></div>
 					<div class="text-inner pageWidth">
-						<div class="thread-title margin-b-medium">
+						<div class="widget-title thread-title-base margin-b-medium">
 							<a href="{xen:link threads, $thread}">{$thread.title}</a>
 						</div><!-- .thread-title -->
 
-						<div class="post-body margin-b-medium">
+						<div class="post-snippet margin-b-medium">
 							<article>
 								<blockquote class="messageText ugc baseHtml">
 									<a href="{xen:link full:threads, $thread}" class="snippet block">{xen:helper

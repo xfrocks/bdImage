@@ -1123,7 +1123,6 @@ html.bdImage_hasCover .titleBar {
 	display: block;
 	height: auto;
 	overflow: hidden;
-	position: relative;
 	width: 100%;
 }
 	.bdImage_stylizedGrid .thread-image img {

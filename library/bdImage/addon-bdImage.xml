@@ -2002,9 +2002,11 @@ ul.bdImage_Widget_Grid
 						<div class="post-snippet margin-b-medium">
 							<article>
 								<blockquote class="messageText ugc baseHtml">
-									<a href="{xen:link full:threads, $thread}" class="snippet block">{xen:helper
-										WidgetFramework_snippet, $thread.messageHtml, 350, {xen:array
-										'stripImage=1', 'stripLink=1', 'stripFrame=1', 'stripScript=1'}}</a>
+									<a href="{xen:link full:threads, $thread}" class="snippet block"><xen:callback
+										class="bdImage_ShippableHelper_Html" method="viewSnippet"
+										params="{xen:array 'context=link', 'maxLength=350',
+										'stripImage=1', 'stripLink=1', 'stripFrame=1', 'stripScript=1'}">{xen:raw
+										$thread.messageHtml}</xen:callback></a>
 								</blockquote>
 							</article>
 							<div class="spacing-edge"></div>
@@ -2088,12 +2090,14 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 	var="$positionId">{xen:calc '{$i} % 6'}</xen:set><xen:set
 	var="$positionWidth">{$widths.{$positionId}}</xen:set><xen:set
 	var="$positionHeight">{$heights.{$positionId}}</xen:set><xen:set var="$imageData"><xen:callback
-	class="bdImage_Helper_Template" method="getImageData" params="{$thread}"/></xen:set><xen:if
+	class="bdImage_Helper_Template" method="getImageData" params="{$thread}"/></xen:set><xen:set
+	var="$threadSnippet"><xen:callback class="bdImage_ShippableHelper_Html" method="viewSnippet"
+		params="{xen:array 'stripImage=1', 'stripLink=1', 'stripFrame=1', 'stripScript=1',
+		'maxLength=350'}">{xen:raw $thread.messageHtml}</xen:callback></xen:set><xen:if
 	is="{$posSuffix.{$positionId}} === '1' || {$i} < {xen:count $threads}">
 	<xen:if is="{$posPrefix.{$positionId}} === '1'"><div class="row width-wide position-{$positionId}"></xen:if>
 	<div class="cell position-{$positionId}">
-		<div id="post-{$thread.first_post_id}" class="thread" data-author="{$thread.username}" data-snippet="{xen:escape
-			{xen:helper WidgetFramework_snippet, $thread.messageHtml, 350}}">
+		<div id="post-{$thread.first_post_id}" class="thread" data-author="{$thread.username}" data-snippet="{xen:escape $threadSnippet}">
 			<div class="thread-inner margin-tb-small margin-lr-small-if-wide">
 				<xen:if is="{$imageData}"><xen:set var="$originalUrl"><xen:callback class="bdImage_Integration"
 					method="getOriginalUrl">{xen:raw $imageData}</xen:callback></xen:set></xen:if><xen:set

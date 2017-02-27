@@ -29,6 +29,9 @@
 
             var $snippet = $('<div />').html(snippet);
             var $iframe = $snippet.find('iframe');
+            if ($iframe.length === 0) {
+                $iframe = $snippet.find('div.iframe-container-compatible').children();
+            }
             if ($iframe.length !== 1) {
                 return;
             }
@@ -73,13 +76,17 @@
             $overlayHtml.find('.href').attr('href', this.href);
             $overlayHtml.find('.snippet-text').text(this.text);
 
+            $overlayHtml.find('.iframe-container').find('.LbTrigger,.OverlayTrigger').each(function () {
+                $(this).attr('class', '');
+            });
+
             var overlay = XenForo.createOverlay(null, $overlayHtml, {
                 onClose: function () {
                     this.getOverlay().empty().remove();
                 },
                 mask: {
                     maskId: 'bdImage_stylizedGridIframeMask'
-                },
+                }
             });
             overlay.load();
         },

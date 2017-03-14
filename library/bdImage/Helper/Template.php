@@ -126,19 +126,17 @@ class bdImage_Helper_Template
                 $height = intval($size);
                 break;
             case bdImage_Integration::MODE_STRETCH_WIDTH:
-                $imageWidth = bdImage_Integration::getImageWidth($imageData);
-                $imageHeight = bdImage_Integration::getImageHeight($imageData);
-                if ($imageWidth > 0 && $imageHeight > 0) {
+                $imageSize = bdImage_Helper_Image::getSize($imageData);
+                if ($imageSize !== false) {
                     $height = intval($size);
-                    $width = $height / $imageHeight * $imageWidth;
+                    $width = $height / $imageSize['height'] * $imageSize['width'];
                 }
                 break;
             case bdImage_Integration::MODE_STRETCH_HEIGHT:
-                $imageWidth = bdImage_Integration::getImageWidth($imageData);
-                $imageHeight = bdImage_Integration::getImageHeight($imageData);
-                if ($imageWidth > 0 && $imageHeight > 0) {
+                $imageSize = bdImage_Helper_Image::getSize($imageData);
+                if ($imageSize !== false) {
                     $width = intval($size);
-                    $height = $width / $imageWidth * $imageHeight;
+                    $height = $width / $imageSize['width'] * $imageSize['height'];
                 }
                 break;
             default:

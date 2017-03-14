@@ -2,6 +2,8 @@
 
 class bdImage_Helper_Image
 {
+    protected static $_calculatedImageSizes = array();
+
     /**
      * @param string $imageData
      * @param bool $doFetch
@@ -22,20 +24,24 @@ class bdImage_Helper_Image
         if ((empty($width) || empty($height)) && $doFetch) {
             $cachedPathOrUrl = bdImage_Helper_File::getImageCachedPathOrUrl($imageData);
             if (strlen($cachedPathOrUrl) > 0) {
-                $imageSize = bdImage_ShippableHelper_ImageSize::calculate($cachedPathOrUrl);
-                if (!empty($imageSize['width'])) {
-                    $width = $imageSize['width'];
+                if (!isset(self::$_calculatedImageSizes[$cachedPathOrUrl])) {
+                    self::$_calculatedImageSizes[$cachedPathOrUrl] = bdImage_ShippableHelper_ImageSize::calculate($cachedPathOrUrl);
                 }
-                if (!empty($imageSize['height'])) {
-                    $height = $imageSize['height'];
+                $imageSizeRef =& self::$_calculatedImageSizes[$cachedPathOrUrl];
+
+                if (!empty($imageSizeRef['width'])) {
+                    $width = $imageSizeRef['width'];
+                }
+                if (!empty($imageSizeRef['height'])) {
+                    $height = $imageSizeRef['height'];
                 }
             }
         }
 
-        if ($width !== false) {
+        if (is_string($width)) {
             $width = intval($width);
         }
-        if ($height !== false) {
+        if (is_string($height)) {
             $height = intval($height);
         }
 

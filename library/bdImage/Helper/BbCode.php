@@ -34,21 +34,30 @@ class bdImage_Helper_BbCode
     public static function extractImage($bbCode, array $contentData = array(), $dwOrModel = null)
     {
         $imageDataMany = self::extractImages($bbCode, $contentData, $dwOrModel);
-        if (empty($imageDataMany)) {
+        if (!is_array($imageDataMany)) {
             return null;
         }
 
-        $imageData = reset($imageDataMany);
-        if (empty($imageData)) {
-            return null;
+        foreach ($imageDataMany as $imageData) {
+            $imageUrl = bdImage_Helper_Data::get($imageData, 'url');
+            if (empty($imageUrl)) {
+                continue;
+            }
+
+            $imageSize = bdImage_Helper_Image::getSize($imageData);
+            if ($imageSize === false) {
+                continue;
+            }
+
+            return bdImage_Helper_Data::pack(
+                $imageUrl,
+                $imageSize[0],
+                $imageSize[1],
+                bdImage_Helper_Data::unpack($imageData)
+            );
         }
 
-        $imageUrl = bdImage_Helper_Data::get($imageData, 'url');
-        $imageWidth = bdImage_Integration::getImageWidth($imageData);
-        $imageHeight = bdImage_Integration::getImageHeight($imageData);
-
-        return bdImage_Helper_Data::pack($imageUrl, $imageWidth, $imageHeight,
-            bdImage_Helper_Data::unpack($imageData));
+        return null;
     }
 
     /**

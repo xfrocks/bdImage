@@ -101,8 +101,6 @@ class bdImage_Integration
         return self::buildThumbnailLink($imageData, $size[0], $size[1]);
     }
 
-    protected static $_cachedImageSizes = array();
-
     /**
      * @param string $imageData
      * @return int
@@ -113,15 +111,12 @@ class bdImage_Integration
             return 0;
         }
 
-        if (!isset(self::$_cachedImageSizes[$imageData])) {
-            self::$_cachedImageSizes[$imageData] = bdImage_Helper_Image::getSize($imageData);
+        $imageSize = bdImage_Helper_Image::getSize($imageData);
+        if (!is_array($imageSize)) {
+            return 0;
         }
 
-        if (is_array(self::$_cachedImageSizes[$imageData])) {
-            return self::$_cachedImageSizes[$imageData][0];
-        }
-
-        return 0;
+        return $imageSize[0];
     }
 
     /**
@@ -134,14 +129,11 @@ class bdImage_Integration
             return 0;
         }
 
-        if (!isset(self::$_cachedImageSizes[$imageData])) {
-            self::$_cachedImageSizes[$imageData] = bdImage_Helper_Image::getSize($imageData);
+        $imageSize = bdImage_Helper_Image::getSize($imageData);
+        if (!is_array($imageSize)) {
+            return 0;
         }
 
-        if (is_array(self::$_cachedImageSizes[$imageData])) {
-            return self::$_cachedImageSizes[$imageData][1];
-        }
-
-        return 0;
+        return $imageSize[1];
     }
 }

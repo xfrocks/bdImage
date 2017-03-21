@@ -25,6 +25,8 @@ class bdImage_Helper_Template
                 return $container[$_key];
             }
         }
+
+        return '';
     }
 
     /**

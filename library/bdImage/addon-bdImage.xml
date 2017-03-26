@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="bdImage" title="[bd] Image" version_string="2.1.0" version_id="2010000" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="bdImage" title="[bd] Image" version_string="2.1.1" version_id="2010100" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -652,9 +652,9 @@ html.bdImage_hasCover .titleBar {
 .bdImage_heroImage .gradient {
 	position: absolute;
 		top: -{$heroImageSpacingHuge};
-		right: -5px;
-		bottom: -5px;
-		left: -5px;
+		right: -1px;
+		bottom: -1px;
+		left: -1px;
 
 	<xen:comment>http://colorzilla.com/gradient-editor/</xen:comment>
 	background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, {$heroImageGradientColor} 100%); /* FF3.6-15 */
@@ -1136,9 +1136,9 @@ html.bdImage_hasCover .titleBar {
 	opacity: .8;
 	position: absolute;
 		top: 30%;
-		right: -5px;
-		bottom: -5px;
-		left: -5px;
+		right: -1px;
+		bottom: -1px;
+		left: -1px;
 
 	<xen:comment>http://colorzilla.com/gradient-editor/</xen:comment>
 	background: {$stylizedGridGradientFrom}; /* Old browsers */
@@ -1259,28 +1259,30 @@ html.bdImage_hasCover .titleBar {
 	width: {$iframeOverlayInfoHeight};
 }
 .bdImage_stylizedGrid_iframeOverlay .text-container {
-	margin: 0 {$stylizedGridSpacingSmall} 0 {xen:calc 'intval({$iframeOverlayInfoHeight}) + intval({$stylizedGridSpacingSmall})'}px;
+	margin: 0 {$stylizedGridSpacingSmall} 0 {xen:calc 'intval({$iframeOverlayInfoHeight}) + intval({$stylizedGridSpacingSmall}) + 5'}px;
 	height: {$iframeOverlayInfoHeight};
 	overflow: hidden;
 }
 .bdImage_stylizedGrid_iframeOverlay .text-container > * {
-	line-height: {xen:calc 'intval({$iframeOverlayInfoHeight}) * 0.5'}px;
+	line-height: {xen:calc 'intval({$iframeOverlayInfoHeight}) * 0.4'}px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 .bdImage_stylizedGrid_iframeOverlay .text-container h3 {
 	font-size: {$iframeOverlayTitleFontSize};
+	font-weight: normal;
 	margin: 0;
 	padding: 0;
+	padding-top: 5px;
 }
-.bdImage_stylizedGrid_iframeOverlay .text-container em { font-style: normal; font-weight: normal; }
+.bdImage_stylizedGrid_iframeOverlay .text-container em { display: none; }
 .bdImage_stylizedGrid_iframeOverlay .text-container .call-to-action {
 	color: {$iframeOverlayCallToActionColor};
 	font-size: {$iframeOverlayCallToActionFontSize};
 }
 .bdImage_stylizedGrid_iframeOverlay .gradient {
-	opacity: .5;
+	opacity: .3;
 	position: absolute;
 		top: -5px;
 		right: -5px;
@@ -1350,6 +1352,26 @@ html.bdImage_hasCover .titleBar {
 			font-size: {$stylizedGridThreadTitleFontSizeBigger};
 			margin-bottom: {$stylizedGridSpacingSmall};
 		}
+	
+	.Responsive .bdImage_stylizedGrid.has-ad-45 .row-4 .ad-45 {
+		float: left;
+		margin: 0;
+		padding: 0;
+		width: 61.3%;
+	}
+	.Responsive .bdImage_stylizedGrid.has-ad-45 .row-4 .cell.position-4,
+	.Responsive .bdImage_stylizedGrid.has-ad-45 .row-4 .cell.position-5 {
+		bottom: initial;
+		float: none;
+		left: initial;
+		margin-left: 61.3%;
+		position: relative;
+		right: initial;
+		top: initial;
+		width: 38.69%;
+	}
+	.Responsive .bdImage_stylizedGrid.has-ad-45 .row-4 .cell.position-5 .thread,
+	.Responsive .bdImage_stylizedGrid.has-ad-45 .row-4 .cell.position-5 .thread-inner { position: relative; }
 }
 </xen:if>]]></template>
     <template title="bdimage_template_modifications" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:edithint template="bdimage_thread_list_item_thread_image" />
@@ -2045,9 +2067,12 @@ ul.bdImage_Widget_Grid
 			</div><!-- .container -->
 		</div><!-- .bdImage_heroImage -->
 </xen:if></xen:if></xen:foreach></xen:contentcheck></xen:if>]]></template>
-    <template title="bdimage_widget_threads_stylized_grid" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:if hascontent="true"><xen:require js="js/WidgetFramework/default.min.js" /><xen:comment>
+    <template title="bdimage_widget_threads_stylized_grid" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$ad45"><xen:hook name="bdimage_widget_threads_stylized_grid_ad_45"
+	params="{xen:array 'widget={$widget}', 'page={$page}'}"
+/></xen:set><xen:if hascontent="true"><xen:require js="js/WidgetFramework/default.min.js" /><xen:comment>
 </xen:comment><xen:require js="js/bdImage/stylized_grid.min.js" /><xen:comment>
-</xen:comment><xen:require css="bdimage_stylized_grid.css" /><xen:set var="$iframeTemplate"><div data-overlayclass="bdImage_stylizedGrid_iframeOverlay">
+</xen:comment><xen:require css="bdimage_stylized_grid.css" /><xen:set
+var="$iframeTemplate"><div data-overlayclass="bdImage_stylizedGrid_iframeOverlay">
 	<a class="close OverlayCloser"></a>
 	<div class="baseHtml">
 		<div class="iframe-container"></div>
@@ -2070,7 +2095,8 @@ ul.bdImage_Widget_Grid
 </div></xen:set><xen:comment>
 
 </xen:comment>
-<div class="WidgetFramework_WidgetRenderer_Threads bdImage_stylizedGrid"{xen:if $loadMoreUrl,
+<div class="WidgetFramework_WidgetRenderer_Threads bdImage_stylizedGrid{xen:if
+	$ad45, ' has-ad-45'}"{xen:if $loadMoreUrl,
 	' data-content-selector=".bdImage_stylizedGrid" data-load-more-url="{xen:escape
 	$loadMoreUrl}" data-times="{$layoutOptions.loadMoreTimes}"'} data-iframe-template="{xen:escape
 	$iframeTemplate}"><div class="container margin-b-huge"><xen:contentcheck><xen:set
@@ -2088,17 +2114,24 @@ var="$posPrefix.4">1</xen:set><xen:set var="$posSuffix.4">0</xen:set><xen:set
 var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreach
 	loop="$threads" i="$i" value="$thread"><xen:set
 	var="$positionId">{xen:calc '{$i} % 6'}</xen:set><xen:set
+	var="$positionAd"><xen:hook name="bdimage_widget_threads_stylized_grid_ad" params="{xen:array
+		'widget={$widget}', 'page={$page}', 'i={$i}', 'positionId={$positionId}', 'thread={$thread}'}" /></xen:set><xen:set
 	var="$positionWidth">{$widths.{$positionId}}</xen:set><xen:set
-	var="$positionHeight">{$heights.{$positionId}}</xen:set><xen:set var="$imageData"><xen:callback
+	var="$positionHeight">{$heights.{$positionId}}</xen:set><xen:if
+		is="{$ad45} && ({$i} == 4 || {$i} == 5)"><xen:set var="$positionWidth">{$positionHeight}</xen:set></xen:if><xen:set var="$imageData"><xen:callback
 	class="bdImage_Helper_Template" method="getImageData" params="{$thread}"/></xen:set><xen:set
 	var="$threadSnippet"><xen:callback class="bdImage_ShippableHelper_Html" method="viewSnippet"
 		params="{xen:array 'stripImage=1', 'stripLink=1', 'stripFrame=1', 'stripScript=1',
 		'maxLength=350'}">{xen:raw $thread.messageHtml}</xen:callback></xen:set><xen:if
 	is="{$posSuffix.{$positionId}} === '1' || {$i} < {xen:count $threads}">
-	<xen:if is="{$posPrefix.{$positionId}} === '1'"><div class="row width-wide position-{$positionId}"></xen:if>
+	<xen:if is="{$posPrefix.{$positionId}} === '1'"><div class="row row-{$i} width-wide position-{$positionId}"></xen:if>
+	<xen:if is="{$i} == 4 && {$ad45}"><div class="ad-45">
+		<div class="ad-inner margin-lr-small-if-wide">{xen:raw $ad45}</div>
+	</div></xen:if>
 	<div class="cell position-{$positionId}">
 		<div id="post-{$thread.first_post_id}" class="thread" data-author="{$thread.username}" data-snippet="{xen:escape $threadSnippet}">
 			<div class="thread-inner margin-tb-small margin-lr-small-if-wide">
+				<xen:if hascontent="true"><xen:contentcheck>{xen:raw $positionAd}</xen:contentcheck><xen:else />
 				<xen:if is="{$imageData}"><xen:set var="$originalUrl"><xen:callback class="bdImage_Integration"
 					method="getOriginalUrl">{xen:raw $imageData}</xen:callback></xen:set></xen:if><xen:set
 					var="$transparentDataUri"><xen:callback class="bdImage_Helper_Template" method="getTransparentDataUri" params="{xen:array
@@ -2147,7 +2180,7 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 							</span></xen:if>
 						</div><!-- .thread-info -->
 					</div><!-- .width-wide -->
-				</div><!-- .image-text-container -->
+				</div><!-- .image-text-container --></xen:if>
 			</div><!-- .thread-inner -->
 		</div><!-- .thread -->
 	</div><!-- .cell -->

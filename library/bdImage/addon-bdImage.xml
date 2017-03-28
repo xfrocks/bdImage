@@ -574,7 +574,7 @@ html.bdImage_hasCover .titleBar {
 
 </style>
 </xen:container>]]></template>
-    <template title="bdimage_hero_image.css" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$heroImageSpacingHuge">40px</xen:set>
+    <template title="bdimage_hero_image.css" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:set var="$heroImageSpacingHuge">40px</xen:set>
 <xen:set var="$heroImageSpacingLarge">30px</xen:set>
 <xen:set var="$heroImageSpacingMedium">20px</xen:set>
 <xen:set var="$heroImageSpacingSmall">10px</xen:set>
@@ -602,7 +602,7 @@ html.bdImage_hasCover .titleBar {
 <xen:set var="$threadViewThreadControlsFontSize">70%</xen:set>
 <xen:set var="$threadViewFirstPosterImgSize">30px</xen:set>
 <xen:set var="$threadViewFirstPostMessageTextColor">#dfe5e9</xen:set>
-<xen:set var="$threadViewFirstPostMessageTextFontSize">100%</xen:set>
+<xen:set var="$threadViewFirstPostMessageTextFontSize">105%</xen:set>
 
 <xen:set var="$threadViewRepliesFontSize">90%</xen:set>
 <xen:set var="$threadViewRepliesHeaderFontSize">140%</xen:set>
@@ -614,13 +614,19 @@ html.bdImage_hasCover .titleBar {
 <xen:set var="$threadViewRepliesUsernameColor">#098bf9</xen:set>
 <xen:set var="$threadViewRepliesUsernameFontSize">100%</xen:set>
 <xen:set var="$threadViewRepliesMessageTextColor">{$threadViewFirstPostMessageTextColor}</xen:set>
-<xen:set var="$threadViewRepliesMessageTextFontSize">100%</xen:set>
+<xen:set var="$threadViewRepliesMessageTextFontSize">110%</xen:set>
+<xen:set var="$threadViewRepliesSignatureFontSize">80%</xen:set>
 <xen:set var="$threadViewRepliesMessageMetaItemFontSize">90%</xen:set>
 
-<xen:set var="$threadViewLikeTextColor">#aec2cc</xen:set>
-<xen:set var="$threadViewEditorToolbarBackgroundColor">#5887d5</xen:set>
-<xen:set var="$threadViewEditorPlaceholderColor">#18202e</xen:set>
-<xen:set var="$threadViewEditorBackgroundColor">#aec2cc</xen:set>
+<xen:set var="$threadViewLikeTextColor">#969696</xen:set>
+<xen:set var="$threadViewQuoteBackgroundColor">#7e8d94</xen:set>
+<xen:set var="$threadViewQuoteFontSize">90%</xen:set>
+<xen:set var="$threadViewQuoteAttributionColor">#d7edfc</xen:set>
+<xen:set var="$threadViewAttachHeaderColor">{$threadViewFirstPostMessageTextColor}</xen:set>
+<xen:set var="$threadViewAttachInfoColor">#000</xen:set>
+
+<xen:set var="$threadViewEditorPlaceholderColor">#8791a2</xen:set>
+<xen:set var="$threadViewEditorBackgroundColor">#fff</xen:set>
 <xen:set var="$threadViewEditorButtonColor">#4fa2e8</xen:set>
 <xen:set var="$threadViewEditorPrimaryButtonColor">#104cc6</xen:set>
 
@@ -672,12 +678,12 @@ html.bdImage_hasCover .titleBar {
 	width: 100%;
 }
 
-.bdImage_heroImage .text {
+.bdImage_heroImage .container .text {
 	bottom: 0;
 	position: absolute;
 	width: 100%;
 }
-	.bdImage_heroImage .text-inner {
+	.bdImage_heroImage .container > .text > .text-inner {
 		position: relative;
 	}
 
@@ -760,15 +766,15 @@ html.bdImage_hasCover .titleBar {
 		width: {$threadViewFirstPosterImgSize};
 	}
 
-	.bdimage_thread_view_hero_image .first-post .text,
-	.bdimage_thread_view_hero_image .replies .text,
-	.bdimage_thread_view_hero_image .quickReplyContainer .text,
+	.bdimage_thread_view_hero_image .first-post > .text,
+	.bdimage_thread_view_hero_image .replies > .text,
+	.bdimage_thread_view_hero_image .quickReplyContainer > .text,
 	.bdimage_thread_view_hero_image __reset {
 		bottom: initial;
 		position: initial;
 	}
-	.bdimage_thread_view_hero_image .replies .text,
-	.bdimage_thread_view_hero_image .quickReplyContainer .text {
+	.bdimage_thread_view_hero_image .replies > .text,
+	.bdimage_thread_view_hero_image .quickReplyContainer > .text {
 		font-size: {$threadViewRepliesFontSize};
 	}
 	.bdimage_thread_view_hero_image .text-inner.pageWidth {
@@ -791,6 +797,14 @@ html.bdImage_hasCover .titleBar {
 .bdimage_thread_view_hero_image .messageList .messageInfo,
 .bdimage_thread_view_hero_image .messageList .messageContent,
 .bdimage_thread_view_hero_image .messageText,
+.bdimage_thread_view_hero_image .bbCodeQuote,
+.bdimage_thread_view_hero_image .bbCodeQuote .attribution,
+.bdimage_thread_view_hero_image .bbCodeQuote .quoteContainer,
+.bdimage_thread_view_hero_image .bbCodeQuote .quoteContainer .quote,
+.bdimage_thread_view_hero_image .attachedFiles,
+.bdimage_thread_view_hero_image .attachedFiles .attachedFilesHeader,
+.bdimage_thread_view_hero_image .attachedFiles .attachmentList,
+.bdimage_thread_view_hero_image .replies .message .likesSummary,
 .bdimage_thread_view_hero_image .message .messageMeta,
 .bdimage_thread_view_hero_image .message .privateControls,
 .bdimage_thread_view_hero_image .message .publicControls,
@@ -798,10 +812,30 @@ html.bdImage_hasCover .titleBar {
 .bdimage_thread_view_hero_image .quickReply,
 .bdimage_thread_view_hero_image #QuickReply,
 .bdimage_thread_view_hero_image .redactor_box,
-.bdimage_thread_view_hero_image .redactor_toolbar,
 .bdimage_thread_view_hero_image .redactor_toolbar li.redactor_btn_group ul,
 .bdimage_thread_view_hero_image #QuickReply .button,
-.bdimage_thread_view_hero_image __reset { background: none !important; border: 0 !important; border-radius: 0 !important; color: inherit !important; clear: none !important; display: block !important; float: none !important; font-size: inherit !important; font-weight: inherit !important; height: initial !important; line-height: 1 !important; margin: 0 !important; max-height: initial !important; max-width: initial !important; min-height: 0 !important; min-width: 0 !important; padding: 0 !important; width: initial !important; }
+.bdimage_thread_view_hero_image __reset {
+	background: none !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-sizing: initial !important;
+	color: inherit !important;
+	clear: none !important;
+	display: block !important;
+	float: none !important;
+	font-size: inherit !important;
+	font-weight: inherit !important;
+	height: initial !important;
+	line-height: 1 !important;
+	margin: 0 !important;
+	max-height: initial !important;
+	max-width: initial !important;
+	min-height: 0 !important;
+	min-width: 0 !important;
+	padding: 0 !important;
+	width: initial !important;
+	zoom: initial !important;
+}
 
 .bdimage_thread_view_hero_image .messageList a.muted { display: block; }
 .bdimage_thread_view_hero_image .messageList a.control { color: {$threadViewControlColor}; }
@@ -816,7 +850,7 @@ html.bdImage_hasCover .titleBar {
 .bdimage_thread_view_hero_image .messageUserBlock > * { display: none !important; }
 .bdimage_thread_view_hero_image .messageUserBlock .avatarHolder { float: left !important; }
 .bdimage_thread_view_hero_image .messageUserBlock .avatar img {
-	border-radius: {$heroImageSpacingSmall} !important;
+	border-radius: {$threadViewRepliesAvatarImgSize} !important;
 	height: {$threadViewRepliesAvatarImgSize} !important;
 	width: {$threadViewRepliesAvatarImgSize} !important;
 }
@@ -836,10 +870,15 @@ html.bdImage_hasCover .titleBar {
 	display: inline-block !important;
 	font-size: {$threadViewRepliesMessageMetaItemFontSize} !important;
 	margin-right: {$heroImageSpacingEdge} !important;
-	opacity: .7;
+	opacity: .5;
 }
 .bdimage_thread_view_hero_image .message .messageInfo .item:hover { opacity: 1; }
 .bdimage_thread_view_hero_image .message .messageInfo .item.hashPermalink { display: none !important; }
+.bdimage_thread_view_hero_image .message .messageText a,
+.bdimage_thread_view_hero_image .message .messageText a:visited,
+.bdimage_thread_view_hero_image .message .messageText a:hover {
+	color: inherit;
+}
 
 .bdimage_thread_view_hero_image .thread-controls { font-size: {$threadViewThreadControlsFontSize}; }
 .bdimage_thread_view_hero_image .first-post .messageList .messageUserInfo { display: none !important; }
@@ -873,13 +912,60 @@ html.bdImage_hasCover .titleBar {
 	margin-top: {$heroImageSpacingEdge} !important;
 	line-height: 1.5em !important;
 }
-.bdimage_thread_view_hero_image .replies .message .likesSummary { color: {$threadViewLikeTextColor} !important; }
+.bdimage_thread_view_hero_image .replies .messageText.signature {
+	font-size: {$threadViewRepliesSignatureFontSize} !important;
+	opacity: .7;
+}
+.bdimage_thread_view_hero_image .bbCodeQuote {
+	border: 1px dotted {$threadViewQuoteBackgroundColor} !important;
+	margin-bottom: {$heroImageSpacingSmall} !important;
+	margin-top: {$heroImageSpacingSmall} !important;
+}
+.bdimage_thread_view_hero_image .bbCodeQuote .attribution {
+	background: {$threadViewQuoteBackgroundColor} !important;
+	color: {$threadViewQuoteAttributionColor} !important;
+	font-size: {$threadViewQuoteFontSize} !important;
+	padding: {$heroImageSpacingSmall} !important;
+}
+.bdimage_thread_view_hero_image .bbCodeQuote .quoteContainer {
+	font-size: {$threadViewQuoteFontSize} !important;
+	padding: {$heroImageSpacingSmall} !important;
+}
+.bdimage_thread_view_hero_image .bbCodeQuote .quoteContainer .quote {
+	line-height: 1.3em !important;
+}
 
+.bdimage_thread_view_hero_image .attachedFiles {
+	padding: 0 {$heroImageSpacingEdge} !important;
+}
+.bdimage_thread_view_hero_image .attachedFiles .attachedFilesHeader {
+	color: {$threadViewAttachHeaderColor} !important;
+	margin-bottom: {$heroImageSpacingEdge} !important;
+	margin-top: {$heroImageSpacingEdge} !important;
+	opacity: .5 !important;
+}
+.bdimage_thread_view_hero_image .attachedFiles .attachmentList {}
+.bdimage_thread_view_hero_image .attachedFiles .attachment .thumbnail {
+	border: 0 !important;
+}
+.bdimage_thread_view_hero_image .attachedFiles .attachmentList h6.filename {
+	color: {$threadViewAttachInfoColor} !important;
+}
+.bdimage_thread_view_hero_image .attachedFiles .attachmentList dd {
+	color: {$threadViewAttachInfoColor} !important;
+}
+
+.bdimage_thread_view_hero_image .replies .message .likesSummary {
+	color: {$threadViewLikeTextColor} !important;
+	opacity: .5;
+}
+
+.bdimage_thread_view_hero_image .quickReplyContainer { margin-top: 20px !important; }
 .bdimage_thread_view_hero_image .quickReplyContainer .messageUserInfo { display: none !important; }
 .bdimage_thread_view_hero_image .redactor_box { border-radius: {$heroImageSpacingEdge} !important; }
-.bdimage_thread_view_hero_image .redactor_toolbar { background: {$threadViewEditorToolbarBackgroundColor} !important; }
+.bdimage_thread_view_hero_image .redactor_toolbar { border: 0 !important; }
 .bdimage_thread_view_hero_image .redactor_box .placeholder span { color: {$threadViewEditorPlaceholderColor} !important; }
-.bdimage_thread_view_hero_image .blendedEditor .redactor_box iframe { opacity: 0.9; }
+.bdimage_thread_view_hero_image .blendedEditor .redactor_box iframe { opacity: 1; }
 .bdimage_thread_view_hero_image .redactor_MessageEditor { background: {$threadViewEditorBackgroundColor} !important; }
 .bdimage_thread_view_hero_image #QuickReply .submitUnit { margin-top: {$heroImageSpacingSmall} !important; }
 .bdimage_thread_view_hero_image #QuickReply .button {
@@ -915,7 +1001,11 @@ html.bdImage_hasCover .titleBar {
 	.Responsive .bdimage_thread_view_hero_image .bdImage_heroImage { font-size: {$threadViewFontSizeWide}; }
 	.Responsive .bdimage_thread_view_hero_image .messageList .message { padding: {$heroImageSpacingMedium} 0 !important; }
 	.Responsive .bdimage_thread_view_hero_image .replies .messageList-container { border-left-width: {$threadViewRepliesBorderWideThickness} !important; }
-	.Responsive .bdimage_thread_view_hero_image .replies .messageUserBlock .avatar img { height: {$threadViewRepliesAvatarImgBiggerSize} !important; width: {$threadViewRepliesAvatarImgBiggerSize} !important; }
+	.Responsive .bdimage_thread_view_hero_image .replies .messageUserBlock .avatar img {
+		border-radius: {$threadViewRepliesAvatarImgBiggerSize} !important;
+		height: {$threadViewRepliesAvatarImgBiggerSize} !important;
+		width: {$threadViewRepliesAvatarImgBiggerSize} !important;
+	}
 	.Responsive .bdimage_thread_view_hero_image .replies .messageUserBlock .userText,
 	.Responsive .bdimage_thread_view_hero_image .replies .messageList .messageInfo { margin-left: {xen:calc 'intval({$threadViewRepliesAvatarImgBiggerSize}) + intval({$heroImageSpacingSmall}) + intval({$heroImageSpacingEdge})'}px !important; }
 	.Responsive .bdimage_thread_view_hero_image .message .messageInfo .item { margin-right: {$heroImageSpacingSmall} !important; }
@@ -1481,7 +1571,7 @@ html.bdImage_hasCover .titleBar {
 	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 	<input type="hidden" name="_xfConfirm" value="1" />
 </form>]]></template>
-    <template title="bdimage_thread_view_hero_image" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$threadView"><xen:include template="thread_view" /></xen:set><xen:set
+    <template title="bdimage_thread_view_hero_image" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:set var="$threadView"><xen:include template="thread_view" /></xen:set><xen:set
 	var="$imageData"><xen:callback class="bdImage_Helper_Template"
 	method="getImageData" params="{$thread}" /></xen:set><xen:set
 	var="$originalUrl"><xen:callback class="bdImage_Integration"
@@ -1491,7 +1581,7 @@ html.bdImage_hasCover .titleBar {
 	
 </xen:comment><div class="bdImage_heroImage">
 	<div class="container">
-		<img src="{xen:raw $transparentDataUri}"
+		<img src="{xen:if $transparentDataUri, {xen:raw $transparentDataUri}, {xen:raw $originalUrl}}"
 			 class="hero" style="background-image: url('{xen:raw $originalUrl}')" />
 
 		<div class="text">
@@ -2120,7 +2210,7 @@ ul.bdImage_Widget_Grid
 		</ul>
 	</div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_threads_hero_image" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:if hascontent="true"><xen:require css="bdimage_hero_image.css"
+    <template title="bdimage_widget_threads_hero_image" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:if hascontent="true"><xen:require css="bdimage_hero_image.css"
 /><xen:edithint template="bdimage_thread_view_hero_image" /><xen:comment>	
 
 	</xen:comment><xen:contentcheck><xen:set var="$imageData" /><xen:foreach loop="$threads"
@@ -2132,7 +2222,9 @@ ul.bdImage_Widget_Grid
 				<xen:set var="$originalUrl"><xen:callback class="bdImage_Integration"
 					method="getOriginalUrl">{xen:raw $imageData}</xen:callback></xen:set><xen:set
 					var="$transparentDataUri"><xen:callback class="bdImage_ShippableHelper_ImageSize"
-					method="getDataUriMatchesRatio">{xen:raw $originalUrl}</xen:callback></xen:set><xen:comment>
+					method="getDataUriMatchesRatio">{xen:raw $originalUrl}</xen:callback></xen:set><xen:container
+					var="$head.bdimage_widget_threads_hero_image_open_graph"><meta property="og:image" content="{xen:raw $originalUrl}" /><xen:comment>
+					</xen:comment><meta property="twitter:image" content="{xen:raw $originalUrl}" /></xen:container><xen:comment>
 					</xen:comment><img src="{xen:raw $transparentDataUri}" class="hero" style="background-image: url('{xen:raw $originalUrl}')" />
 
 				<div class="text">

@@ -1640,7 +1640,7 @@ html.bdImage_hasCover .titleBar {
 <meta property="twitter:image" content="{$bdImage_originalUrl}" /><xen:if is="{$bdImage_width} && {$bdImage_height}">
 <meta property="twitter:image:width" content="{$bdImage_width}" />
 <meta property="twitter:image:height" content="{$bdImage_height}" /></xen:if></xen:if></xen:if></xen:if>]]></template>
-    <template title="bdimage_timeline.css" version_id="2010100" version_string="2.1.1"><![CDATA[<xen:set var="$spacingHuge">40px</xen:set>
+    <template title="bdimage_timeline.css" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:set var="$spacingHuge">40px</xen:set>
 <xen:set var="$spacingLarge">30px</xen:set>
 <xen:set var="$spacingMedium">20px</xen:set>
 <xen:set var="$spacingSmall">10px</xen:set>
@@ -1687,11 +1687,10 @@ html.bdImage_hasCover .titleBar {
 		display: block;
 		opacity: 0;
 	}
-	.bdImage_timeline .timeline-info {
+	.bdImage_timeline .timeline-text {
 		margin-left: {xen:calc 'intval({$thumbnailSize}) + intval({$spacingSmall})'}px;
 	}
 
-.bdImage_timeline .timeline-height { display: none; }
 .bdImage_timeline .timeline-title { color: {$titleColor}; font-size: {$titleFontSize}; }
 .bdImage_timeline .timeline-poster { color: {$posterColor}; font-size: {$posterFontSize}; }
 
@@ -1699,7 +1698,7 @@ html.bdImage_hasCover .titleBar {
 @media screen and (min-width: {$widthBreakPoint}) {
 	.bdImage_timeline .width-wide { margin: 0 auto; max-width: {$widthWide}; }
 	.Responsive .bdImage_timeline .margin-b-small-if-wide { margin-bottom: {$spacingSmall}; }
-	.Responsive .bdImage_timeline .margin-b-huge-if-wide { margin-bottom: {$spacingHuge}; }
+	.Responsive .bdImage_timeline .margin-b-large-if-wide { margin-bottom: {$spacingLarge}; }
 	
 	.Responsive .bdImage_timeline { font-size: {$fontSizeWide}; }
 
@@ -1721,27 +1720,42 @@ html.bdImage_hasCover .titleBar {
 			white-space: nowrap;
 		}
 
-	.Responsive .bdImage_timeline .timeline-thumbnail {
-		float: none;
-		height: initial;
-		position: absolute;
-		right: {xen:calc 'ceil(intval({$spacingInfo}) / -2)'}px;
-		width: initial;
-	}
-
 	.Responsive .bdImage_timeline .timeline-info {
 		margin-left: {$spacingInfo};
-		margin-right: {$spacingInfo};
+		margin-right: {xen:calc 'ceil(intval({$spacingInfo}) / -2)'}px;
 	}
-	
-	.bdImage_timeline .timeline-height {
-		display: block;
-		float: left;
+	{xen:helper clearfix, '.Responsive .bdImage_timeline .timeline-infoInner'}
+
+	.Responsive .bdImage_timeline .timeline-thumbnail {
+		float: right;
+		height: initial;
+		width: initial;
 	}
+		.Responsive .bdImage_timeline .timeline-text {
+			margin-left: 0;
+		}
 
 	.Responsive .bdImage_timeline .timeline-title {
 		line-height: {$clockSize};
 	}
+	
+	.Responsive .bdImage_timeline .timeline-line {
+		background: #e3e4e6;
+		box-shadow: 1px 1px 1px 1px #f0f2f3;
+	}
+		.Responsive .bdImage_timeline .timeline-row:last-child .timeline-line { display: none; }
+		.Responsive .bdImage_timeline .timeline-row:last-child { margin-bottom: 0; }
+		.Responsive .bdImage_timeline .timeline-line--vertical {
+			height: 90%;
+			left: {xen:calc 'intval({$spacingInfo}) - intval({$clockSize}) - intval({$spacingSmall}) + intval({$clockSize}) * 0.85 / 2'}px;<xen:comment>0.85 = width/height ratio of Font Awesome clock icon</xen:comment>
+			position: absolute;
+			top: {xen:calc 'intval({$clockSize}) + intval({$spacingSmall}) / 2'}px;
+			width: 1px;
+		}
+		.Responsive .bdImage_timeline .timeline-line--horizontal {
+			height: 1px;
+			width: 100%;
+		}
 }
 </xen:if>]]></template>
     <template title="bdimage_wf_widget_threads_full_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_wfWidgetThreadsThreadImage"><xen:callback
@@ -2297,7 +2311,7 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 <xen:include template="wf_widget_threads_pagenav" />
 </div></div><!-- .container + .bdImage_stylizedGrid -->
 </xen:if>]]></template>
-    <template title="bdimage_widget_threads_timeline" version_id="2010100" version_string="2.1.1"><![CDATA[<xen:set var="$thumbnailWidth">166</xen:set><xen:set
+    <template title="bdimage_widget_threads_timeline" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:set var="$thumbnailWidth">166</xen:set><xen:set
 var="$thumbnailHeight">96</xen:set><xen:if
 hascontent="true"><xen:require css="bdimage_timeline.css" /><xen:comment>
 
@@ -2307,27 +2321,35 @@ hascontent="true"><xen:require css="bdimage_timeline.css" /><xen:comment>
 	loop="$threads" i="$i" value="$thread"><xen:set var="$imageData"><xen:callback
 		class="bdImage_Helper_Template" method="getImageData" params="{$thread}"/></xen:set>
 		<div id="post-{$thread.first_post_id}" class="timeline-row timeline-row--{$i} timeline-thread <xen:comment>
-			</xen:comment>width-wide margin-b-medium margin-b-huge-if-wide" data-author="{$thread.username}">
+			</xen:comment>width-wide margin-b-medium margin-b-large-if-wide" data-author="{$thread.username}">
 			<div class="timeline-clock">
 				<i class="fa fa-clock-o" aria-hidden="true"></i>
 				<xen:datetime time="{$thread.post_date}" />
-			</div><xen:if is="{$imageData}"><xen:set var="$imageThumbnail"><xen:callback
+			</div>
+			<div class="timeline-info">
+				<div class="timeline-infoInner margin-b-large-if-wide"><xen:if
+				is="{$imageData}"><xen:set var="$imageThumbnail"><xen:callback
 				class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
 				'width={$thumbnailWidth}', 'height={$thumbnailHeight}'}">{xen:raw
 				$imageData}</xen:callback></xen:set><xen:if is="{$imageThumbnail}">
-			<div class="timeline-thumbnail" style="background-image: url({$imageThumbnail})">
-				<a href="{xen:link threads, $thread}">
-					<img src="{$imageThumbnail}" width="{$thumbnailWidth}" height="{$thumbnailHeight}" />
-				</a>
-			</div></xen:if></xen:if>
-			<div class="timeline-info">
-				<div class="timeline-height" style="height: {$thumbnailHeight}px"></div>
-				<div class="timeline-title margin-b-small-if-wide">
-					<a href="{xen:link threads, $thread}">{$thread.title}</a>
+					<div class="timeline-thumbnail" style="background-image: url({$imageThumbnail})">
+						<a href="{xen:link threads, $thread}">
+							<img src="{$imageThumbnail}" width="{$thumbnailWidth}" height="{$thumbnailHeight}" />
+						</a>
+					</div></xen:if></xen:if>
+
+					<div class="timeline-text">
+						<div class="timeline-title margin-b-small-if-wide">
+							<a href="{xen:link threads, $thread}">{$thread.title}</a>
+						</div>
+						<div class="timeline-poster">
+							{xen:phrase by_x, 'name={xen:helper username, $thread}'}
+						</div>
+					</div>
 				</div>
-				<div class="timeline-poster">
-					{xen:phrase by_x, 'name={xen:helper username, $thread}'}
-				</div>
+
+				<div class="timeline-line timeline-line--vertical"></div>
+				<div class="timeline-line timeline-line--horizontal"></div>
 			</div>
 		</div><!-- .timeline-thread --></xen:foreach></xen:contentcheck>
 	</div><!-- .timeline-container -->

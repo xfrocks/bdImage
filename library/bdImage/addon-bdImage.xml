@@ -1064,7 +1064,7 @@ html.bdImage_hasCover .titleBar {
 	</xen:comment><img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_searchResult_imageSize}" <xen:comment>
 	</xen:comment>height="{xen:property bdImage_searchResult_imageSize}"{xen:if $debugMode,
 	' data-image="{xen:jsescape $thread.bdimage_image}"'} /></a></xen:if></xen:if></xen:if>]]></template>
-    <template title="bdimage_stylized_grid.css" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$stylizedGridSpacingHuge">40px</xen:set>
+    <template title="bdimage_stylized_grid.css" version_id="2010100" version_string="2.1.1"><![CDATA[<xen:set var="$stylizedGridSpacingHuge">40px</xen:set>
 <xen:set var="$stylizedGridSpacingLarge">30px</xen:set>
 <xen:set var="$stylizedGridSpacingMedium">20px</xen:set>
 <xen:set var="$stylizedGridSpacingSmall">10px</xen:set>
@@ -1353,14 +1353,17 @@ html.bdImage_hasCover .titleBar {
 			margin-bottom: {$stylizedGridSpacingSmall};
 		}
 	
-	.Responsive .bdImage_stylizedGrid.has-ad-45 .row-4 .ad-45 {
-		float: left;
+	.Responsive .bdImage_stylizedGrid .row-4.has-ad-45 .ad-45 {
+		bottom: {$stylizedGridSpacingSmall};
 		margin: 0;
 		padding: 0;
+		position: absolute;
+		top: 0;
 		width: 61.3%;
 	}
-	.Responsive .bdImage_stylizedGrid.has-ad-45 .row-4 .cell.position-4,
-	.Responsive .bdImage_stylizedGrid.has-ad-45 .row-4 .cell.position-5 {
+	.Responsive .bdImage_stylizedGrid .row-4.has-ad-45 .ad-45 .ad-inner { height: 100%; overflow: hidden; }
+	.Responsive .bdImage_stylizedGrid .row-4.has-ad-45 .cell.position-4,
+	.Responsive .bdImage_stylizedGrid .row-4.has-ad-45 .cell.position-5 {
 		bottom: initial;
 		float: none;
 		left: initial;
@@ -1370,8 +1373,8 @@ html.bdImage_hasCover .titleBar {
 		top: initial;
 		width: 38.69%;
 	}
-	.Responsive .bdImage_stylizedGrid.has-ad-45 .row-4 .cell.position-5 .thread,
-	.Responsive .bdImage_stylizedGrid.has-ad-45 .row-4 .cell.position-5 .thread-inner { position: relative; }
+	.Responsive .bdImage_stylizedGrid .row-4.has-ad-45 .cell.position-5 .thread,
+	.Responsive .bdImage_stylizedGrid .row-4.has-ad-45 .cell.position-5 .thread-inner { position: relative; }
 }
 </xen:if>]]></template>
     <template title="bdimage_template_modifications" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:edithint template="bdimage_thread_list_item_thread_image" />
@@ -2067,9 +2070,10 @@ ul.bdImage_Widget_Grid
 			</div><!-- .container -->
 		</div><!-- .bdImage_heroImage -->
 </xen:if></xen:if></xen:foreach></xen:contentcheck></xen:if>]]></template>
-    <template title="bdimage_widget_threads_stylized_grid" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:set var="$ad45"><xen:hook name="bdimage_widget_threads_stylized_grid_ad_45"
+    <template title="bdimage_widget_threads_stylized_grid" version_id="2010100" version_string="2.1.1"><![CDATA[<xen:set var="$ad45"><xen:if hascontent="true"><xen:contentcheck><xen:hook
+	name="bdimage_widget_threads_stylized_grid_ad_45"
 	params="{xen:array 'widget={$widget}', 'page={$page}'}"
-/></xen:set><xen:if hascontent="true"><xen:require js="js/WidgetFramework/default.min.js" /><xen:comment>
+/></xen:contentcheck></xen:if></xen:set><xen:if hascontent="true"><xen:require js="js/WidgetFramework/default.min.js" /><xen:comment>
 </xen:comment><xen:require js="js/bdImage/stylized_grid.min.js" /><xen:comment>
 </xen:comment><xen:require css="bdimage_stylized_grid.css" /><xen:set
 var="$iframeTemplate"><div data-overlayclass="bdImage_stylizedGrid_iframeOverlay">
@@ -2095,8 +2099,7 @@ var="$iframeTemplate"><div data-overlayclass="bdImage_stylizedGrid_iframeOverlay
 </div></xen:set><xen:comment>
 
 </xen:comment>
-<div class="WidgetFramework_WidgetRenderer_Threads bdImage_stylizedGrid{xen:if
-	$ad45, ' has-ad-45'}"{xen:if $loadMoreUrl,
+<div class="WidgetFramework_WidgetRenderer_Threads bdImage_stylizedGrid"{xen:if $loadMoreUrl,
 	' data-content-selector=".bdImage_stylizedGrid" data-load-more-url="{xen:escape
 	$loadMoreUrl}" data-times="{$layoutOptions.loadMoreTimes}"'} data-iframe-template="{xen:escape
 	$iframeTemplate}"><div class="container margin-b-huge"><xen:contentcheck><xen:set
@@ -2124,7 +2127,8 @@ var="$posPrefix.5">0</xen:set><xen:set var="$posSuffix.5">1</xen:set><xen:foreac
 		params="{xen:array 'stripImage=1', 'stripLink=1', 'stripFrame=1', 'stripScript=1',
 		'maxLength=350'}">{xen:raw $thread.messageHtml}</xen:callback></xen:set><xen:if
 	is="{$posSuffix.{$positionId}} === '1' || {$i} < {xen:count $threads}">
-	<xen:if is="{$posPrefix.{$positionId}} === '1'"><div class="row row-{$i} width-wide position-{$positionId}"></xen:if>
+	<xen:if is="{$posPrefix.{$positionId}} === '1'"><div class="row row-{$i} width-wide position-{$positionId}{xen:if
+		'{$ad45} && {$i} == 4', ' has-ad-45'}"></xen:if>
 	<xen:if is="{$i} == 4 && {$ad45}"><div class="ad-45">
 		<div class="ad-inner margin-lr-small-if-wide">{xen:raw $ad45}</div>
 	</div></xen:if>

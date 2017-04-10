@@ -206,7 +206,7 @@ class bdImage_Helper_Thumbnail
         }
 
         $outputImageType = self::_guessImageTypeByFileExtension($cachePath);
-        $imageObj->output($outputImageType, $tempFile);
+        $imageObj->output($outputImageType, $tempFile, bdImage_Listener::$imageQuality);
 
         if (is_callable(array($imageObj, 'bdImage_cleanUp'))) {
             call_user_func(array($imageObj, 'bdImage_cleanUp'));

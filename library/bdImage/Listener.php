@@ -5,6 +5,9 @@ class bdImage_Listener
     const CONFIG_GENERATOR_DIR_NAME = 'bdImage_generatorDirName';
     public static $generatorDirName = 'bdImage';
 
+    const CONFIG_IMAGE_QUALITY = 'bdImage_imageQuality';
+    public static $imageQuality = 66;
+
     const XENFORO_CONTROLLERPUBLIC_POST_SAVE = 'bdImage_XenForo_ControllerPublic_Post::actionSave';
     const XENFORO_CONTROLLERPUBLIC_THREAD_SAVE = 'bdImage_XenForo_ControllerPublic_Thread::actionSave';
 
@@ -19,6 +22,11 @@ class bdImage_Listener
         $generatorDirName = $config->get(self::CONFIG_GENERATOR_DIR_NAME);
         if (is_string($generatorDirName) && strlen($generatorDirName) > 0) {
             self::$generatorDirName = $generatorDirName;
+        }
+
+        $imageQuality = $config->get(self::CONFIG_IMAGE_QUALITY);
+        if ($imageQuality > 0) {
+            self::$imageQuality = intval($imageQuality);
         }
 
         if (isset($data['routesAdmin'])) {

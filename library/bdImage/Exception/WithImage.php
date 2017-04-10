@@ -14,6 +14,6 @@ class bdImage_Exception_WithImage extends XenForo_Exception
     public function output()
     {
         header('Content-Type: image/jpeg');
-        $this->_imageObj->output(IMAGETYPE_JPEG);
+        $this->_imageObj->output(IMAGETYPE_JPEG, null, bdImage_Listener::$imageQuality);
     }
 }

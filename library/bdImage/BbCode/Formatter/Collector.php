@@ -89,6 +89,8 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
             }
         }
 
+        $imageDataMany = array_unique($imageDataMany);
+
         return $imageDataMany;
     }
 

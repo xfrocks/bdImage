@@ -37,13 +37,14 @@ class bdImage_Deferred_Thread extends XenForo_Deferred_Abstract
                 $image = $this->_getImageFromFirstPost($thread, $threadModel);
             }
 
-            if (empty($image)) {
+            if (!is_string($image) || strlen($image) === 0) {
                 continue;
             }
 
+            /** @var bdImage_XenForo_DataWriter_Discussion_Thread $dw */
             $dw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread');
             $dw->setExistingData($thread, true);
-            $dw->set('bdimage_image', $image);
+            $dw->bdImage_setThreadImage($image);
             $dw->save();
         }
 
@@ -65,7 +66,10 @@ class bdImage_Deferred_Thread extends XenForo_Deferred_Abstract
             return null;
         }
 
-        return bdImage_Helper_Data::packUrl($thread['tinhte_thumbnail_url'], array(
+        $url = $thread['tinhte_thumbnail_url'];
+        list($imageWidth, $imageHeight) = bdImage_Helper_Image::getSize($url);
+
+        return bdImage_Helper_Data::pack($url, $imageWidth, $imageHeight, array(
             'is_cover' => !empty($thread['tinhte_thumbnail_cover']),
             'source' => __METHOD__,
         ));

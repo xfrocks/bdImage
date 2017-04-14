@@ -2,6 +2,28 @@
 
 class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_DataWriter_Discussion_Thread
 {
+    /**
+     * @return array
+     */
+    public function bdImage_getThreadImage()
+    {
+        return bdImage_Helper_Data::unpack($this->get('bdimage_image'));
+    }
+
+    /**
+     * @param string $image
+     * @return bool
+     * @throws XenForo_Exception
+     */
+    public function bdImage_setThreadImage($image)
+    {
+        if (!is_string($image)) {
+            throw new XenForo_Exception('$image must be a packed string');
+        }
+
+        return $this->set('bdimage_image', $image);
+    }
+
     protected function _getFields()
     {
         $fields = parent::_getFields();
@@ -25,8 +47,8 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
         ) {
             /** @var bdImage_XenForo_DataWriter_DiscussionMessage_Post $firstMessageDw */
             $firstMessageDw = $this->_firstMessageDw;
-            $image = $firstMessageDw->bdImage_getImage();
-            $this->set('bdimage_image', $image);
+            $image = $firstMessageDw->bdImage_extractImage();
+            $this->bdImage_setThreadImage($image);
 
             // tell the post data writer not to update the thread again
             $this->_firstMessageDw->setOption(

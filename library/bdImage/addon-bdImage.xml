@@ -174,7 +174,10 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
   </optiongroups>
   <permissions>
     <permission_groups/>
-    <permissions/>
+    <permissions>
+      <permission permission_group_id="general" permission_id="bdImage_setCover" permission_type="flag" default_value="unset" interface_group_id="generalModeratorPermissions" display_order="9999"/>
+      <permission permission_group_id="general" permission_id="bdImage_usePicker" permission_type="flag" default_value="unset" interface_group_id="generalModeratorPermissions" display_order="9999"/>
+    </permissions>
     <interface_groups/>
   </permissions>
   <phrases>
@@ -186,6 +189,7 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="bdimage_feature_height" version_id="14" version_string="0.9.5"><![CDATA[Feature Image Height]]></phrase>
     <phrase title="bdimage_feature_width" version_id="14" version_string="0.9.5"><![CDATA[Feature Image Width]]></phrase>
     <phrase title="bdimage_gap" version_id="10" version_string="0.9-dev"><![CDATA[Gap (between thumbnails)]]></phrase>
+    <phrase title="bdimage_image_x_is_not_accessible" version_id="2010000" version_string="2.1.0"><![CDATA[The image at {url} is not accessible.]]></phrase>
     <phrase title="bdimage_is_cover" version_id="30" version_string="1.0.4"><![CDATA[Render as thread top cover image]]></phrase>
     <phrase title="bdimage_more_info_about_media_available_in_thread" version_id="2010000" version_string="2.1.0"><![CDATA[More information about the media is available in thread.]]></phrase>
     <phrase title="bdimage_rebuild_thread_images" version_id="1020100" version_string="1.2.1"><![CDATA[Rebuild Thread Images]]></phrase>
@@ -197,7 +201,7 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="bdimage_small_size" version_id="14" version_string="0.9.5"><![CDATA[Second Column Thumbnail Width]]></phrase>
     <phrase title="bdimage_small_title" version_id="14" version_string="0.9.5"><![CDATA[Second Column Title]]></phrase>
     <phrase title="bdimage_template_node_forum_last_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Last Thread Image in Forum List]]></phrase>
-    <phrase title="bdimage_template_picker" version_id="1020001" version_string="1.2.0"><![CDATA[Thread Image Pickers]]></phrase>
+    <phrase title="bdimage_template_picker" version_id="2010000" version_string="2.1.0"><![CDATA[Image Picker]]></phrase>
     <phrase title="bdimage_template_search_result_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in search result]]></phrase>
     <phrase title="bdimage_template_thread_list_item_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in Thread List]]></phrase>
     <phrase title="bdimage_template_thread_view_open_graph_meta" version_id="30" version_string="1.0.4"><![CDATA[Open Graph Image in Thread View]]></phrase>
@@ -224,6 +228,8 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="option_bdImage_threadAuto_explain" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
     <phrase title="option_group_bdImage" version_id="14" version_string="0.9.5"><![CDATA[[bd] Image]]></phrase>
     <phrase title="option_group_bdImage_description" version_id="14" version_string="0.9.5"><![CDATA[]]></phrase>
+    <phrase title="permission_general_bdImage_setCover" version_id="2010000" version_string="2.1.0"><![CDATA[Use Image Picker: Set Cover]]></phrase>
+    <phrase title="permission_general_bdImage_usePicker" version_id="2010000" version_string="2.1.0"><![CDATA[Use Image Picker]]></phrase>
     <phrase title="style_property_bdImage_coverAvatar_description_master" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
     <phrase title="style_property_bdImage_coverAvatar_master" version_id="30" version_string="1.0.4"><![CDATA[Avatar]]></phrase>
     <phrase title="style_property_bdImage_coverBg_description_master" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
@@ -1021,128 +1027,132 @@ html.bdImage_hasCover .titleBar {
 	</xen:comment>width="{xen:property bdImage_forumLastThread_imageSize}" height="{xen:property bdImage_forumLastThread_imageSize}" <xen:comment>
 	</xen:comment>class="bdImage_lastThreadImage"{xen:if $debugMode,
 	' data-image="{xen:jsescape $forum.bdimage_last_post_image}"'} /></xen:if></xen:if></xen:if>]]></template>
-    <template title="bdimage_picker" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:require css="bdimage.css" />
+    <template title="bdimage_picker" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:if is="{$bdImage_canUsePicker}">
+	<xen:require css="bdimage.css" />
 
-<xen:set var="$currentImageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
-	params="{xen:array '0=url'}">{xen:raw $currentImageData}</xen:callback></xen:set><xen:set
-	var="$currentImageIsCover"><xen:callback class="bdImage_Helper_Data" method="get"
-	params="{xen:array '0=is_cover'}">{xen:raw $currentImageData}</xen:callback></xen:set>
+	<xen:set var="$currentImageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
+		params="{xen:array '0=url'}">{xen:raw $currentImageData}</xen:callback></xen:set><xen:set
+		var="$currentImageIsCover"><xen:callback class="bdImage_Helper_Data" method="get"
+		params="{xen:array '0=is_cover'}">{xen:raw $currentImageData}</xen:callback></xen:set>
 
-<dl class="ctrlUnit">
-	<dt>
-		<label for="ctrl_bdimage_image">
-			{xen:phrase bdimage_thread_image}:
-		</label>
-	</dt>
-	<dd>
-		<ul>
-			<xen:if is="{$images}">
-			<li>
-				<ul class="bdImage_Picker">
-					<xen:set var="$currentImageFound">0</xen:set>
+	<dl class="ctrlUnit">
+		<dt>
+			<label for="ctrl_bdimage_image">
+				{xen:phrase bdimage_thread_image}:
+			</label>
+		</dt>
+		<dd>
+			<ul>
+				<xen:if is="{$images}">
+				<li>
+					<ul class="bdImage_Picker">
+						<xen:set var="$currentImageFound">0</xen:set>
 
-					<xen:foreach loop="$images" value="$imageData">
-					<xen:set var="$imageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
-						params="{xen:array '0=url'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
-						var="$imageWidth"><xen:callback class="bdImage_Helper_Data" method="get"
-						params="{xen:array '0=width'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
-						var="$imageHeight"><xen:callback class="bdImage_Helper_Data" method="get"
-						params="{xen:array '0=height'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
-						var="$imageType"><xen:callback class="bdImage_Helper_Data" method="get"
-						params="{xen:array '0=type'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
-						var="$imageTooltip">{$imageType}{xen:if '{$imageWidth} && {$imageHeight}',
-						' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</xen:set><xen:set
-						var="$imageThumbnail"><xen:callback class="bdImage_Helper_Template" method="getThumbnailUrl"
-						params="{xen:array '0={xen:property bdImage_threadList_imageSize}'}">{xen:raw $imageData}</xen:callback></xen:set>
-					<xen:if is="{$imageUrl} == {$currentImageUrl}"><xen:set var="$currentImageFound">1</xen:set></xen:if>
+						<xen:foreach loop="$images" value="$imageData">
+						<xen:set var="$imageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
+							params="{xen:array '0=url'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+							var="$imageWidth"><xen:callback class="bdImage_Helper_Data" method="get"
+							params="{xen:array '0=width'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+							var="$imageHeight"><xen:callback class="bdImage_Helper_Data" method="get"
+							params="{xen:array '0=height'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+							var="$imageType"><xen:callback class="bdImage_Helper_Data" method="get"
+							params="{xen:array '0=type'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+							var="$imageTooltip">{$imageType}{xen:if '{$imageWidth} && {$imageHeight}',
+							' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</xen:set><xen:set
+							var="$imageThumbnail"><xen:callback class="bdImage_Helper_Template" method="getThumbnailUrl"
+							params="{xen:array '0={xen:property bdImage_threadList_imageSize}'}">{xen:raw $imageData}</xen:callback></xen:set>
+						<xen:if is="{$imageUrl} == {$currentImageUrl}"><xen:set var="$currentImageFound">1</xen:set></xen:if>
 
-					<li class="image">
-						<label{xen:if $imageTooltip, ' title="{xen:jsescape $imageTooltip}" class="Tooltip"'}>
-							<input type="radio" name="bdimage_image" value="{$imageUrl}" {xen:checked
-								'{$imageUrl} == {$currentImageUrl}'} /><img src="{$imageThumbnail}" <xen:comment>
-								</xen:comment>width="{xen:property bdImage_threadList_imageSize}" />
-						</label>
-					</li>
-					</xen:foreach>
+						<li class="image">
+							<label{xen:if $imageTooltip, ' title="{xen:jsescape $imageTooltip}" class="Tooltip"'}>
+								<input type="radio" name="bdimage_image" value="{$imageData}" {xen:checked
+									'{$imageUrl} == {$currentImageUrl}'} />
+								<img src="{$imageThumbnail}" width="{xen:property bdImage_threadList_imageSize}" />
+							</label>
+						</li>
+						</xen:foreach>
 
-					<li class="other">
-						<label>
-							<input type="radio" name="bdimage_image" value="other"
-								   class="Disabler Hider" id="ctrl_bdimage_image_other"
-								   {xen:checked '!{$currentImageFound}'} />
-							{xen:phrase other}
-						</label><br/>
-						<br/>
-						<div id="ctrl_bdimage_image_other_Disabler">
-							<input type="text" name="bdimage_other" placeholder="{xen:phrase image_url}" class="textCtrl"
-								   value="{xen:if '!{$currentImageFound}', $currentImageUrl}" />
-						</div>
-					</li>
-				</ul>
-			</li>
-			<xen:else />
-			<li>
-				<input type="hidden" name="bdimage_image" value="other" />
-				<input type="text" name="bdimage_other" value="{$currentImageUrl}" class="textCtrl" />
-			</li>
-			</xen:if>
-			<li>
-				<label>
-					<input type="checkbox" name="bdimage_extra_data[is_cover]" value="1" {xen:checked $currentImageIsCover} />
-					{xen:phrase bdimage_is_cover}
-				</label>
-			</li>
-		</ul>
+						<li class="other">
+							<label>
+								<input type="radio" name="bdimage_image" value="other"
+									   class="Disabler" id="ctrl_bdimage_image_other"
+									   {xen:checked '!{$currentImageFound}'} />
+								{xen:phrase other}
+							</label><br/>
+							<br/>
+							<div id="ctrl_bdimage_image_other_Disabler">
+								<input type="text" name="bdimage_other" placeholder="{xen:phrase image_url}" class="textCtrl"
+									   value="{xen:if '!{$currentImageFound}', $currentImageUrl}" />
+							</div>
+						</li>
+					</ul>
+				</li>
+				<xen:else />
+				<li>
+					<input type="hidden" name="bdimage_image" value="other" />
+					<input type="text" name="bdimage_other" value="{$currentImageUrl}" class="textCtrl" />
+				</li>
+				</xen:if>
 
-		<input type="hidden" name="bdimage_picker" value="1" />
-	</dd>
-</dl>
+				<xen:if is="{$bdImage_canSetCover}">
+				<li>
+					<label>
+						<input type="checkbox" name="bdimage_extra_data[is_cover]" value="1" {xen:checked $currentImageIsCover} />
+						{xen:phrase bdimage_is_cover}
+					</label>
+					<input type="hidden" name="bdimage_extra_data[is_cover_included]" value="1" />
+				</li>
+				</xen:if>
+			</ul>
+
+			<input type="hidden" name="bdimage_included" value="1" />
+		</dd>
+	</dl>
+</xen:if>
 
 <xen:edithint template="bdimage_picker_simple" />]]></template>
-    <template title="bdimage_picker_simple" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:set var="$currentImageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
-	params="{xen:array '0=url'}">{xen:raw $currentImageData}</xen:callback></xen:set><xen:set
-	var="$currentImageIsCover"><xen:callback class="bdImage_Helper_Data" method="get"
-	params="{xen:array '0=is_cover'}">{xen:raw $currentImageData}</xen:callback></xen:set>
+    <template title="bdimage_picker_simple" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:if is="{$bdImage_canUsePicker} && {$images}">
 
-<xen:if is="{$images} || {$currentImageUrl}">
+	<xen:set var="$currentImageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
+		params="{xen:array '0=url'}">{xen:raw $currentImageData}</xen:callback></xen:set><xen:set
+		var="$currentImageIsCover"><xen:callback class="bdImage_Helper_Data" method="get"
+		params="{xen:array '0=is_cover'}">{xen:raw $currentImageData}</xen:callback></xen:set>
 
-<label>
-	<xen:if is="{$currentImageIsCover}">
-	{xen:phrase bdimage_thread_cover_image}:
-	<input type="hidden" name="bdimage_extra_data[is_cover]" value="1" />
-	<xen:else />
-	{xen:phrase bdimage_thread_image}:
-	</xen:if>
-
-	<select{xen:if $id, ' id="{$id}"'} name="bdimage_image" class="textCtrl bdImage_Picker">
-		<option value=""></option>
-
-		<xen:set var="$currentImageFound">0</xen:set>
-		<xen:foreach loop="$images" value="$imageData">
-			<xen:set var="$imageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
-				params="{xen:array '0=url'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
-				var="$imageWidth"><xen:callback class="bdImage_Helper_Data" method="get"
-				params="{xen:array '0=width'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
-				var="$imageHeight"><xen:callback class="bdImage_Helper_Data" method="get"
-				params="{xen:array '0=height'}">{xen:raw $imageData}</xen:callback></xen:set>
-			<xen:if is="{$imageUrl} == {$currentImageUrl}">
-				<xen:set var="$currentImageFound">1</xen:set>
-			</xen:if>
-
-			<option value="{$imageUrl}" {xen:selected '{$imageUrl} == {$currentImageUrl}'}>{$imageUrl}{xen:if '{$imageWidth}
-				&& {$imageHeight}', ' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</option>
-		</xen:foreach>
-
-		<xen:if is="{$currentImageFound} == 0 && {$currentImageUrl}">
-			<option value="{$currentImage}" selected="selected">
-				{$currentImageUrl}
-			</option>
+	<label>
+		<xen:if is="{$currentImageIsCover}">
+		{xen:phrase bdimage_thread_cover_image}:
+		<xen:else />
+		{xen:phrase bdimage_thread_image}:
 		</xen:if>
-	</select>
-</label>
 
-<input type="hidden" name="bdimage_picker" value="1" />
+		<select{xen:if $id, ' id="{$id}"'} name="bdimage_image" class="textCtrl bdImage_Picker">
+			<option value=""></option>
 
+			<xen:set var="$currentImageFound">0</xen:set>
+			<xen:foreach loop="$images" value="$imageData">
+				<xen:set var="$imageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
+					params="{xen:array '0=url'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+					var="$imageWidth"><xen:callback class="bdImage_Helper_Data" method="get"
+					params="{xen:array '0=width'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+					var="$imageHeight"><xen:callback class="bdImage_Helper_Data" method="get"
+					params="{xen:array '0=height'}">{xen:raw $imageData}</xen:callback></xen:set>
+				<xen:if is="{$imageUrl} == {$currentImageUrl}">
+					<xen:set var="$currentImageFound">1</xen:set>
+				</xen:if>
+
+				<option value="{$imageUrl}" {xen:selected '{$imageUrl} == {$currentImageUrl}'}>{$imageUrl}{xen:if '{$imageWidth}
+					&& {$imageHeight}', ' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</option>
+			</xen:foreach>
+
+			<xen:if is="{$currentImageFound} == 0 && {$currentImageUrl}">
+				<option value="{$currentImage}" selected="selected">
+					{$currentImageUrl}
+				</option>
+			</xen:if>
+		</select>
+	</label>
+
+	<input type="hidden" name="bdimage_included" value="1" />
 </xen:if>]]></template>
     <template title="bdimage_search_result_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_searchResultThreadImage"><xen:callback
 	class="bdImage_Option" method="get" params="{xen:array

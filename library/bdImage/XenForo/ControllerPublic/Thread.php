@@ -22,19 +22,20 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
     public function actionEdit()
     {
         $response = parent::actionEdit();
+        $visitor = XenForo_Visitor::getInstance();
 
-        if ($response instanceof XenForo_ControllerResponse_View) {
-            $params = &$response->params;
+        if (bdImage_Option::get('template', 'picker')
+            && $response instanceof XenForo_ControllerResponse_View
+            && !empty($response->params['thread']['first_post_id'])
+            && $visitor->hasPermission('general', 'bdImage_usePicker')
+        ) {
+            $response->params['bdImage_canUsePicker'] = true;
+            $response->params['bdImage_canSetCover'] = $visitor->hasPermission('general', 'bdImage_setCover');
 
-            $firstPost = $this->_getPostModel()->getPostById($params['thread']['first_post_id']);
-
-            $contentData = array(
-                'contentType' => 'post',
-                'contentId' => $firstPost['post_id'],
-                'attachmentHash' => false,
-                'allAttachments' => true,
-            );
-            $params['bdImage_images'] = bdImage_Helper_BbCode::extractImages($firstPost['message'], $contentData, null);
+            /** @var bdImage_XenForo_DataWriter_DiscussionMessage_Post $firstPostDw */
+            $firstPostDw = XenForo_DataWriter::create('XenForo_DataWriter_DiscussionMessage_Post');
+            $firstPostDw->setExistingData($response->params['thread']['first_post_id']);
+            $response->params['bdImage_images'] = $firstPostDw->bdImage_extractImage(true);
         }
 
         return $response;
@@ -49,12 +50,19 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
 
     public function bdImage_actionSave(XenForo_DataWriter_Discussion_Thread $threadDw)
     {
+        if (!bdImage_Option::get('template', 'picker')) {
+            return;
+        }
+
         /** @var bdImage_ControllerHelper_Picker $picker */
         $picker = $this->getHelper('bdImage_ControllerHelper_Picker');
-        $picked = $picker->getPickedData();
 
-        if (is_string($picked)) {
-            $threadDw->set('bdimage_image', $picked);
+        /** @var bdImage_XenForo_DataWriter_Discussion_Thread $threadDw */
+        $pickedImage = $picker->getPickedData($threadDw->bdImage_getThreadImage());
+
+        if (is_string($pickedImage)) {
+            /** @var bdImage_XenForo_DataWriter_Discussion_Thread $threadDw */
+            $threadDw->bdImage_setThreadImage($pickedImage);
         }
     }
 

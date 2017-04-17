@@ -69,7 +69,10 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
                             $attachmentUrl,
                             $attachments[$attachmentId]['width'],
                             $attachments[$attachmentId]['height'],
-                            array('type' => 'attachment')
+                            array(
+                                'type' => 'attachment',
+                                'filename' => $attachments[$attachmentId]['filename'],
+                            )
                         );
                     }
                 }
@@ -77,7 +80,10 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
         }
 
         foreach ($this->_bdImage_imageUrls as $imageUrl) {
-            $imageDataMany[] = $imageUrl;
+            $imageDataMany[] = bdImage_Helper_Data::pack($imageUrl, 0, 0, array(
+                'type' => 'url',
+                'filename' => basename($imageUrl),
+            ));
         }
 
         foreach ($this->_bdImage_mediaIds as $mediaId) {

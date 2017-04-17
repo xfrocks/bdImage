@@ -171,6 +171,12 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="bdImage" display_order="1010"/>
     </option>
+    <option option_id="bdImage_threadAutoCover" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>rows=5</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdImage" display_order="1010"/>
+    </option>
   </optiongroups>
   <permissions>
     <permission_groups/>
@@ -225,6 +231,12 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="option_bdImage_template" version_id="14" version_string="0.9.5"><![CDATA[Template Modification]]></phrase>
     <phrase title="option_bdImage_template_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[Tick the modifications you wish to apply automatically.]]></phrase>
     <phrase title="option_bdImage_threadAuto" version_id="30" version_string="1.0.4"><![CDATA[Thread: Auto-extract Image]]></phrase>
+    <phrase title="option_bdImage_threadAutoCover" version_id="2010200" version_string="2.1.2"><![CDATA[Thread: Auto Set Cover]]></phrase>
+    <phrase title="option_bdImage_threadAutoCover_explain" version_id="2010200" version_string="2.1.2"><![CDATA[Enter requirements to set an image as the thread cover automatically. Each requirement must be in its own line, available keys:<br />
+<span style="font-family: monospace">prefix</span>: filename must starts with this (e.g. prefix=cover_).<br />
+<span style="font-family: monospace">ratio</span>: image must have this width:height ratio (e.g. ratio=16:9).<br />
+<span style="font-family: monospace">width</span>: image width must be equal to or greater than the specified value (in pixel, e.g. width=1024).<br />
+<span style="font-family: monospace">height</span>: image height must be equal to or greater than the specified value (in pixel, e.g. height=300).<br />]]></phrase>
     <phrase title="option_bdImage_threadAuto_explain" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
     <phrase title="option_group_bdImage" version_id="14" version_string="0.9.5"><![CDATA[[bd] Image]]></phrase>
     <phrase title="option_group_bdImage_description" version_id="14" version_string="0.9.5"><![CDATA[]]></phrase>

@@ -38,6 +38,12 @@ class bdImage_Helper_BbCode
             return null;
         }
 
+        $autoCoverRules = null;
+        if (!empty($contentData['autoCover'])) {
+            $autoCoverRules = self::parseRules($contentData['autoCover']);
+        }
+
+        $image = null;
         foreach ($imageDataMany as $imageData) {
             $imageUrl = bdImage_Helper_Data::get($imageData, 'url');
             if (empty($imageUrl)) {
@@ -49,15 +55,25 @@ class bdImage_Helper_BbCode
                 continue;
             }
 
-            return bdImage_Helper_Data::pack(
-                $imageUrl,
-                $imageSize[0],
-                $imageSize[1],
-                bdImage_Helper_Data::unpack($imageData)
-            );
+            $unpackedImageData = bdImage_Helper_Data::unpack($imageData);
+            $unpackedImageData['width'] = $imageSize[0];
+            $unpackedImageData['height'] = $imageSize[1];
+            if ($image === null) {
+                $image = bdImage_Helper_Data::pack($imageUrl, 0, 0, $unpackedImageData);
+            }
+
+            if (is_array($autoCoverRules)) {
+                if (self::checkRules($unpackedImageData, $autoCoverRules)) {
+                    $unpackedImageData['is_cover'] = true;
+                    $coverImage = bdImage_Helper_Data::pack($imageUrl, 0, 0, $unpackedImageData);
+                    return $coverImage;
+                }
+            } else {
+                return $image;
+            }
         }
 
-        return null;
+        return $image;
     }
 
     /**
@@ -66,7 +82,10 @@ class bdImage_Helper_BbCode
      */
     public static function extractYouTubeThumbnails($youtubeId)
     {
-        $defaultUrls = array(sprintf('http://img.youtube.com/vi/%s/default.jpg', $youtubeId));
+        $defaultUrls = array(
+            bdImage_Helper_Data::pack(sprintf('http://img.youtube.com/vi/%s/default.jpg',
+                $youtubeId), 0, 0, array('type' => 'youtube')),
+        );
         $apiKey = bdImage_Option::get('googleApiKey');
         if (empty($apiKey)) {
             return $defaultUrls;
@@ -95,5 +114,90 @@ class bdImage_Helper_BbCode
         }
 
         return $imageDataMany;
+    }
+
+    public static function parseRules($input)
+    {
+        if (empty($input)) {
+            return null;
+        }
+
+        $rules = array();
+        foreach (preg_split('#\s#', $input) as $ruleLine) {
+            if (empty($ruleLine)) {
+                continue;
+            }
+
+            $equalPos = strpos($ruleLine, '=');
+            if ($equalPos === false) {
+                continue;
+            }
+
+            $ruleKey = substr($ruleLine, 0, $equalPos);
+            $ruleValue = substr($ruleLine, $equalPos + 1);
+            switch ($ruleKey) {
+                case 'ratio':
+                    $ratio = explode(':', $ruleValue);
+                    if (count($ratio) !== 2) {
+                        $ruleValue = null;
+                        break;
+                    }
+                    $ratio = array_map('intval', $ratio);
+                    if ($ratio[0] === 0 || $ratio[1] === 0) {
+                        $ruleValue = null;
+                        break;
+                    }
+                    $ruleValue = $ratio;
+                    break;
+                case 'width':
+                case 'height':
+                    $ruleValue = intval($ruleValue);
+                    break;
+                default:
+                    $ruleValue = trim($ruleValue);
+            }
+
+            if (strlen($ruleKey) === 0 || empty($ruleValue)) {
+                continue;
+            }
+            $rules[$ruleKey] = $ruleValue;
+        }
+
+        return $rules;
+    }
+
+    public static function checkRules(array $imageData, array $rules)
+    {
+        foreach ($rules as $ruleKey => $ruleValue) {
+            switch ($ruleKey) {
+                case 'prefix':
+                    if (!isset($imageData['filename'])) {
+                        return false;
+                    }
+                    if (substr_compare($imageData['filename'], $ruleValue, 0, strlen($ruleValue)) !== 0) {
+                        return false;
+                    }
+                    break;
+                case 'ratio':
+                    if (empty($ruleValue[1]) || empty($imageData['width']) || empty($imageData['height'])) {
+                        return false;
+                    }
+                    if ($ruleValue[0] / $ruleValue[1] !== $imageData['width'] / $imageData['height']) {
+                        return false;
+                    }
+                    break;
+                case 'width':
+                case 'height':
+                    if (empty($imageData[$ruleKey]) || $imageData[$ruleKey] < $ruleValue) {
+                        return false;
+                    }
+                    break;
+                default:
+                    XenForo_Error::logError('Unrecognized rule key %s', $ruleKey);
+                    return false;
+            }
+        }
+
+        return true;
     }
 }

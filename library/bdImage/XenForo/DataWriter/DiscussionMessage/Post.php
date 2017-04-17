@@ -21,6 +21,7 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
             'contentId' => $this->get('post_id'),
             'attachmentHash' => $this->getExtraData(XenForo_DataWriter_DiscussionMessage_Post::DATA_ATTACHMENT_HASH),
             'allAttachments' => $getAll || !!bdImage_Option::get('allAttachments'),
+            'autoCover' => bdImage_Option::get('threadAutoCover'),
         );
 
         if ($getAll) {

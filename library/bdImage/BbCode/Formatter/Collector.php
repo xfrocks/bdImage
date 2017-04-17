@@ -62,8 +62,9 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
                         && isset($attachments[$attachmentId]['height'])
                         && $attachments[$attachmentId]['height'] > 0
                     ) {
-                        $attachmentUrl = XenForo_Link::buildPublicLink('canonical:attachments',
-                            $attachments[$attachmentId]);
+                        $linkData = $attachments[$attachmentId];
+                        $linkData['temp_hash'] = '';
+                        $attachmentUrl = XenForo_Link::buildPublicLink('canonical:attachments', $linkData);
 
                         $imageDataMany[] = bdImage_Helper_Data::pack(
                             $attachmentUrl,

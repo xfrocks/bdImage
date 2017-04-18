@@ -118,4 +118,11 @@ class bdImage_Listener
             $extend[] = 'bdImage_WidgetFramework_Model_Thread';
         }
     }
+
+    public static function load_class_XenForo_ViewPublic_Thread_View($class, array &$extend)
+    {
+        if ($class === 'XenForo_ViewPublic_Thread_View') {
+            $extend[] = 'bdImage_XenForo_ViewPublic_Thread_View';
+        }
+    }
 }

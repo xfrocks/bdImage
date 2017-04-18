@@ -113,6 +113,7 @@
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_DataWriter_Forum" active="1" hint="XenForo_DataWriter_Forum" description="XenForo_DataWriter_Forum"/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_WidgetFramework_Model_Thread" active="1" hint="WidgetFramework_Model_Thread" description="WidgetFramework_Model_Thread"/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_Model_Thread" active="1" hint="XenForo_Model_Thread" description="XenForo_Model_Thread"/>
+    <listener event_id="load_class_view" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_ViewPublic_Thread_View" active="1" hint="XenForo_ViewPublic_Thread_View" description="XenForo_ViewPublic_Thread_View"/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="bdImage_Listener" callback_method="widget_framework_ready" active="1" hint="" description=""/>
   </code_event_listeners>
   <cron>
@@ -158,6 +159,7 @@ step=14</edit_format_params>
       <default_value></default_value>
       <edit_format_params>thread_list_item_thread_image = {xen:phrase bdimage_template_thread_list_item_thread_image}
 thread_view_open_graph_meta = {xen:phrase bdimage_template_thread_view_open_graph_meta}
+thread_view_hidden_attachment = {xen:phrase bdimage_template_thread_view_hidden_attachment}
 node_forum_last_thread_image = {xen:phrase bdimage_template_node_forum_last_thread_image}
 search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_image}
 wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_thread_image}
@@ -210,8 +212,9 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="bdimage_template_picker" version_id="2010000" version_string="2.1.0"><![CDATA[Image Picker]]></phrase>
     <phrase title="bdimage_template_search_result_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in search result]]></phrase>
     <phrase title="bdimage_template_thread_list_item_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in Thread List]]></phrase>
+    <phrase title="bdimage_template_thread_view_hidden_attachment" version_id="2010200" version_string="2.1.2"><![CDATA[Auto-hide Thread Image in First Post Attachments in Thread View]]></phrase>
     <phrase title="bdimage_template_thread_view_open_graph_meta" version_id="30" version_string="1.0.4"><![CDATA[Open Graph Image in Thread View]]></phrase>
-    <phrase title="bdimage_template_wf_widget_threads_thread_image" version_id="28" version_string="1.0.2b"><![CDATA[Thread image in [bd] Widget Framework Threads widget.]]></phrase>
+    <phrase title="bdimage_template_wf_widget_threads_thread_image" version_id="2010200" version_string="2.1.2"><![CDATA[Thread Image in [bd] Widget Framework Threads widget.]]></phrase>
     <phrase title="bdimage_thread_cover_image" version_id="30" version_string="1.0.4"><![CDATA[Cover Image]]></phrase>
     <phrase title="bdimage_thread_image" version_id="13" version_string="0.9.4"><![CDATA[Thread Image]]></phrase>
     <phrase title="bdimage_thumbnail_height" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Height]]></phrase>

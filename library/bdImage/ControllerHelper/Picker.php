@@ -3,11 +3,10 @@
 class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
 {
     /**
-     * @param array $existingImage
      * @return null|string
      * @throws XenForo_Exception
      */
-    public function getPickedData(array $existingImage = array())
+    public function getPickedData()
     {
         $visitor = XenForo_Visitor::getInstance();
         if (!$visitor->hasPermission('general', 'bdImage_usePicker')) {
@@ -22,7 +21,7 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
         $imageUrl = bdImage_Helper_Data::get($pickedImage, bdImage_Helper_Data::IMAGE_URL);
         $imageWidth = 0;
         $imageHeight = 0;
-        $pickedExtraData = array();
+        $extraData = array();
         if ($imageUrl === $pickedImage) {
             $imageSize = bdImage_Helper_Image::getSize($imageUrl);
             if ($imageSize === false) {
@@ -31,12 +30,12 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
             }
             list($imageWidth, $imageHeight) = $imageSize;
         } else {
-            $pickedExtraData = bdImage_Helper_Data::unpack($pickedImage);
-            if (isset($pickedExtraData[bdImage_Helper_Data::IMAGE_WIDTH])) {
-                $imageWidth = $pickedExtraData[bdImage_Helper_Data::IMAGE_WIDTH];
+            $extraData = bdImage_Helper_Data::unpack($pickedImage);
+            if (isset($extraData[bdImage_Helper_Data::IMAGE_WIDTH])) {
+                $imageWidth = $extraData[bdImage_Helper_Data::IMAGE_WIDTH];
             }
-            if (isset($pickedExtraData[bdImage_Helper_Data::IMAGE_HEIGHT])) {
-                $imageHeight = $pickedExtraData[bdImage_Helper_Data::IMAGE_HEIGHT];
+            if (isset($extraData[bdImage_Helper_Data::IMAGE_HEIGHT])) {
+                $imageHeight = $extraData[bdImage_Helper_Data::IMAGE_HEIGHT];
             }
         }
 
@@ -49,11 +48,10 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
         }
         foreach ($extraDataFilters as $extraDataKey => $extraDataFilter) {
             if ($extraDataInput->filterSingle($extraDataKey . '_included', XenForo_Input::BOOLEAN)) {
-                $pickedExtraData[$extraDataKey] = $extraDataInput->filterSingle($extraDataKey, $extraDataFilter);
+                $extraData[$extraDataKey] = $extraDataInput->filterSingle($extraDataKey, $extraDataFilter);
             }
         }
 
-        $extraData = array_merge($existingImage, $pickedExtraData);
         $extraData['_locked'] = true;
 
         return bdImage_Helper_Data::pack($imageUrl, $imageWidth, $imageHeight, $extraData);

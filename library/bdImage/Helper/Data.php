@@ -57,6 +57,17 @@ class bdImage_Helper_Data
     }
 
     /**
+     * @param array $data,...
+     * @return string
+     */
+    public static function mergeAndPack(array $data)
+    {
+        $args = func_get_args();
+        $merged = call_user_func_array('array_merge', $args);
+        return self::_packArray($merged);
+    }
+
+    /**
      * @param string $url
      * @param int $width
      * @param int $height

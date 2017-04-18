@@ -56,9 +56,7 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
 
         /** @var bdImage_ControllerHelper_Picker $picker */
         $picker = $this->getHelper('bdImage_ControllerHelper_Picker');
-
-        /** @var bdImage_XenForo_DataWriter_Discussion_Thread $threadDw */
-        $pickedImage = $picker->getPickedData($threadDw->bdImage_getThreadImage());
+        $pickedImage = $picker->getPickedData();
 
         if (is_string($pickedImage)) {
             /** @var bdImage_XenForo_DataWriter_Discussion_Thread $threadDw */

@@ -45,14 +45,13 @@ class bdImage_Helper_Data
     /**
      * @param string $rawData
      * @param string $secondaryKey
-     * @param string $secondaryUrl
-     * @param array $secondaryExtraData
+     * @param string $secondaryData
      * @return string
      */
-    public static function packSecondary($rawData, $secondaryKey, $secondaryUrl, array $secondaryExtraData = array())
+    public static function packSecondary($rawData, $secondaryKey, $secondaryData)
     {
         $data = self::unpack($rawData);
-        $data[self::SECONDARY_IMAGES][$secondaryKey] = self::packUrl($secondaryUrl, $secondaryExtraData);
+        $data[self::SECONDARY_IMAGES][$secondaryKey] = $secondaryData;
         return self::_packArray($data);
     }
 
@@ -89,6 +88,21 @@ class bdImage_Helper_Data
         $data += $extraData;
 
         return self::_packArray($data);
+    }
+
+    /**
+     * @param string $rawData
+     * @param string $secondaryKey
+     * @return array|string
+     */
+    public static function unpackSecondaryOrDefault($rawData, $secondaryKey)
+    {
+        $data = self::unpack($rawData);
+        if (!empty($data[self::SECONDARY_IMAGES][$secondaryKey])) {
+            return $data[self::SECONDARY_IMAGES][$secondaryKey];
+        }
+
+        return $rawData;
     }
 
     /**

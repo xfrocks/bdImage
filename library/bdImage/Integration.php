@@ -15,42 +15,42 @@ class bdImage_Integration
     public static function buildThumbnailLink($imageData, $size, $mode = self::MODE_CROP_EQUAL)
     {
         if (!defined('BDIMAGE_IS_WORKING')) {
-            return bdImage_Helper_Data::get($imageData, 'url');
+            return bdImage_Helper_Data::get($imageData, bdImage_Helper_Data::IMAGE_URL);
         }
 
         $imageData = bdImage_Helper_Data::unpack($imageData);
-        $imageUrl = $imageData['url'];
+        $imageUrl = $imageData[bdImage_Helper_Data::IMAGE_URL];
         if (empty($imageUrl)) {
             return '';
         }
 
-        if (!empty($imageData['width'])
-            && !empty($imageData['height'])
+        if (!empty($imageData[bdImage_Helper_Data::IMAGE_WIDTH])
+            && !empty($imageData[bdImage_Helper_Data::IMAGE_HEIGHT])
             && parse_url($imageUrl) !== false
         ) {
             // we have the image size information
             // try to return the image url itself if its size matches the requested thumbnail
             switch ($mode) {
                 case self::MODE_STRETCH_WIDTH:
-                    if ($imageData['height'] == $size) {
+                    if ($imageData[bdImage_Helper_Data::IMAGE_HEIGHT] == $size) {
                         return $imageUrl;
                     }
                     break;
                 case self::MODE_STRETCH_HEIGHT:
-                    if ($imageData['width'] == $size) {
+                    if ($imageData[bdImage_Helper_Data::IMAGE_WIDTH] == $size) {
                         return $imageUrl;
                     }
                     break;
                 default:
                     if (is_numeric($mode)) {
-                        if ($imageData['width'] == $size
-                            && $imageData['height'] == $mode
+                        if ($imageData[bdImage_Helper_Data::IMAGE_WIDTH] == $size
+                            && $imageData[bdImage_Helper_Data::IMAGE_HEIGHT] == $mode
                         ) {
                             return $imageUrl;
                         }
                     } else {
-                        if ($imageData['width'] == $size
-                            && $imageData['height'] == $size
+                        if ($imageData[bdImage_Helper_Data::IMAGE_WIDTH] == $size
+                            && $imageData[bdImage_Helper_Data::IMAGE_HEIGHT] == $size
                         ) {
                             return $imageUrl;
                         }
@@ -81,11 +81,11 @@ class bdImage_Integration
     public static function getOriginalUrl($imageData)
     {
         if (!defined('BDIMAGE_IS_WORKING')) {
-            return bdImage_Helper_Data::get($imageData, 'url');
+            return bdImage_Helper_Data::get($imageData, bdImage_Helper_Data::IMAGE_URL);
         }
 
         $imageData = bdImage_Helper_Data::unpack($imageData);
-        $imageUrl = $imageData['url'];
+        $imageUrl = $imageData[bdImage_Helper_Data::IMAGE_URL];
 
         if (Zend_Uri::check($imageUrl)) {
             // it is an uri already, return asap

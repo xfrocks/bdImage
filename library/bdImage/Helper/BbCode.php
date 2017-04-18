@@ -45,7 +45,7 @@ class bdImage_Helper_BbCode
 
         $image = null;
         foreach ($imageDataMany as $imageData) {
-            $imageUrl = bdImage_Helper_Data::get($imageData, 'url');
+            $imageUrl = bdImage_Helper_Data::get($imageData, bdImage_Helper_Data::IMAGE_URL);
             if (empty($imageUrl)) {
                 continue;
             }
@@ -56,8 +56,8 @@ class bdImage_Helper_BbCode
             }
 
             $unpackedImageData = bdImage_Helper_Data::unpack($imageData);
-            $unpackedImageData['width'] = $imageSize[0];
-            $unpackedImageData['height'] = $imageSize[1];
+            $unpackedImageData[bdImage_Helper_Data::IMAGE_WIDTH] = $imageSize[0];
+            $unpackedImageData[bdImage_Helper_Data::IMAGE_HEIGHT] = $imageSize[1];
             if ($image === null) {
                 $image = bdImage_Helper_Data::pack($imageUrl, 0, 0, $unpackedImageData);
             }
@@ -179,16 +179,27 @@ class bdImage_Helper_BbCode
                     }
                     break;
                 case 'ratio':
-                    if (empty($ruleValue[1]) || empty($imageData['width']) || empty($imageData['height'])) {
+                    if (empty($ruleValue[1])
+                        || empty($imageData[bdImage_Helper_Data::IMAGE_WIDTH])
+                        || empty($imageData[bdImage_Helper_Data::IMAGE_HEIGHT])
+                    ) {
                         return false;
                     }
-                    if ($ruleValue[0] / $ruleValue[1] !== $imageData['width'] / $imageData['height']) {
+                    if ($ruleValue[0] / $ruleValue[1] !== $imageData[bdImage_Helper_Data::IMAGE_WIDTH] / $imageData[bdImage_Helper_Data::IMAGE_HEIGHT]) {
                         return false;
                     }
                     break;
                 case 'width':
+                    if (empty($imageData[bdImage_Helper_Data::IMAGE_WIDTH])
+                        || $imageData[bdImage_Helper_Data::IMAGE_WIDTH] < $ruleValue
+                    ) {
+                        return false;
+                    }
+                    break;
                 case 'height':
-                    if (empty($imageData[$ruleKey]) || $imageData[$ruleKey] < $ruleValue) {
+                    if (empty($imageData[bdImage_Helper_Data::IMAGE_HEIGHT])
+                        || $imageData[bdImage_Helper_Data::IMAGE_HEIGHT] < $ruleValue
+                    ) {
                         return false;
                     }
                     break;

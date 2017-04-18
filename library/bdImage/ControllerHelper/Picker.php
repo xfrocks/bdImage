@@ -19,7 +19,7 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
             return null;
         }
 
-        $imageUrl = bdImage_Helper_Data::get($pickedImage, 'url');
+        $imageUrl = bdImage_Helper_Data::get($pickedImage, bdImage_Helper_Data::IMAGE_URL);
         $imageWidth = 0;
         $imageHeight = 0;
         $pickedExtraData = array();
@@ -32,11 +32,11 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
             list($imageWidth, $imageHeight) = $imageSize;
         } else {
             $pickedExtraData = bdImage_Helper_Data::unpack($pickedImage);
-            if (isset($pickedExtraData['width'])) {
-                $imageWidth = $pickedExtraData['width'];
+            if (isset($pickedExtraData[bdImage_Helper_Data::IMAGE_WIDTH])) {
+                $imageWidth = $pickedExtraData[bdImage_Helper_Data::IMAGE_WIDTH];
             }
-            if (isset($pickedExtraData['height'])) {
-                $imageHeight = $pickedExtraData['height'];
+            if (isset($pickedExtraData[bdImage_Helper_Data::IMAGE_HEIGHT])) {
+                $imageHeight = $pickedExtraData[bdImage_Helper_Data::IMAGE_HEIGHT];
             }
         }
 

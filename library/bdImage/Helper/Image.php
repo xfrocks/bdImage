@@ -16,9 +16,11 @@ class bdImage_Helper_Image
         $width = false;
         $height = false;
 
-        if (isset($imageData['width']) && isset($imageData['height'])) {
-            $width = $imageData['width'];
-            $height = $imageData['height'];
+        if (isset($imageData[bdImage_Helper_Data::IMAGE_WIDTH])
+            && isset($imageData[bdImage_Helper_Data::IMAGE_HEIGHT])
+        ) {
+            $width = $imageData[bdImage_Helper_Data::IMAGE_WIDTH];
+            $height = $imageData[bdImage_Helper_Data::IMAGE_HEIGHT];
         }
 
         if ((empty($width) || empty($height)) && $doFetch) {

@@ -71,12 +71,12 @@ class bdImage_Helper_File
     }
 
     /**
-     * @param $imageData
+     * @param string $imageData
      * @return string
      */
     public static function getImageCachedPathOrUrl($imageData)
     {
-        $url = bdImage_Helper_Data::get($imageData, 'url');
+        $url = bdImage_Helper_Data::get($imageData, bdImage_Helper_Data::IMAGE_URL);
         if (!is_string($url) || strlen($url) < 0) {
             return '';
         }

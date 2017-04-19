@@ -50,19 +50,24 @@ class bdImage_Helper_Data
      */
     public static function packSecondary($rawData, $secondaryKey, $secondaryData)
     {
-        $data = self::unpack($rawData);
+        $data = array();
+        if ($rawData !== '') {
+            $data = self::unpack($rawData);
+        }
+
         $data[self::SECONDARY_IMAGES][$secondaryKey] = $secondaryData;
         return self::_packArray($data);
     }
 
     /**
-     * @param array $data,...
+     * @param string $data,...
      * @return string
      */
-    public static function mergeAndPack(array $data)
+    public static function mergeAndPack($data)
     {
         $args = func_get_args();
-        $merged = call_user_func_array('array_merge', $args);
+        $unpackedArgs = array_map(array(__CLASS__, '_unpackArrayOrString'), $args);
+        $merged = call_user_func_array('array_merge', $unpackedArgs);
         return self::_packArray($merged);
     }
 
@@ -111,11 +116,7 @@ class bdImage_Helper_Data
      */
     public static function unpack($rawData)
     {
-        if (is_array($rawData)) {
-            $data = $rawData;
-        } else {
-            $data = @json_decode($rawData, true);
-        }
+        $data = self::_unpackArrayOrString($rawData);
         $result = array();
 
         if (!empty($data)) {
@@ -162,5 +163,16 @@ class bdImage_Helper_Data
         }
 
         return json_encode($data);
+    }
+
+    protected static function _unpackArrayOrString($rawData)
+    {
+        if (is_array($rawData)) {
+            $data = $rawData;
+        } else {
+            $data = @json_decode($rawData, true);
+        }
+
+        return $data;
     }
 }

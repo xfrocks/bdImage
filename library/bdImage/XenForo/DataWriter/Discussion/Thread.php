@@ -21,9 +21,9 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
             throw new XenForo_Exception('$image must be a packed string');
         }
 
-        $existing = $this->bdImage_getThreadImage();
+        $existing = $this->get('bdimage_image');
         if (!empty($existing)) {
-            $image = bdImage_Helper_Data::mergeAndPack($existing, bdImage_Helper_Data::unpack($image));
+            $image = bdImage_Helper_Data::mergeAndPack($existing, $image);
         }
 
         return $this->set('bdimage_image', $image);

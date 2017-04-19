@@ -23,12 +23,14 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
         $imageHeight = 0;
         $extraData = array();
         if ($imageUrl === $pickedImage) {
-            $imageSize = bdImage_Helper_Image::getSize($imageUrl);
-            if ($imageSize === false) {
-                throw new XenForo_Exception(new XenForo_Phrase('bdimage_image_x_is_not_accessible',
-                    array('url' => $imageUrl)), true);
+            if (strlen($imageUrl) > 0) {
+                $imageSize = bdImage_Helper_Image::getSize($imageUrl);
+                if ($imageSize === false) {
+                    throw new XenForo_Exception(new XenForo_Phrase('bdimage_image_x_is_not_accessible',
+                        array('url' => $imageUrl)), true);
+                }
+                list($imageWidth, $imageHeight) = $imageSize;
             }
-            list($imageWidth, $imageHeight) = $imageSize;
         } else {
             $extraData = bdImage_Helper_Data::unpack($pickedImage);
             if (isset($extraData[bdImage_Helper_Data::IMAGE_WIDTH])) {

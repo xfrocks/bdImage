@@ -377,6 +377,7 @@ class bdImage_Helper_Thumbnail
         try {
             return XenForo_Image_Abstract::createFromFile($path, $type);
         } catch (Exception $e) {
+            self::_log($e->getMessage());
             return null;
         }
     }
@@ -389,6 +390,7 @@ class bdImage_Helper_Thumbnail
     {
         $cachedPathOrUrl = bdImage_Helper_File::getImageCachedPathOrUrl($url);
         if (bdImage_Helper_File::existsAndNotEmpty($cachedPathOrUrl)) {
+            self::_log('Using cached path %s...', $cachedPathOrUrl);
             return $cachedPathOrUrl;
         }
 

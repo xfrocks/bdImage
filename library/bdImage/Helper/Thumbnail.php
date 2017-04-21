@@ -425,7 +425,7 @@ class bdImage_Helper_Thumbnail
             XenForo_Helper_File::createDirectory(dirname($originalCachePath), true);
             $downloaded = bdImage_ShippableHelper_TempFile::download($url, array(
                 'tempFile' => $originalCachePath,
-                'maxDownloadSize' => XenForo_Application::getOptions()->get('attachmentMaxFileSize') * 1024,
+                'maxDownloadSize' => XenForo_Application::getOptions()->get('attachmentMaxFileSize') * 1024 * 10,
             ));
             if (empty($downloaded)) {
                 self::_log('Cannot download url %s', $url);

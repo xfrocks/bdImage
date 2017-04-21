@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2017-03-14T04:16:48+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2017-04-21T08:03:42+00:00
 
 /**
  * Class bdImage_ShippableHelper_TempFile
- * @version 11
+ * @version 12
  * @see DevHelper_Helper_ShippableHelper_TempFile
  */
 class bdImage_ShippableHelper_TempFile
@@ -117,11 +117,18 @@ class bdImage_ShippableHelper_TempFile
         }
 
         curl_exec($ch);
-
-        $downloaded = intval(curl_getinfo($ch, CURLINFO_HTTP_CODE)) == 200;
-
+        $curlInfo = curl_getinfo($ch);
         curl_close($ch);
         fclose($fh);
+
+        $downloaded = true;
+        if (!isset($curlInfo['http_code'])
+            || $curlInfo['http_code'] < 200
+            || $curlInfo['http_code'] >= 300
+        ) {
+            // no http response status / non success status, must be an error
+            $downloaded = false;
+        }
 
         $fileSize = filesize($tempFile);
         if ($downloaded && $fileSize === 0) {
@@ -129,14 +136,30 @@ class bdImage_ShippableHelper_TempFile
             $fileSize = filesize($tempFile);
         }
 
+        if ($downloaded
+            && isset($curlInfo['size_download'])
+            && $fileSize !== intval($curlInfo['size_download'])
+        ) {
+            // file size reported by our system seems to be off, probably a write error
+            $downloaded = false;
+        }
+
+        if ($downloaded
+            && isset($curlInfo['download_content_length'])
+            && $curlInfo['download_content_length'] > 0
+            && $fileSize !== intval($curlInfo['download_content_length'])
+        ) {
+            // file size is different from Content-Length header, probably a cancelled download (or corrupted)
+            $downloaded = false;
+        }
+
         if (XenForo_Application::debugMode()) {
             XenForo_Helper_File::log(__CLASS__, call_user_func_array('sprintf', array(
-                'download %s -> %s, %s, %d bytes%s',
+                'download %s -> %s, %s, %s',
                 $url,
                 $tempFile,
                 ($downloaded ? 'succeeded' : 'failed'),
-                $fileSize,
-                ((!$downloaded && $fileSize > 0) ? "\n\t" . file_get_contents($tempFile) : ''),
+                json_encode($curlInfo),
             )));
         }
 

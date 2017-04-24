@@ -53,11 +53,13 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
             /** @var bdImage_XenForo_DataWriter_DiscussionMessage_Post $firstMessageDw */
             $firstMessageDw = $this->_firstMessageDw;
             $image = $firstMessageDw->bdImage_extractImage();
-            $this->bdImage_setThreadImage($image);
+            if (is_string($image)) {
+                $this->bdImage_setThreadImage($image);
+            }
 
             // tell the post data writer not to update the thread again
-            $this->_firstMessageDw->setOption(
-                bdImage_XenForo_DataWriter_DiscussionMessage_Post::OPTION_SKIP_THREAD_AUTO, true);
+            $optionName = bdImage_XenForo_DataWriter_DiscussionMessage_Post::OPTION_SKIP_THREAD_AUTO;
+            $this->_firstMessageDw->setOption($optionName, true);
         }
 
         parent::_discussionPreSave();

@@ -11,6 +11,7 @@ class bdImage_Helper_Thumbnail
 
     public static function main()
     {
+        $startTime = microtime(true);
         if (headers_sent()) {
             die(1);
         }
@@ -45,6 +46,10 @@ class bdImage_Helper_Thumbnail
             }
 
             header('HTTP/1.0 500 Internal Server Error');
+        }
+
+        if (XenForo_Application::debugMode()) {
+            header('X-Thumbnail-Time: ' . (microtime(true) - $startTime));
         }
 
         die(0);
@@ -83,10 +88,15 @@ class bdImage_Helper_Thumbnail
      */
     public static function buildPhpLink($url, $size, $mode, $hash)
     {
-        return sprintf('%s/%s/thumbnail.php?url=%s&size=%d&mode=%s&hash=%s',
-            rtrim(XenForo_Application::getOptions()->get('boardUrl'), '/'),
-            bdImage_Listener::$generatorDirName, rawurlencode($url),
-            intval($size), $mode, $hash);
+        $phpUrl = bdImage_Listener::$phpUrl;
+        if (!is_string($phpUrl) || strlen($phpUrl) === 0) {
+            $phpUrl = sprintf('%s/%s/thumbnail.php',
+                rtrim(XenForo_Application::getOptions()->get('boardUrl'), '/'),
+                bdImage_Listener::$generatorDirName);
+        }
+
+        return sprintf('%s?url=%s&size=%d&mode=%s&hash=%s',
+            $phpUrl, rawurlencode($url), intval($size), $mode, $hash);
     }
 
     /**

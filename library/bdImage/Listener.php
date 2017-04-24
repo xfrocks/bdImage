@@ -5,6 +5,9 @@ class bdImage_Listener
     const CONFIG_GENERATOR_DIR_NAME = 'bdImage_generatorDirName';
     public static $generatorDirName = 'bdImage';
 
+    const CONFIG_PHP_URL = 'bdImage_phpUrl';
+    public static $phpUrl = null;
+
     const CONFIG_IMAGE_QUALITY = 'bdImage_imageQuality';
     public static $imageQuality = 66;
 
@@ -19,9 +22,15 @@ class bdImage_Listener
         define('BDIMAGE_IS_WORKING', 1);
 
         $config = XenForo_Application::getConfig();
+
         $generatorDirName = $config->get(self::CONFIG_GENERATOR_DIR_NAME);
         if (is_string($generatorDirName) && strlen($generatorDirName) > 0) {
             self::$generatorDirName = $generatorDirName;
+        }
+
+        $phpUrl = $config->get(self::CONFIG_PHP_URL);
+        if (is_string($phpUrl) && strlen($phpUrl) > 0) {
+            self::$phpUrl = $phpUrl;
         }
 
         $imageQuality = $config->get(self::CONFIG_IMAGE_QUALITY);

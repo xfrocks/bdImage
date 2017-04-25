@@ -193,6 +193,11 @@ class bdImage_Helper_File
             );
 
         XenForo_Helper_File::createDirectory(dirname($path), true);
-        return file_put_contents($path, $raw);
+        $written = file_put_contents($path, $raw);
+        if ($written !== false) {
+            XenForo_Helper_File::makeWritableByFtpUser($path);
+        }
+
+        return $written;
     }
 }

@@ -34,25 +34,37 @@ class bdImage_Helper_Thumbnail
             die(1);
         }
 
+        XenForo_Application::disablePhpErrorHandler();
+        set_error_handler(array(__CLASS__, 'handlePhpError'));
+
         try {
             $thumbnailUri = bdImage_Helper_Thumbnail::getThumbnailUri($url, $size, $mode, $hash);
             header('Location: ' . $thumbnailUri, true, 302);
         } catch (bdImage_Exception_WithImage $ewi) {
-            XenForo_Error::logException($ewi, false);
             $ewi->output();
-        } catch (XenForo_Exception $e) {
-            if (XenForo_Application::debugMode()) {
-                XenForo_Error::logException($e, false);
-            }
-
+            XenForo_Error::logException($ewi, false, '[Sent output] ');
+        } catch (Exception $e) {
             header('HTTP/1.0 500 Internal Server Error');
+            if (XenForo_Application::debugMode()) {
+                XenForo_Error::logException($e, false, '[Sent 500] ');
+            }
         }
 
-        if (XenForo_Application::debugMode()) {
+        if (XenForo_Application::debugMode() && !headers_sent()) {
             header('X-Thumbnail-Time: ' . (microtime(true) - $startTime));
         }
 
         die(0);
+    }
+
+    public static function handlePhpError($errorType)
+    {
+        if (!($errorType & error_reporting())) {
+            return;
+        }
+
+        $args = func_get_args();
+        throw new XenForo_Exception(json_encode($args));
     }
 
     /**
@@ -209,7 +221,20 @@ class bdImage_Helper_Thumbnail
                 break;
         }
 
-        $tempFile = tempnam(XenForo_Helper_File::getTempDir(), 'xf');
+        $cacheDir = dirname($cachePath);
+        try {
+            XenForo_Helper_File::createDirectory($cacheDir, true);
+        } catch (Exception $e) {
+            throw new bdImage_Exception_WithImage($e->getMessage(), $imageObj, $e);
+        }
+        if (!is_dir($cacheDir) || !is_writable($cacheDir)) {
+            throw new bdImage_Exception_WithImage(sprintf('Dir %s is not writable', $cacheDir), $imageObj);
+        }
+        if (file_exists($cachePath) && !is_writable($cachePath)) {
+            throw new bdImage_Exception_WithImage(sprintf('Path %s is not writable', $cachePath), $imageObj);
+        }
+
+        $tempFile = tempnam(XenForo_Helper_File::getTempDir(), 'bdImageThumbnail_');
         if (!is_string($tempFile)) {
             throw new bdImage_Exception_WithImage(sprintf('tempnam() returns %s',
                 var_export($tempFile, true)), $imageObj);
@@ -218,14 +243,24 @@ class bdImage_Helper_Thumbnail
         $outputImageType = self::_guessImageTypeByFileExtension($cachePath);
         $imageObj->output($outputImageType, $tempFile, bdImage_Listener::$imageQuality);
 
+        $tempFileSize = filesize($tempFile);
+        try {
+            XenForo_Helper_File::safeRename($tempFile, $cachePath);
+        } catch (Exception $e) {
+            @unlink($tempFile);
+            throw new bdImage_Exception_WithImage($e->getMessage(), $imageObj, $e);
+        }
+
+        try {
+            XenForo_Helper_File::makeWritableByFtpUser($cachePath);
+        } catch (Exception $e) {
+            // ignore this one
+        }
+
         if (is_callable(array($imageObj, 'bdImage_cleanUp'))) {
             call_user_func(array($imageObj, 'bdImage_cleanUp'));
         }
         unset($imageObj);
-
-        $tempFileSize = filesize($tempFile);
-        XenForo_Helper_File::createDirectory(dirname($cachePath), true);
-        XenForo_Helper_File::safeRename($tempFile, $cachePath);
 
         self::_log('Done');
         return sprintf('%s?%d', $thumbnailUri, $tempFileSize);

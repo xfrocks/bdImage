@@ -40,15 +40,27 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
                 $attachmentModel = $this->getModelFromCache('XenForo_Model_Attachment');
                 $attachments = array();
 
-                if (!empty($this->_contentData['contentId'])) {
+                if (!empty($this->_contentData['contentId'])
+                    && (!isset($this->_contentData['contentAttachCount'])
+                        || $this->_contentData['contentAttachCount'] > 0)
+                ) {
                     $attachments += $attachmentModel->getAttachmentsByContentId(
                         $this->_contentData['contentType'],
                         $this->_contentData['contentId']
                     );
+
+                    if (XenForo_Application::debugMode() && defined('DEFERRED_CMD')) {
+                        echo(sprintf("Fetching attachments for %s-%d\n",
+                            $this->_contentData['contentType'], $this->_contentData['contentId']));
+                    }
                 }
 
                 if (!empty($this->_contentData['attachmentHash'])) {
                     $attachments += $attachmentModel->getAttachmentsByTempHash($this->_contentData['attachmentHash']);
+
+                    if (XenForo_Application::debugMode() && defined('DEFERRED_CMD')) {
+                        echo(sprintf("Fetching attachments for %s\n", $this->_contentData['attachmentHash']));
+                    }
                 }
 
                 if (!empty($this->_contentData['allAttachments'])) {

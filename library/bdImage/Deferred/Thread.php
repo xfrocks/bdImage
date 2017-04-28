@@ -41,6 +41,10 @@ class bdImage_Deferred_Thread extends XenForo_Deferred_Abstract
                 continue;
             }
 
+            if (XenForo_Application::debugMode() && defined('DEFERRED_CMD')) {
+                echo(sprintf("Updating thread #%d with %s\n", $threadId, $image));
+            }
+
             /** @var bdImage_XenForo_DataWriter_Discussion_Thread $dw */
             $dw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread');
             $dw->setExistingData($thread, true);
@@ -92,6 +96,7 @@ class bdImage_Deferred_Thread extends XenForo_Deferred_Abstract
         $contentData = array(
             'contentType' => 'post',
             'contentId' => $firstPost['post_id'],
+            'contentAttachCount' => $firstPost['attach_count'],
             'attachmentHash' => false,
             'allAttachments' => !!bdImage_Option::get('allAttachments'),
         );

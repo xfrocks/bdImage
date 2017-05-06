@@ -7,10 +7,11 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
         $response = parent::actionIndex();
 
         if ($response instanceof XenForo_ControllerResponse_View
-            && !empty($response->params['thread']['bdimage_image'])
+            && isset($response->params['thread'])
             && isset($response->params['forum'])
         ) {
-            if (bdImage_Helper_Data::get($response->params['thread']['bdimage_image'], 'is_cover')) {
+            $imageData = bdImage_Helper_Template::getImageData('', $response->params['thread']);
+            if (bdImage_Helper_Data::get($imageData, 'is_cover')) {
                 $response->containerParams['bdImage_threadWithCover'] = $response->params['thread'];
                 $response->containerParams['bdImage_threadWithCover']['forum'] = $response->params['forum'];
             }
@@ -88,7 +89,7 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
                 $size = $input['height'];
                 $mode = bdImage_Integration::MODE_STRETCH_WIDTH;
             } else {
-                $imageSize = bdImage_Helper_Image::getSize($input['url']);
+                $imageSize = bdImage_Integration::getSize($input['url']);
                 if (empty($imageSize)) {
                     return $this->responseNoPermission();
                 }

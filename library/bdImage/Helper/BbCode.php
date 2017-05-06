@@ -45,27 +45,27 @@ class bdImage_Helper_BbCode
 
         $image = null;
         foreach ($imageDataMany as $imageData) {
-            $imageUrl = bdImage_Helper_Data::get($imageData, bdImage_Helper_Data::IMAGE_URL);
-            if (empty($imageUrl)) {
+            $unpacked = bdImage_Helper_Data::unpack($imageData);
+            if (empty($unpacked[bdImage_Helper_Data::IMAGE_URL])) {
                 continue;
             }
 
-            $imageSize = bdImage_Helper_Image::getSize($imageData);
+            $imageUrl = $unpacked[bdImage_Helper_Data::IMAGE_URL];
+            $imageSize = bdImage_Integration::getSize($unpacked, false);
             if ($imageSize === false) {
                 continue;
             }
 
-            $unpackedImageData = bdImage_Helper_Data::unpack($imageData);
-            $unpackedImageData[bdImage_Helper_Data::IMAGE_WIDTH] = $imageSize[0];
-            $unpackedImageData[bdImage_Helper_Data::IMAGE_HEIGHT] = $imageSize[1];
+            $unpacked[bdImage_Helper_Data::IMAGE_WIDTH] = $imageSize[0];
+            $unpacked[bdImage_Helper_Data::IMAGE_HEIGHT] = $imageSize[1];
             if ($image === null) {
-                $image = bdImage_Helper_Data::pack($imageUrl, 0, 0, $unpackedImageData);
+                $image = bdImage_Helper_Data::pack($imageUrl, 0, 0, $unpacked);
             }
 
             if (is_array($autoCoverRules)) {
-                if (self::checkRules($unpackedImageData, $autoCoverRules)) {
-                    $unpackedImageData['is_cover'] = true;
-                    $coverImage = bdImage_Helper_Data::pack($imageUrl, 0, 0, $unpackedImageData);
+                if (self::checkRules($unpacked, $autoCoverRules)) {
+                    $unpacked['is_cover'] = true;
+                    $coverImage = bdImage_Helper_Data::pack($imageUrl, 0, 0, $unpacked);
                     return $coverImage;
                 }
             } else {
@@ -82,33 +82,35 @@ class bdImage_Helper_BbCode
      */
     public static function extractYouTubeThumbnails($youtubeId)
     {
-        $defaultUrls = array(
-            bdImage_Helper_Data::pack(sprintf('http://img.youtube.com/vi/%s/default.jpg',
-                $youtubeId), 0, 0, array('type' => 'youtube')),
-        );
         $apiKey = bdImage_Option::get('googleApiKey');
         if (empty($apiKey)) {
-            return $defaultUrls;
+            return self::prepareDefaultYouTubeThumbnails($youtubeId);
         }
 
         $apiUrl = sprintf('https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet',
             $youtubeId, $apiKey);
         $apiResponse = @file_get_contents($apiUrl);
         if (empty($apiResponse)) {
-            return $defaultUrls;
+            return self::prepareDefaultYouTubeThumbnails($youtubeId);
         }
 
         $apiJson = @json_decode($apiResponse, true);
         if (empty($apiJson)) {
-            return $defaultUrls;
+            return self::prepareDefaultYouTubeThumbnails($youtubeId);
         }
 
         if (empty($apiJson['items'][0]['snippet']['thumbnails'])) {
-            return $defaultUrls;
+            return self::prepareDefaultYouTubeThumbnails($youtubeId);
         }
 
         $imageDataMany = array();
         foreach ($apiJson['items'][0]['snippet']['thumbnails'] as $thumbnail) {
+            if (empty($thumbnail['width'])
+                || empty($thumbnail['height'])
+            ) {
+                continue;
+            }
+
             $imageDataMany[] = bdImage_Helper_Data::pack($thumbnail['url'],
                 $thumbnail['width'], $thumbnail['height'], array('type' => 'youtube'));
         }
@@ -116,6 +118,36 @@ class bdImage_Helper_BbCode
         return $imageDataMany;
     }
 
+    /**
+     * @param string $youtubeId
+     * @return array
+     */
+    public static function prepareDefaultYouTubeThumbnails($youtubeId)
+    {
+        $prepared = array();
+        $candidates = array(
+            sprintf('http://img.youtube.com/vi/%s/default.jpg', $youtubeId),
+        );
+
+        foreach ($candidates as $candidate) {
+            $imageSize = bdImage_ShippableHelper_ImageSize::calculate($candidate);
+            if (empty($imageSize['width'])
+                || empty($imageSize['height'])
+            ) {
+                continue;
+            }
+
+            $prepared[] = bdImage_Helper_Data::pack($candidate,
+                $imageSize['width'], $imageSize['height'], array('type' => 'youtube'));
+        }
+
+        return $prepared;
+    }
+
+    /**
+     * @param string $input
+     * @return array|null
+     */
     public static function parseRules($input)
     {
         if (empty($input)) {
@@ -166,6 +198,11 @@ class bdImage_Helper_BbCode
         return $rules;
     }
 
+    /**
+     * @param array $imageData
+     * @param array $rules
+     * @return bool
+     */
     public static function checkRules(array $imageData, array $rules)
     {
         foreach ($rules as $ruleKey => $ruleValue) {

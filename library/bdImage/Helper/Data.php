@@ -32,17 +32,6 @@ class bdImage_Helper_Data
     }
 
     /**
-     * @param string $url
-     * @param array $extraData
-     * @return string
-     */
-    public static function packUrl($url, array $extraData = array())
-    {
-        list($imageWidth, $imageHeight) = bdImage_Helper_Image::getSize($url);
-        return self::pack($url, $imageWidth, $imageHeight, $extraData);
-    }
-
-    /**
      * @param string $rawData
      * @param string $secondaryKey
      * @param string $secondaryData

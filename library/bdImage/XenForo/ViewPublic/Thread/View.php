@@ -15,10 +15,14 @@ class bdImage_XenForo_ViewPublic_Thread_View extends XFCP_bdImage_XenForo_ViewPu
             return;
         }
 
-        if (empty($this->_params['thread']['bdimage_image'])) {
+        if (!isset($this->_params['thread'])) {
             return;
         }
         $threadRef =& $this->_params['thread'];
+        $imageData = bdImage_Helper_Template::getImageData('', $threadRef);
+        if (empty($imageData)) {
+            return;
+        }
 
         if (empty($threadRef['first_post_id'])) {
             return;
@@ -35,10 +39,10 @@ class bdImage_XenForo_ViewPublic_Thread_View extends XFCP_bdImage_XenForo_ViewPu
         }
         $firstPostAttachmentsRef =& $firstPostRef['attachments'];
 
-        $threadImageData = bdImage_Helper_Data::unpack($this->_params['thread']['bdimage_image']);
-        $threadImageUrls = array($threadImageData['url']);
-        if (!empty($threadImageData[bdImage_Helper_Data::SECONDARY_IMAGES])) {
-            foreach ($threadImageData[bdImage_Helper_Data::SECONDARY_IMAGES] as $secondaryImage) {
+        $unpack = bdImage_Helper_Data::unpack($imageData);
+        $threadImageUrls = array($unpack['url']);
+        if (!empty($unpack[bdImage_Helper_Data::SECONDARY_IMAGES])) {
+            foreach ($unpack[bdImage_Helper_Data::SECONDARY_IMAGES] as $secondaryImage) {
                 $threadImageUrls[] = bdImage_Helper_Data::get($secondaryImage, bdImage_Helper_Data::IMAGE_URL);
             }
         }

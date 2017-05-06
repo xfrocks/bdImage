@@ -6,8 +6,8 @@ class bdImage_bdApi_Extend_Model_Thread extends XFCP_bdImage_bdApi_Extend_Model_
     {
         $data = call_user_func(array('parent', 'prepareApiDataForThread'), $thread, $forum, $firstPost);
 
-        if (isset($thread['bdimage_image'])) {
-            $imageData = $thread['bdimage_image'];
+        $imageData = bdImage_Helper_Template::getImageData('', $thread);
+        if (!empty($imageData)) {
             if (!isset($data['thread_thumbnail'])) {
                 $thumbnailSize = intval(XenForo_Application::getOptions()->get('attachmentThumbnailDimensions'));
                 if ($thumbnailSize > 0) {
@@ -20,14 +20,12 @@ class bdImage_bdApi_Extend_Model_Thread extends XFCP_bdImage_bdApi_Extend_Model_
             }
 
             if (!isset($data['thread_image'])) {
-                $fullSize = bdImage_Helper_Image::getSize($imageData);
-                if (is_array($fullSize)) {
-                    $data['thread_image'] = array(
-                        'link' => bdImage_Integration::getOriginalUrl($imageData),
-                        'width' => $fullSize[0],
-                        'height' => $fullSize[1],
-                    );
-                }
+                list($width, $height) = bdImage_Integration::getSize($imageData, false);
+                $data['thread_image'] = array(
+                    'link' => bdImage_Integration::getOriginalUrl($imageData),
+                    'width' => intval($width),
+                    'height' => intval($height),
+                );
             }
         }
 

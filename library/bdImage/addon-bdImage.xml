@@ -1066,15 +1066,17 @@ html.bdImage_hasCover .titleBar {
 						<xen:foreach loop="$images" value="$imageData">
 						<xen:set var="$imageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
 							params="{xen:array '0=url'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
-							var="$imageWidth"><xen:callback class="bdImage_Helper_Data" method="get"
-							params="{xen:array '0=width'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
-							var="$imageHeight"><xen:callback class="bdImage_Helper_Data" method="get"
-							params="{xen:array '0=height'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
-							var="$imageType"><xen:callback class="bdImage_Helper_Data" method="get"
+						var="$imageType"><xen:callback class="bdImage_Helper_Data" method="get"
 							params="{xen:array '0=type'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
-							var="$imageTooltip">{$imageType}{xen:if '{$imageWidth} && {$imageHeight}',
-							' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</xen:set><xen:set
-							var="$imageThumbnail"><xen:callback class="bdImage_Helper_Template" method="getThumbnailUrl"
+						var="$imageFileName"><xen:callback class="bdImage_Helper_Data" method="get"
+							params="{xen:array '0=filename'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+						var="$imageWidth"><xen:callback class="bdImage_Helper_Data" method="get"
+							params="{xen:array '0=width'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+						var="$imageHeight"><xen:callback class="bdImage_Helper_Data" method="get"
+							params="{xen:array '0=height'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+						var="$imageTooltip">{$imageType}{xen:if $imageFileName,  ': {$imageFileName}'}{xen:if
+							'{$imageWidth} && {$imageHeight}', ' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</xen:set><xen:set
+						var="$imageThumbnail"><xen:callback class="bdImage_Helper_Template" method="getThumbnailUrl"
 							params="{xen:array '0={xen:property bdImage_threadList_imageSize}'}">{xen:raw $imageData}</xen:callback></xen:set>
 						<xen:if is="{$imageUrl} == {$currentImageUrl}"><xen:set var="$currentImageFound">1</xen:set></xen:if>
 
@@ -1498,31 +1500,30 @@ html.bdImage_hasCover .titleBar {
 <xen:edithint template="bdimage_search_result_thread_image" />
 <xen:edithint template="bdimage_wf_widget_threads_full_thread_image" />
 <xen:edithint template="bdimage_wf_widget_threads_thread_image" />]]></template>
-    <template title="bdimage_thread_cover" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:require css="bdimage.css" />
-
-<xen:set var="$coverTitleEscaped">{$thread.title}</xen:set>
-<xen:set var="$coverDescriptionEscaped">{xen:phrase bdimage_discussion_in_x_started_by_y_date_z_replies_m_views_n,
+    <template title="bdimage_thread_cover" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:require css="bdimage.css" /><xen:set
+var="$coverTitleEscaped">{$thread.title}</xen:set><xen:set
+var="$coverDescriptionEscaped">{xen:phrase bdimage_discussion_in_x_started_by_y_date_z_replies_m_views_n,
 	'forum=<a href="{xen:link forums, $forum}">{$forum.title}</a>',
 	'name={xen:helper username, $thread}',
 	'date=<a href="{xen:link threads, $bdImage_thread}">{xen:datetime $thread.post_date, html}</a>',
 	'replies={xen:number $thread.reply_count}',
-	'views={xen:number $thread.view_count}'}</xen:set>
-<xen:set var="$coverOriginalUrl"><xen:callback class="bdImage_Integration"
-	method="getOriginalUrl">{xen:raw $thread.bdimage_image}</xen:callback></xen:set>
+	'views={xen:number $thread.view_count}'}</xen:set><xen:set
+var="$coverImageData"><xen:callback class="bdImage_Helper_Template"
+	method="getImageData" params="{$thread}" /></xen:set><xen:set
+var="$coverOriginalUrl"><xen:callback class="bdImage_Integration"
+	method="getOriginalUrl">{xen:raw $coverImageData}</xen:callback></xen:set><xen:if
 
-<div class="bdImage_coverContainer position-{$position}">
+is="{$coverOriginalUrl}"><div class="bdImage_coverContainer position-{$position}">
 	<p class="title coverContent">{xen:raw $coverTitleEscaped}</p>
 	<div class="bdImage_cover bdImage_threadCover-{$thread.thread_id}">
-		<xen:if is="!{$bdCache_isAmp}">
-			<xen:set var="$dataUri"><xen:callback class="bdImage_Helper_Image"
-			method="getDataUriTransparentAtSameSize">{xen:raw $thread.bdimage_image}</xen:callback></xen:set>
-		</xen:if>
-		<xen:if is="{$dataUri}">
-			<img class="cover" src="{xen:raw $dataUri}"
-				 style="background-image: url({$coverOriginalUrl}); background-size: cover;" />
-		<xen:else />
-			<img class="cover" src="{$coverOriginalUrl}" />
-		</xen:if>
+		<xen:if is="!{$bdCache_isAmp}"><xen:set
+			var="$dataUri"><xen:callback class="bdImage_Integration"
+			method="getDataUriTransparentAtSameSize">{xen:raw
+			$coverImageData}</xen:callback></xen:set></xen:if><xen:if
+		is="{$dataUri}"><img class="cover" src="{xen:raw
+			$dataUri}" style="background-image: url({$coverOriginalUrl}); background-size: cover;" /><xen:else
+		/><img class="cover" src="{$coverOriginalUrl}" /></xen:if>
+
 		<div class="bg coverContent">
 			<p class="title">{xen:raw $coverTitleEscaped}</p>
 			<p class="description">{xen:raw $coverDescriptionEscaped}</p>
@@ -1533,14 +1534,14 @@ html.bdImage_hasCover .titleBar {
 		</a>
 	</div>
 
-	<div class="share_bar">
+	<xen:if is="!{$hideShareBar}"><div class="share_bar">
 		<xen:include template="share_page">
 			<xen:set var="$url">{xen:link canonical:threads, $thread}</xen:set>
 		</xen:include>
-	</div>
-</div>
+	</div></xen:if>
+</div></xen:if><xen:comment>
 
-<xen:edithint template="PAGE_CONTAINER" />]]></template>
+</xen:comment><xen:edithint template="PAGE_CONTAINER" />]]></template>
     <template title="bdimage_thread_list_item_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_threadListItemThreadImage"><xen:callback
 	class="bdImage_Option" method="get" params="{xen:array
 	'0=thread_list_item_thread_image'}">template</xen:callback></xen:set><xen:if

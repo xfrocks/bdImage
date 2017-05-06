@@ -24,7 +24,7 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
         $extraData = array();
         if ($imageUrl === $pickedImage) {
             if (strlen($imageUrl) > 0) {
-                $imageSize = bdImage_Helper_Image::getSize($imageUrl);
+                $imageSize = bdImage_Integration::getSize($imageUrl);
                 if ($imageSize === false) {
                     throw new XenForo_Exception(new XenForo_Phrase('bdimage_image_x_is_not_accessible',
                         array('url' => $imageUrl)), true);

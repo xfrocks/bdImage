@@ -6,6 +6,8 @@ class bdImage_Integration
     const MODE_STRETCH_WIDTH = 'sw';
     const MODE_STRETCH_HEIGHT = 'sh';
 
+    protected static $_calculatedImageSizes = array();
+
     /**
      * @param string $imageData
      * @param int $size
@@ -14,43 +16,47 @@ class bdImage_Integration
      */
     public static function buildThumbnailLink($imageData, $size, $mode = self::MODE_CROP_EQUAL)
     {
-        if (!defined('BDIMAGE_IS_WORKING')) {
-            return bdImage_Helper_Data::get($imageData, bdImage_Helper_Data::IMAGE_URL);
+        $unpacked = bdImage_Helper_Data::unpack($imageData);
+        $imageUrl = $unpacked[bdImage_Helper_Data::IMAGE_URL];
+        if (empty($imageUrl)
+            || !defined('BDIMAGE_IS_WORKING')
+        ) {
+            return $imageUrl;
         }
 
-        $imageData = bdImage_Helper_Data::unpack($imageData);
-        $imageUrl = $imageData[bdImage_Helper_Data::IMAGE_URL];
-        if (empty($imageUrl)) {
+        $size = intval($size);
+        if ($size === 0) {
             return '';
         }
 
-        if (!empty($imageData[bdImage_Helper_Data::IMAGE_WIDTH])
-            && !empty($imageData[bdImage_Helper_Data::IMAGE_HEIGHT])
+        $imageSize = self::getSize($unpacked, false);
+        if ($imageSize !== false
             && parse_url($imageUrl) !== false
         ) {
             // we have the image size information
             // try to return the image url itself if its size matches the requested thumbnail
+            list($imageWidth, $imageHeight) = $imageSize;
             switch ($mode) {
                 case self::MODE_STRETCH_WIDTH:
-                    if ($imageData[bdImage_Helper_Data::IMAGE_HEIGHT] == $size) {
+                    if ($imageHeight === $size) {
                         return $imageUrl;
                     }
                     break;
                 case self::MODE_STRETCH_HEIGHT:
-                    if ($imageData[bdImage_Helper_Data::IMAGE_WIDTH] == $size) {
+                    if ($imageWidth === $size) {
                         return $imageUrl;
                     }
                     break;
                 default:
                     if (is_numeric($mode)) {
-                        if ($imageData[bdImage_Helper_Data::IMAGE_WIDTH] == $size
-                            && $imageData[bdImage_Helper_Data::IMAGE_HEIGHT] == $mode
+                        if ($imageWidth === $size
+                            && $imageHeight === intval($mode)
                         ) {
                             return $imageUrl;
                         }
                     } else {
-                        if ($imageData[bdImage_Helper_Data::IMAGE_WIDTH] == $size
-                            && $imageData[bdImage_Helper_Data::IMAGE_HEIGHT] == $size
+                        if ($imageWidth === $size
+                            && $imageHeight === $size
                         ) {
                             return $imageUrl;
                         }
@@ -83,60 +89,88 @@ class bdImage_Integration
      */
     public static function getOriginalUrl($imageData)
     {
-        if (!defined('BDIMAGE_IS_WORKING')) {
-            return bdImage_Helper_Data::get($imageData, bdImage_Helper_Data::IMAGE_URL);
-        }
-
-        $imageData = bdImage_Helper_Data::unpack($imageData);
-        $imageUrl = $imageData[bdImage_Helper_Data::IMAGE_URL];
-
-        if (Zend_Uri::check($imageUrl)) {
-            // it is an uri already, return asap
+        $unpacked = bdImage_Helper_Data::unpack($imageData);
+        $imageUrl = $unpacked[bdImage_Helper_Data::IMAGE_URL];
+        if (empty($imageUrl)
+            || !defined('BDIMAGE_IS_WORKING')
+            || substr($imageUrl, 0, 2) === '//'
+            || substr($imageUrl, 0, 7) === 'http://'
+            || substr($imageUrl, 0, 8) === 'https://'
+        ) {
+            // nothing to do here
             return $imageUrl;
         }
 
-        $size = bdImage_Helper_Image::getSize($imageData);
+        $size = self::getSize($unpacked, false);
         if ($size === false) {
             // too bad, we cannot determine the size
             return $imageUrl;
         }
 
-        return self::buildThumbnailLink($imageData, $size[0], $size[1]);
+        return self::buildThumbnailLink($unpacked, $size[0], $size[1]);
     }
 
     /**
      * @param string $imageData
-     * @return int
+     * @param bool $doFetch
+     * @return array|false
      */
-    public static function getImageWidth($imageData)
+    public static function getSize($imageData, $doFetch = true)
     {
-        if (!defined('BDIMAGE_IS_WORKING')) {
-            return 0;
+        $unpacked = bdImage_Helper_Data::unpack($imageData);
+
+        $width = false;
+        $height = false;
+
+        if (isset($unpacked[bdImage_Helper_Data::IMAGE_WIDTH])
+            && isset($unpacked[bdImage_Helper_Data::IMAGE_HEIGHT])
+        ) {
+            $width = $unpacked[bdImage_Helper_Data::IMAGE_WIDTH];
+            $height = $unpacked[bdImage_Helper_Data::IMAGE_HEIGHT];
         }
 
-        $imageSize = bdImage_Helper_Image::getSize($imageData);
-        if (!is_array($imageSize)) {
-            return 0;
+        if ((empty($width) || empty($height)) && $doFetch) {
+            $cachedPathOrUrl = bdImage_Helper_File::getImageCachedPathOrUrl($unpacked);
+            if (strlen($cachedPathOrUrl) > 0) {
+                if (!isset(self::$_calculatedImageSizes[$cachedPathOrUrl])) {
+                    self::$_calculatedImageSizes[$cachedPathOrUrl] = bdImage_ShippableHelper_ImageSize::calculate($cachedPathOrUrl);
+                }
+                $imageSizeRef =& self::$_calculatedImageSizes[$cachedPathOrUrl];
+
+                if (!empty($imageSizeRef['width'])) {
+                    $width = $imageSizeRef['width'];
+                }
+                if (!empty($imageSizeRef['height'])) {
+                    $height = $imageSizeRef['height'];
+                }
+            }
         }
 
-        return $imageSize[0];
+        if (is_string($width)) {
+            $width = intval($width);
+        }
+        if (is_string($height)) {
+            $height = intval($height);
+        }
+
+        if ($width > 0 && $height > 0) {
+            return array($width, $height);
+        } else {
+            return false;
+        }
     }
 
     /**
      * @param string $imageData
-     * @return int
+     * @return string
      */
-    public static function getImageHeight($imageData)
+    public static function getDataUriTransparentAtSameSize($imageData)
     {
-        if (!defined('BDIMAGE_IS_WORKING')) {
-            return 0;
+        list($width, $height) = self::getSize($imageData, false);
+        if (empty($width) || empty($height)) {
+            return '';
         }
 
-        $imageSize = bdImage_Helper_Image::getSize($imageData);
-        if (!is_array($imageSize)) {
-            return 0;
-        }
-
-        return $imageSize[1];
+        return bdImage_ShippableHelper_ImageSize::getDataUriAtSize($width, $height);
     }
 }

@@ -1739,16 +1739,16 @@ html.bdImage_hasCover .titleBar {
 <xen:edithint template="message" />
 <xen:edithint template="post" />
 <xen:edithint template="wf_PAGE_CONTAINER_simple" />]]></template>
-    <template title="bdimage_thread_view_open_graph_meta" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_threadViewOpenGraphMeta"><xen:callback
+    <template title="bdimage_thread_view_open_graph_meta" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_threadViewOpenGraphMeta"><xen:callback
 	class="bdImage_Option" method="get" params="{xen:array
 	'0=thread_view_open_graph_meta'}">template</xen:callback></xen:set><xen:if
 	is="{$bdImage_threadViewOpenGraphMeta}"><xen:set var="$bdImage_originalUrl"><xen:callback
 	class="bdImage_Integration" method="getOriginalUrl">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:if
-	is="{$bdImage_originalUrl}"><xen:set var="$bdImage_width"><xen:callback class="bdImage_Integration"
-	method="getImageWidth">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:set
-	var="$bdImage_height"><xen:callback class="bdImage_Integration" method="getImageHeight">{xen:raw
-	$thread.bdimage_image}</xen:callback></xen:set><xen:if is="{$debugMode}">
-<meta property="og-image-generator" content="bdImage" /></xen:if>
+	is="{$bdImage_originalUrl}"><xen:set var="$bdImage_width"><xen:callback class="bdImage_Helper_Data"
+	method="get" params="{xen:array '0=width'}">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:set
+	var="$bdImage_height"><xen:callback class="bdImage_Helper_Data" method="get" params="{xen:array
+	'0=height'}">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:if is="{$debugMode}">
+<meta property="og-image-generator" content="bdimage_thread_view_open_graph_meta" /></xen:if>
 <meta property="og:image" content="{$bdImage_originalUrl}" /><xen:if is="{$bdImage_width} && {$bdImage_height}">
 <meta property="og:image:width" content="{$bdImage_width}" />
 <meta property="og:image:height" content="{$bdImage_height}" /></xen:if>

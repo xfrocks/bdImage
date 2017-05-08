@@ -3,6 +3,13 @@
 class bdImage_Listener
 {
     const CONFIG_GENERATOR_DIR_NAME = 'bdImage_generatorDirName';
+
+    /**
+     * This directory should be watched and remove files via cron. Something like these:
+     * `find ./data/bdImage/cache -type f -iname '*.jpg' -atime +90 -exec rm {} \;`
+     *
+     * @var string
+     */
     public static $generatorDirName = 'bdImage';
 
     const CONFIG_PHP_URL = 'bdImage_phpUrl';
@@ -10,6 +17,9 @@ class bdImage_Listener
 
     const CONFIG_IMAGE_QUALITY = 'bdImage_imageQuality';
     public static $imageQuality = 66;
+
+    const CONFIG_EXTERNAL_DATA_URLS = 'bdImage_externalDataUrls';
+    public static $externalDataUrls = array();
 
     const XENFORO_CONTROLLERPUBLIC_POST_SAVE = 'bdImage_XenForo_ControllerPublic_Post::actionSave';
     const XENFORO_CONTROLLERPUBLIC_THREAD_SAVE = 'bdImage_XenForo_ControllerPublic_Thread::actionSave';
@@ -36,6 +46,13 @@ class bdImage_Listener
         $imageQuality = $config->get(self::CONFIG_IMAGE_QUALITY);
         if ($imageQuality > 0) {
             self::$imageQuality = intval($imageQuality);
+        }
+
+        $externalDataUrls = $config->get(self::CONFIG_EXTERNAL_DATA_URLS);
+        if (!empty($externalDataUrls)) {
+            foreach ($externalDataUrls as $externalDataUrl => $externalDataPath) {
+                self::$externalDataUrls[$externalDataUrl] = $externalDataPath;
+            }
         }
 
         if (isset($data['routesAdmin'])) {

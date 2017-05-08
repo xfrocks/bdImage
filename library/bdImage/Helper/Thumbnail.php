@@ -241,6 +241,8 @@ class bdImage_Helper_Thumbnail
         }
 
         $outputImageType = self::_guessImageTypeByFileExtension($cachePath);
+
+        /** @noinspection PhpParamsInspection */
         $imageObj->output($outputImageType, $tempFile, bdImage_Listener::$imageQuality);
 
         $tempFileSize = filesize($tempFile);
@@ -337,6 +339,7 @@ class bdImage_Helper_Thumbnail
     {
         if (self::$cropTopLeft) {
             // revert to top left cropping (old version behavior)
+            /** @noinspection PhpParamsInspection */
             $imageObj->crop(0, 0, $cropWidth, $cropHeight);
             return;
         }
@@ -345,6 +348,8 @@ class bdImage_Helper_Thumbnail
         $height = $imageObj->getHeight();
         $x = floor(($width - $cropWidth) / 2);
         $y = floor(($height - $cropHeight) / 2);
+
+        /** @noinspection PhpParamsInspection */
         $imageObj->crop($x, $y, $cropWidth, $cropHeight);
     }
 
@@ -439,16 +444,20 @@ class bdImage_Helper_Thumbnail
             return $cachedPathOrUrl;
         }
 
-        $boardUrl = XenForo_Application::getOptions()->get('boardUrl');
-        if (strpos($url, '..') === false
-            && strpos($url, $boardUrl) === 0
-        ) {
-            $localFilePath = self::_getLocalFilePath(substr($url, strlen($boardUrl)));
-            if (strlen($localFilePath) > 0
-                && bdImage_Helper_File::existsAndNotEmpty($localFilePath)
-            ) {
-                self::_log('Using local file path %s...', $localFilePath);
-                return $localFilePath;
+        if (strpos($url, '..') === false) {
+            $boardUrl = XenForo_Application::getOptions()->get('boardUrl');
+            if (strpos($url, $boardUrl) === 0) {
+                $localFilePath = self::_getLocalFilePath(substr($url, strlen($boardUrl)));
+                if (strlen($localFilePath) > 0) {
+                    self::_log('Using local file path %s...', $localFilePath);
+                    return $localFilePath;
+                }
+            }
+
+            $externalDataFilePath = self::_getExternalDataFilePath($url);
+            if (strlen($externalDataFilePath) > 0) {
+                self::_log('Using external_data file path %s...', $externalDataFilePath);
+                return $externalDataFilePath;
             }
         }
 
@@ -483,27 +492,62 @@ class bdImage_Helper_Thumbnail
     }
 
     /**
-     * @param string $path
+     * @param string $pathFromUrl
+     * @param null|string $rootDir
      * @return string
      */
-    protected static function _getLocalFilePath($path)
+    protected static function _getLocalFilePath($pathFromUrl, $rootDir = null)
     {
         // remove query parameters
-        $path = preg_replace('#(\?|\#).*$#', '', $path);
-        if (strlen($path) === 0) {
-            return $path;
+        $pathFromUrl = preg_replace('/(\?|#).*$/', '', $pathFromUrl);
+        if (strlen($pathFromUrl) === 0) {
+            return '';
         }
 
-        $extension = XenForo_Helper_File::getFileExtension($path);
+        $extension = XenForo_Helper_File::getFileExtension($pathFromUrl);
         if (!in_array($extension, array('gif', 'jpeg', 'jpg', 'png'), true)) {
             return '';
         }
 
-        /** @var XenForo_Application $app */
-        $app = XenForo_Application::getInstance();
-        $path = sprintf('%s/%s', rtrim($app->getRootDir(), '/'), ltrim($path, '/'));
+        if ($rootDir === null) {
+            /** @var XenForo_Application $app */
+            $app = XenForo_Application::getInstance();
+            $rootDir = $app->getRootDir();
+        }
 
-        return $path;
+        $path = sprintf('%s/%s', rtrim($rootDir, '/'), ltrim($pathFromUrl, '/'));
+        if (bdImage_Helper_File::existsAndNotEmpty($path)) {
+            return $path;
+        }
+
+        return '';
+    }
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    protected static function _getExternalDataFilePath($url)
+    {
+        $externalDataUrls = bdImage_Listener::$externalDataUrls;
+        $externalDataUrls[XenForo_Application::$externalDataUrl] = '';
+        foreach ($externalDataUrls as $externalDataUrl => $externalDataPath) {
+            $externalDataUrlLength = strlen($externalDataUrl);
+            if (substr($url, 0, $externalDataUrlLength) !== $externalDataUrl) {
+                continue;
+            }
+
+            if ($externalDataPath === '') {
+                $externalDataPath = XenForo_Helper_File::getExternalDataPath();
+            }
+
+            $path = self::_getLocalFilePath(substr($url, $externalDataUrlLength), $externalDataPath);
+            if (strlen($path) > 0) {
+                return $path;
+            }
+        }
+
+        return '';
     }
 
     /**

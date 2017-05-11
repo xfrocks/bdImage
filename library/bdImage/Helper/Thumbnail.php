@@ -45,6 +45,12 @@ class bdImage_Helper_Thumbnail
             XenForo_Error::logException($ewi, false, '[Sent output] ');
         } catch (Exception $e) {
             header('HTTP/1.0 500 Internal Server Error');
+
+            // http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever
+            header('Content-Type: image/gif');
+            /** @noinspection SpellCheckingInspection */
+            echo base64_decode('R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+
             if (XenForo_Application::debugMode()) {
                 XenForo_Error::logException($e, false, '[Sent 500] ');
             }

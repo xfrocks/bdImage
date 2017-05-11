@@ -92,7 +92,7 @@ class bdImage_Helper_File
     }
 
     /**
-     * @param string $imageData
+     * @param string|array $imageData
      * @return string
      */
     public static function getImageCachedPathOrUrl($imageData)

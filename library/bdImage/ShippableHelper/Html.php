@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2017-02-27T09:55:20+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2017-04-18T03:20:42+00:00
 
 /**
  * Class bdImage_ShippableHelper_Html
- * @version 16
+ * @version 17
  * @see DevHelper_Helper_ShippableHelper_Html
  */
 class bdImage_ShippableHelper_Html
@@ -138,7 +138,7 @@ class bdImage_ShippableHelper_Html
         $string = str_replace('&#8203;', '', $string);
 
         if (!empty($options['_isPreview'])) {
-            return $string;
+            return;
         }
 
         $replacementsRef =& $options['replacements'];

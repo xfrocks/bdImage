@@ -19,6 +19,7 @@ class bdImage_Exception_WithImage extends Exception
         }
 
         header('Content-Type: image/jpeg');
+        /** @noinspection PhpParamsInspection */
         $imageObj->output(IMAGETYPE_JPEG, null, bdImage_Listener::$imageQuality);
 
         if (is_callable(array($imageObj, 'bdImage_cleanUp'))) {

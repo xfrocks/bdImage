@@ -9,7 +9,7 @@ class bdImage_Integration
     protected static $_calculatedImageSizes = array();
 
     /**
-     * @param string $imageData
+     * @param string|array $imageData
      * @param int $size
      * @param string|int $mode
      * @return string thumbnail url
@@ -111,7 +111,7 @@ class bdImage_Integration
     }
 
     /**
-     * @param string $imageData
+     * @param string|array $imageData
      * @param bool $doFetch
      * @return array|false
      */

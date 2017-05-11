@@ -154,12 +154,22 @@ class bdImage_Helper_Data
         return json_encode($data);
     }
 
+    /**
+     * @param array|string $rawData
+     * @return array
+     */
     protected static function _unpackArrayOrString($rawData)
     {
+        $data = null;
+
         if (is_array($rawData)) {
             $data = $rawData;
-        } else {
+        } elseif (is_string($rawData)) {
             $data = @json_decode($rawData, true);
+        }
+
+        if (!is_array($data)) {
+            $data = array();
         }
 
         return $data;

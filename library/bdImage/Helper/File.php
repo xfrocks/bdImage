@@ -20,6 +20,8 @@ class bdImage_Helper_File
      * @param string $hash
      * @param bool $pathPrefix
      * @return string
+     *
+     * @see bdImage_Helper_File::getImageTypeFromCachePath()
      */
     public static function getCachePath($uri, $size, $mode, $hash, $pathPrefix = false)
     {
@@ -41,6 +43,25 @@ class bdImage_Helper_File
 
         return sprintf('%s/%s/cache/%s_%s/%s/%s.%s', $pathPrefix,
             bdImage_Listener::$generatorDirName, $size, $mode, $divider, $hash, $ext);
+    }
+
+    /**
+     * @param string $cachePath
+     * @return int
+     *
+     * @see bdImage_Helper_File::getCachePath()
+     */
+    public static function getImageTypeFromCachePath($cachePath)
+    {
+        $outputFileExtension = XenForo_Helper_File::getFileExtension($cachePath);
+        switch ($outputFileExtension) {
+            case 'gif':
+                return IMAGETYPE_GIF;
+            case 'png':
+                return IMAGETYPE_PNG;
+        }
+
+        return IMAGETYPE_JPEG;
     }
 
     /**

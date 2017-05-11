@@ -158,16 +158,19 @@ class bdImage_Helper_Thumbnail
 
         $imagePath = self::_downloadImageIfNeeded($url);
 
-        $imageType = self::_guessImageTypeByFileExtension($url, $imagePath);
-        if ($imageType !== null) {
-            self::_log('Guessed image type: %d', $imageType);
-            $imageObj = self::_createImageObjFromFile($imagePath, $imageType);
-            if (empty($imageObj)) {
-                if (self::_detectImageType($imagePath, $imageType)) {
-                    self::_log('Detected image type: %d', $imageType);
-                    $imageObj = self::_createImageObjFromFile($imagePath, $imageType);
-                }
+        $imageInfo = self::_getImageInfo($imagePath);
+        if (!empty($imageInfo)) {
+            $maxImageResizePixelCount = XenForo_Application::getConfig()->get('maxImageResizePixelCount');
+            if ($imageInfo['width'] * $imageInfo['height'] > $maxImageResizePixelCount) {
+                self::_log('Image too big (%dx%d, type %d), maxImageResizePixelCount=%d',
+                    $imageInfo['width'], $imageInfo['height'], $imageInfo['type'], $maxImageResizePixelCount);
+                $imageInfo = null;
             }
+        }
+
+        if (!empty($imageInfo)) {
+            self::_log('Image type: %d', $imageInfo['type']);
+            $imageObj = self::_createImageObjFromFile($imagePath, $imageInfo['type']);
         }
 
         if (empty($imageObj)
@@ -186,11 +189,9 @@ class bdImage_Helper_Thumbnail
                     if (self::$maxAttempt > 1) {
                         self::_log('Exceeded MAX_ATTEMPT');
                     }
-                    $fallbackImageType = self::_guessImageTypeByFileExtension($fallbackImage);
-                    try {
-                        $imageObj = self::_createImageObjFromFile($fallbackImage, $fallbackImageType);
-                    } catch (Exception $e) {
-                        self::_log($e->getMessage());
+                    $fallbackImageInfo = self::_getImageInfo($fallbackImage);
+                    if ($fallbackImageInfo !== null) {
+                        $imageObj = self::_createImageObjFromFile($fallbackImage, $fallbackImageInfo['type']);
                     }
                 }
             }
@@ -240,10 +241,9 @@ class bdImage_Helper_Thumbnail
                 var_export($tempFile, true)), $imageObj);
         }
 
-        $outputImageType = self::_guessImageTypeByFileExtension($cachePath);
-
         /** @noinspection PhpParamsInspection */
-        $imageObj->output($outputImageType, $tempFile, bdImage_Listener::$imageQuality);
+        $imageObj->output(bdImage_Helper_File::getImageTypeFromCachePath($cachePath),
+            $tempFile, bdImage_Listener::$imageQuality);
 
         $tempFileSize = filesize($tempFile);
         try {
@@ -575,86 +575,24 @@ class bdImage_Helper_Thumbnail
         return $attachmentModel->getAttachmentDataFilePath($attachments[$attachmentId]);
     }
 
-    /**
-     * @param string $url
-     * @param string $path
-     * @return int|null
-     */
-    protected static function _guessImageTypeByFileExtension($url, $path = '')
+    protected static function _getImageInfo($path)
     {
         switch ($path) {
             case self::ERROR_DOWNLOAD_REMOTE_URI:
                 return null;
         }
 
-        $ext = XenForo_Helper_File::getFileExtension($url);
-        switch ($ext) {
-            case 'gif':
-                $result = IMAGETYPE_GIF;
-                break;
-            case 'jpg':
-            case 'jpeg':
-                $result = IMAGETYPE_JPEG;
-                break;
-            case 'png':
-                $result = IMAGETYPE_PNG;
-                break;
-            default:
-                $result = IMAGETYPE_JPEG;
+        $raw = getimagesize($path);
+        if (!is_array($raw)) {
+            return null;
         }
 
-        return $result;
-    }
+        $info = array();
+        $info['width'] = $raw[0];
+        $info['height'] = $raw[1];
+        $info['type'] = $raw[2];
 
-    /**
-     * @param string $path
-     * @param int $guessedImageType
-     * @return bool
-     */
-    protected static function _detectImageType($path, &$guessedImageType)
-    {
-        $detectedImageType = null;
-
-        $fh = fopen($path, 'rb');
-        if (!empty($fh)) {
-            $data = fread($fh, 2);
-
-            if (!empty($data)
-                && strlen($data) == 2
-            ) {
-                switch ($data) {
-                    case 'BM':
-                        $detectedImageType = IMAGETYPE_BMP;
-                        break;
-                    case 'GI':
-                        $detectedImageType = IMAGETYPE_GIF;
-                        break;
-                    case chr(0xFF) . chr(0xd8):
-                        $detectedImageType = IMAGETYPE_JPEG;
-                        break;
-                    case chr(0x89) . 'P':
-                        $detectedImageType = IMAGETYPE_PNG;
-                        break;
-                    case 'II':
-                        $detectedImageType = IMAGETYPE_TIFF_II;
-                        break;
-                    case 'MM':
-                        $detectedImageType = IMAGETYPE_TIFF_MM;
-                        break;
-                }
-            }
-
-            fclose($fh);
-        }
-
-        if ($detectedImageType !== null
-            && $detectedImageType !== $guessedImageType
-        ) {
-            $guessedImageType = $detectedImageType;
-            return true;
-        }
-
-        return false;
+        return $info;
     }
 
     /**

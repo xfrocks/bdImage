@@ -2,6 +2,9 @@
 
 class bdImage_Listener
 {
+    const CONFIG_EXTERNAL_DATA_URLS = 'bdImage_externalDataUrls';
+    public static $externalDataUrls = array();
+
     const CONFIG_GENERATOR_DIR_NAME = 'bdImage_generatorDirName';
 
     /**
@@ -12,14 +15,20 @@ class bdImage_Listener
      */
     public static $generatorDirName = 'bdImage';
 
-    const CONFIG_PHP_URL = 'bdImage_phpUrl';
-    public static $phpUrl = null;
-
     const CONFIG_IMAGE_QUALITY = 'bdImage_imageQuality';
     public static $imageQuality = 66;
 
-    const CONFIG_EXTERNAL_DATA_URLS = 'bdImage_externalDataUrls';
-    public static $externalDataUrls = array();
+    const CONFIG_PHP_URL = 'bdImage_phpUrl';
+    public static $phpUrl = null;
+
+    const CONFIG_SKIP_CACHE_CHECK = 'bdImage_skipCacheCheck';
+
+    /**
+     * Useful to be used with $phpUrl if there is one dedicated thumbnail server.
+     *
+     * @var bool
+     */
+    public static $skipCacheCheck = false;
 
     const XENFORO_CONTROLLERPUBLIC_POST_SAVE = 'bdImage_XenForo_ControllerPublic_Post::actionSave';
     const XENFORO_CONTROLLERPUBLIC_THREAD_SAVE = 'bdImage_XenForo_ControllerPublic_Thread::actionSave';
@@ -28,25 +37,11 @@ class bdImage_Listener
         /** @noinspection PhpUnusedParameterInspection */
         XenForo_Dependencies_Abstract $dependencies,
         array $data
-    ) {
+    )
+    {
         define('BDIMAGE_IS_WORKING', 1);
 
         $config = XenForo_Application::getConfig();
-
-        $generatorDirName = $config->get(self::CONFIG_GENERATOR_DIR_NAME);
-        if (is_string($generatorDirName) && strlen($generatorDirName) > 0) {
-            self::$generatorDirName = $generatorDirName;
-        }
-
-        $phpUrl = $config->get(self::CONFIG_PHP_URL);
-        if (is_string($phpUrl) && strlen($phpUrl) > 0) {
-            self::$phpUrl = $phpUrl;
-        }
-
-        $imageQuality = $config->get(self::CONFIG_IMAGE_QUALITY);
-        if ($imageQuality > 0) {
-            self::$imageQuality = intval($imageQuality);
-        }
 
         $externalDataUrls = $config->get(self::CONFIG_EXTERNAL_DATA_URLS);
         if (!empty($externalDataUrls)) {
@@ -54,6 +49,24 @@ class bdImage_Listener
                 self::$externalDataUrls[$externalDataUrl] = $externalDataPath;
             }
         }
+
+        $generatorDirName = $config->get(self::CONFIG_GENERATOR_DIR_NAME);
+        if (is_string($generatorDirName) && strlen($generatorDirName) > 0) {
+            self::$generatorDirName = $generatorDirName;
+        }
+
+        $imageQuality = $config->get(self::CONFIG_IMAGE_QUALITY);
+        if ($imageQuality > 0) {
+            self::$imageQuality = intval($imageQuality);
+        }
+
+        $phpUrl = $config->get(self::CONFIG_PHP_URL);
+        if (is_string($phpUrl) && strlen($phpUrl) > 0) {
+            self::$phpUrl = $phpUrl;
+        }
+
+        $skipCacheCheck = $config->get(self::CONFIG_SKIP_CACHE_CHECK);
+        self::$skipCacheCheck = !!$skipCacheCheck;
 
         if (isset($data['routesAdmin'])) {
             bdImage_ShippableHelper_Updater::onInitDependencies($dependencies);

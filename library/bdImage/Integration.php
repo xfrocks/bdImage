@@ -67,7 +67,7 @@ class bdImage_Integration
         $thumbnailUrl = null;
         $hash = bdImage_Helper_Data::computeHash($imageUrl, $size, $mode);
 
-        if (bdImage_Listener::$phpUrl === null) {
+        if (!bdImage_Listener::$skipCacheCheck) {
             $cachePath = bdImage_Helper_File::getCachePath($imageUrl, $size, $mode, $hash);
             $cacheFileSize = bdImage_Helper_File::getImageFileSizeIfExists($cachePath);
             if ($cacheFileSize > bdImage_Helper_File::THUMBNAIL_ERROR_FILE_LENGTH) {

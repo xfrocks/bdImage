@@ -67,7 +67,7 @@ class bdImage_Helper_Data
      * @param array $extraData
      * @return string
      */
-    public static function pack($url, $width, $height, array $extraData = array())
+    public static function pack($url, $width = 0, $height = 0, array $extraData = array())
     {
         $data = array(self::IMAGE_URL => $url);
 

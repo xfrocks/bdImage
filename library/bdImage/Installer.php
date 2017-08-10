@@ -72,11 +72,8 @@ class bdImage_Installer
 
     /* End auto-generated lines of code. Feel free to make changes below */
 
-    private static function installCustomized(
-        /** @noinspection PhpUnusedParameterInspection */
-        $existingAddOn,
-        $addOnData
-    ) {
+    private static function installCustomized($existingAddOn, $addOnData)
+    {
         if (XenForo_Application::$versionId < 1020000) {
             throw new XenForo_Exception('[bd] Image requires XenForo 1.2.0+');
         }
@@ -86,5 +83,4 @@ class bdImage_Installer
     {
         bdImage_ShippableHelper_Updater::onUninstall();
     }
-
 }

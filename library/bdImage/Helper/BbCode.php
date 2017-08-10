@@ -87,8 +87,11 @@ class bdImage_Helper_BbCode
             return self::prepareDefaultYouTubeThumbnails($youtubeId);
         }
 
-        $apiUrl = sprintf('https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet',
-            $youtubeId, $apiKey);
+        $apiUrl = sprintf(
+            'https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet',
+            $youtubeId,
+            $apiKey
+        );
         $apiResponse = @file_get_contents($apiUrl);
         if (empty($apiResponse)) {
             return self::prepareDefaultYouTubeThumbnails($youtubeId);
@@ -111,8 +114,12 @@ class bdImage_Helper_BbCode
                 continue;
             }
 
-            $imageDataMany[] = bdImage_Helper_Data::pack($thumbnail['url'],
-                $thumbnail['width'], $thumbnail['height'], array('type' => 'youtube'));
+            $imageDataMany[] = bdImage_Helper_Data::pack(
+                $thumbnail['url'],
+                $thumbnail['width'],
+                $thumbnail['height'],
+                array('type' => 'youtube')
+            );
         }
 
         return $imageDataMany;
@@ -137,8 +144,12 @@ class bdImage_Helper_BbCode
                 continue;
             }
 
-            $prepared[] = bdImage_Helper_Data::pack($candidate,
-                $imageSize['width'], $imageSize['height'], array('type' => 'youtube'));
+            $prepared[] = bdImage_Helper_Data::pack(
+                $candidate,
+                $imageSize['width'],
+                $imageSize['height'],
+                array('type' => 'youtube')
+            );
         }
 
         return $prepared;
@@ -222,7 +233,8 @@ class bdImage_Helper_BbCode
                     ) {
                         return false;
                     }
-                    if ($ruleValue[0] / $ruleValue[1] !== $imageData[bdImage_Helper_Data::IMAGE_WIDTH] / $imageData[bdImage_Helper_Data::IMAGE_HEIGHT]) {
+                    $ratio = $imageData[bdImage_Helper_Data::IMAGE_WIDTH] / $imageData[bdImage_Helper_Data::IMAGE_HEIGHT];
+                    if ($ruleValue[0] / $ruleValue[1] !== $ratio) {
                         return false;
                     }
                     break;

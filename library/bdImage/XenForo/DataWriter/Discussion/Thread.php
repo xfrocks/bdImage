@@ -64,5 +64,4 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
 
         parent::_discussionPreSave();
     }
-
 }

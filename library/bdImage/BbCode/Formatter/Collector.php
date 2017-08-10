@@ -50,8 +50,11 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
                     );
 
                     if (XenForo_Application::debugMode() && defined('DEFERRED_CMD')) {
-                        echo(sprintf("Fetching attachments for %s-%d\n",
-                            $this->_contentData['contentType'], $this->_contentData['contentId']));
+                        echo(sprintf(
+                            "Fetching attachments for %s-%d\n",
+                            $this->_contentData['contentType'],
+                            $this->_contentData['contentId']
+                        ));
                     }
                 }
 
@@ -102,8 +105,10 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
         foreach ($this->_bdImage_mediaIds as $mediaId) {
             switch ($mediaId[0]) {
                 case 'youtube':
-                    $imageDataMany = array_merge($imageDataMany,
-                        bdImage_Helper_BbCode::extractYouTubeThumbnails($mediaId[1]));
+                    $imageDataMany = array_merge(
+                        $imageDataMany,
+                        bdImage_Helper_BbCode::extractYouTubeThumbnails($mediaId[1])
+                    );
                     break;
             }
         }
@@ -203,5 +208,4 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
             return $this->_dwOrModel->getModelFromCache($class);
         }
     }
-
 }

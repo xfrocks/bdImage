@@ -41,8 +41,16 @@ class bdImage_Helper_File
 
         $divider = substr(md5($hash), 0, 2);
 
-        return sprintf('%s/%s/cache/%s_%s/%s/%s.%s', $pathPrefix,
-            bdImage_Listener::$generatorDirName, $size, $mode, $divider, $hash, $ext);
+        return sprintf(
+            '%s/%s/cache/%s_%s/%s/%s.%s',
+            $pathPrefix,
+            bdImage_Listener::$generatorDirName,
+            $size,
+            $mode,
+            $divider,
+            $hash,
+            $ext
+        );
     }
 
     /**
@@ -87,8 +95,13 @@ class bdImage_Helper_File
             $pathPrefix = XenForo_Helper_File::getInternalDataPath();
         }
 
-        return sprintf('%s/%s/cache/%s/%s.orig', $pathPrefix,
-            bdImage_Listener::$generatorDirName, gmdate('Ym'), md5($uri));
+        return sprintf(
+            '%s/%s/cache/%s/%s.orig',
+            $pathPrefix,
+            bdImage_Listener::$generatorDirName,
+            gmdate('Ym'),
+            md5($uri)
+        );
     }
 
     /**
@@ -207,7 +220,8 @@ class bdImage_Helper_File
         }
 
         $raw = self::THUMBNAIL_ERROR_MAGIC_BYTES
-            . pack(self::THUMBNAIL_ERROR_FORMAT_PACK,
+            . pack(
+                self::THUMBNAIL_ERROR_FORMAT_PACK,
                 self::THUMBNAIL_ERROR_VERSION,
                 $attemptCount + 1,
                 XenForo_Application::$time

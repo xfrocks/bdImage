@@ -159,5 +159,4 @@ class bdImage_Helper_Template
 
         return implode('', $attributes);
     }
-
 }

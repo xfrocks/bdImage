@@ -33,11 +33,7 @@ class bdImage_Listener
     const XENFORO_CONTROLLERPUBLIC_POST_SAVE = 'bdImage_XenForo_ControllerPublic_Post::actionSave';
     const XENFORO_CONTROLLERPUBLIC_THREAD_SAVE = 'bdImage_XenForo_ControllerPublic_Thread::actionSave';
 
-    public static function init_dependencies(
-        /** @noinspection PhpUnusedParameterInspection */
-        XenForo_Dependencies_Abstract $dependencies,
-        array $data
-    )
+    public static function init_dependencies(XenForo_Dependencies_Abstract $dependencies, array $data)
     {
         define('BDIMAGE_IS_WORKING', 1);
 
@@ -92,11 +88,8 @@ class bdImage_Listener
         $renderers[] = 'bdImage_WidgetRenderer_SliderThreads2';
     }
 
-    public static function file_health_check(
-        /** @noinspection PhpUnusedParameterInspection */
-        XenForo_ControllerAdmin_Abstract $controller,
-        array &$hashes
-    ) {
+    public static function file_health_check(XenForo_ControllerAdmin_Abstract $controller, array &$hashes)
+    {
         $hashes += bdImage_FileSums::getHashes();
     }
 

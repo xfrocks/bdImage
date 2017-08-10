@@ -14,5 +14,4 @@ class bdImage_Option
 
         return XenForo_Application::getOptions()->get('bdImage_' . $key, $subKey);
     }
-
 }

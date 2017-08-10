@@ -108,13 +108,21 @@ class bdImage_Helper_Thumbnail
     {
         $phpUrl = bdImage_Listener::$phpUrl;
         if (!is_string($phpUrl) || strlen($phpUrl) === 0) {
-            $phpUrl = sprintf('%s/%s/thumbnail.php',
+            $phpUrl = sprintf(
+                '%s/%s/thumbnail.php',
                 rtrim(XenForo_Application::getOptions()->get('boardUrl'), '/'),
-                bdImage_Listener::$generatorDirName);
+                bdImage_Listener::$generatorDirName
+            );
         }
 
-        return sprintf('%s?url=%s&size=%d&mode=%s&hash=%s',
-            $phpUrl, rawurlencode($url), intval($size), $mode, $hash);
+        return sprintf(
+            '%s?url=%s&size=%d&mode=%s&hash=%s',
+            $phpUrl,
+            rawurlencode($url),
+            intval($size),
+            $mode,
+            $hash
+        );
     }
 
     /**
@@ -130,8 +138,12 @@ class bdImage_Helper_Thumbnail
     {
         $forceRebuild = false;
         if (!empty($_REQUEST['rebuild'])) {
-            $forceRebuild = $_REQUEST['rebuild'] === bdImage_Helper_Data::computeHash(
-                    self::buildPhpLink($url, $size, $mode, $hash), 0, 'rebuild');
+            $rebuildHash = bdImage_Helper_Data::computeHash(
+                self::buildPhpLink($url, $size, $mode, $hash),
+                0,
+                'rebuild'
+            );
+            $forceRebuild = $_REQUEST['rebuild'] === $rebuildHash;
         }
 
         $cachePath = bdImage_Helper_File::getCachePath($url, $size, $mode, $hash);
@@ -168,8 +180,13 @@ class bdImage_Helper_Thumbnail
         if (!empty($imageInfo)) {
             $maxImageResizePixelCount = XenForo_Application::getConfig()->get('maxImageResizePixelCount');
             if ($imageInfo['width'] * $imageInfo['height'] > $maxImageResizePixelCount) {
-                self::_log('Image too big (%dx%d, type %d), maxImageResizePixelCount=%d',
-                    $imageInfo['width'], $imageInfo['height'], $imageInfo['type'], $maxImageResizePixelCount);
+                self::_log(
+                    'Image too big (%dx%d, type %d), maxImageResizePixelCount=%d',
+                    $imageInfo['width'],
+                    $imageInfo['height'],
+                    $imageInfo['type'],
+                    $maxImageResizePixelCount
+                );
                 $imageInfo = null;
             }
         }
@@ -243,13 +260,18 @@ class bdImage_Helper_Thumbnail
 
         $tempFile = tempnam(XenForo_Helper_File::getTempDir(), 'bdImageThumbnail_');
         if (!is_string($tempFile)) {
-            throw new bdImage_Exception_WithImage(sprintf('tempnam() returns %s',
-                var_export($tempFile, true)), $imageObj);
+            throw new bdImage_Exception_WithImage(sprintf(
+                'tempnam() returns %s',
+                var_export($tempFile, true)
+            ), $imageObj);
         }
 
         /** @noinspection PhpParamsInspection */
-        $imageObj->output(bdImage_Helper_File::getImageTypeFromCachePath($cachePath),
-            $tempFile, bdImage_Listener::$imageQuality);
+        $imageObj->output(
+            bdImage_Helper_File::getImageTypeFromCachePath($cachePath),
+            $tempFile,
+            bdImage_Listener::$imageQuality
+        );
 
         $tempFileSize = filesize($tempFile);
         try {

@@ -48,5 +48,4 @@ class bdImage_XenForo_DataWriter_Forum extends XFCP_bdImage_XenForo_DataWriter_F
             }
         }
     }
-
 }

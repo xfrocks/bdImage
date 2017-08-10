@@ -20,5 +20,4 @@ abstract class bdImage_WidgetRenderer_ThreadsBase extends WidgetFramework_Widget
 
         return $response;
     }
-
 }

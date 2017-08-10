@@ -32,8 +32,10 @@ class bdImage_WidgetRenderer_AttachmentsGrid extends WidgetFramework_WidgetRende
     {
         $params = $template->getParams();
 
-        $forums = $this->_helperPrepareForumsOptionSource(empty($params['options']['forums']) ? array() : $params['options']['forums'],
-            true);
+        $forums = $this->_helperPrepareForumsOptionSource(
+            empty($params['options']['forums']) ? array() : $params['options']['forums'],
+            true
+        );
 
         $template->setParam('forums', $forums);
 
@@ -80,8 +82,11 @@ class bdImage_WidgetRenderer_AttachmentsGrid extends WidgetFramework_WidgetRende
         /** @var XenForo_Model_Node $nodeModel */
         $nodeModel = $core->getModelFromCache('XenForo_Model_Node');
 
-        $forumIds = $this->_helperGetForumIdsFromOption($widget['options']['forums'], $params,
-            empty($widget['options']['as_guest']) ? false : true);
+        $forumIds = $this->_helperGetForumIdsFromOption(
+            $widget['options']['forums'],
+            $params,
+            empty($widget['options']['as_guest']) ? false : true
+        );
         $forumIdsWithAttachmentView = array();
 
         $permissionCombinationId = empty($widget['options']['as_guest']) ? $visitor['permission_combination_id'] : 1;
@@ -189,5 +194,4 @@ class bdImage_WidgetRenderer_AttachmentsGrid extends WidgetFramework_WidgetRende
 
         return parent::_getCacheId($widget, $positionCode, $params, $suffix);
     }
-
 }

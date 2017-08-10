@@ -40,8 +40,10 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
             && $this->get('position') == 0
         ) {
             /** @var bdImage_XenForo_DataWriter_Discussion_Thread $threadDw */
-            $threadDw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread',
-                XenForo_DataWriter::ERROR_SILENT);
+            $threadDw = XenForo_DataWriter::create(
+                'XenForo_DataWriter_Discussion_Thread',
+                XenForo_DataWriter::ERROR_SILENT
+            );
             $threadDw->setExistingData($this->get('thread_id'));
             if ($this->get('post_id') == $threadDw->get('first_post_id')) {
                 $existingImage = $threadDw->bdImage_getThreadImage();
@@ -58,5 +60,4 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
 
         parent::_messagePostSave();
     }
-
 }

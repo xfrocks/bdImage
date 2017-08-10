@@ -62,5 +62,4 @@ class bdImage_CronEntry_CleanUp
             return false;
         }
     }
-
 }

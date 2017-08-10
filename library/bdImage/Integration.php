@@ -71,8 +71,12 @@ class bdImage_Integration
             $cachePath = bdImage_Helper_File::getCachePath($imageUrl, $size, $mode, $hash);
             $cacheFileSize = bdImage_Helper_File::getImageFileSizeIfExists($cachePath);
             if ($cacheFileSize > bdImage_Helper_File::THUMBNAIL_ERROR_FILE_LENGTH) {
-                $thumbnailUrl = sprintf('%s?%d', bdImage_Helper_File::getCacheUrl($imageUrl,
-                    $size, $mode, $hash), $cacheFileSize);
+                $thumbnailUrl = sprintf('%s?%d', bdImage_Helper_File::getCacheUrl(
+                    $imageUrl,
+                    $size,
+                    $mode,
+                    $hash
+                ), $cacheFileSize);
             }
         }
 

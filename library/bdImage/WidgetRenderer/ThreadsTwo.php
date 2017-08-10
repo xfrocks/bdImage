@@ -70,6 +70,4 @@ class bdImage_WidgetRenderer_ThreadsTwo extends bdImage_WidgetRenderer_ThreadsBa
 
         return $layoutOptions;
     }
-
-
 }

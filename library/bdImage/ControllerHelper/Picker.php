@@ -26,8 +26,10 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
             if (strlen($imageUrl) > 0) {
                 $imageSize = bdImage_Integration::getSize($imageUrl);
                 if ($imageSize === false) {
-                    throw new XenForo_Exception(new XenForo_Phrase('bdimage_image_x_is_not_accessible',
-                        array('url' => $imageUrl)), true);
+                    throw new XenForo_Exception(new XenForo_Phrase(
+                        'bdimage_image_x_is_not_accessible',
+                        array('url' => $imageUrl)
+                    ), true);
                 }
                 list($imageWidth, $imageHeight) = $imageSize;
             }
@@ -42,7 +44,9 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
         }
 
         $extraDataInput = new XenForo_Input($this->_controller->getInput()->filterSingle(
-            'bdimage_extra_data', XenForo_Input::ARRAY_SIMPLE));
+            'bdimage_extra_data',
+            XenForo_Input::ARRAY_SIMPLE
+        ));
 
         $extraDataFilters = array();
         if ($visitor->hasPermission('general', 'bdImage_setCover')) {
@@ -80,5 +84,4 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
             return '';
         }
     }
-
 }

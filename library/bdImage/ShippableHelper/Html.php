@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2017-04-18T03:20:42+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2017-08-04T09:03:27+00:00
 
 /**
  * Class bdImage_ShippableHelper_Html
- * @version 17
+ * @version 18
  * @see DevHelper_Helper_ShippableHelper_Html
  */
 class bdImage_ShippableHelper_Html
@@ -254,7 +254,7 @@ class bdImage_ShippableHelper_Html
                         // do nothing
                     } else {
                         // is opening tag
-                        $stack[] = array('tag' => $tag, 'offset' => $startPos);
+                        $stack[] = array('tag' => $tag, 'offset' => $startPos, 'till' => $endPos);
                     }
                 }
             } else {
@@ -265,6 +265,11 @@ class bdImage_ShippableHelper_Html
         // close any remaining tags
         while (!empty($stack)) {
             $stackItem = array_pop($stack);
+            if (utf8_strlen($snippet) === $stackItem['till'] + 1) {
+                // the latest tag is empty, delete it
+                $snippet = utf8_substr($snippet, 0, $stackItem['offset']);
+                continue;
+            }
 
             self::snippetAppendEllipsis($snippet, $options);
             $snippet .= sprintf('</%s>', $stackItem['tag']);

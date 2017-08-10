@@ -1,6 +1,6 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2016-08-08T19:01:23+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2017-07-31T06:31:49+00:00
 
 /**
  * Class bdImage_ShippableHelper_UpdaterCore
@@ -268,9 +268,7 @@ var match = hash.match(regex);
 if (match) {
     var accessToken = match[1];
     var downloadLink = $downloadLinkJson;
-    var redirect = downloadLink + '&' + $accessTokenParamJson + '=' + encodeURIComponent(accessToken);
-
-    window.location = redirect;
+    window.location = downloadLink + '&' + $accessTokenParamJson + '=' + encodeURIComponent(accessToken);
 }
 </script>
 EOF;

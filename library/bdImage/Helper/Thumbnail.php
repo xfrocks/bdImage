@@ -34,8 +34,10 @@ class bdImage_Helper_Thumbnail
             die(1);
         }
 
+        ini_set('display_errors', '0');
         XenForo_Application::disablePhpErrorHandler();
         set_error_handler(array(__CLASS__, 'handlePhpError'));
+        register_shutdown_function(array(__CLASS__, 'handleFatalError'));
 
         try {
             $thumbnailUri = bdImage_Helper_Thumbnail::getThumbnailUri($url, $size, $mode, $hash);
@@ -44,12 +46,7 @@ class bdImage_Helper_Thumbnail
             $ewi->output();
             XenForo_Error::logException($ewi, false, '[Sent output] ');
         } catch (Exception $e) {
-            header('HTTP/1.0 500 Internal Server Error');
-
-            // http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever
-            header('Content-Type: image/gif');
-            /** @noinspection SpellCheckingInspection */
-            echo base64_decode('R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+            self::_echoHttp500WithTinyGif($e->getMessage());
 
             if (XenForo_Application::debugMode()) {
                 XenForo_Error::logException($e, false, '[Sent 500] ');
@@ -71,6 +68,25 @@ class bdImage_Helper_Thumbnail
 
         $args = func_get_args();
         throw new XenForo_Exception(json_encode($args));
+    }
+
+    public static function handleFatalError()
+    {
+        $error = @error_get_last();
+        if (!$error) {
+            return;
+        }
+
+        if (empty($error['type']) || !($error['type'] & (E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR))) {
+            return;
+        }
+
+        $errorMessage = '';
+        if (isset($error['message'])) {
+            $errorMessage = $error['message'];
+        }
+
+        self::_echoHttp500WithTinyGif($errorMessage);
     }
 
     /**
@@ -662,5 +678,25 @@ class bdImage_Helper_Thumbnail
         header($string, $replace, $httpResponseCode);
 
         return true;
+    }
+
+    /**
+     * @param string $errorMessage
+     */
+    protected static function _echoHttp500WithTinyGif($errorMessage)
+    {
+        header('HTTP/1.0 500 Internal Server Error');
+
+        if (is_string($errorMessage)
+            && strlen($errorMessage) > 0
+            && XenForo_Application::debugMode()
+        ) {
+            header('X-Error-Message: ' . $errorMessage);
+        }
+
+        // http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever
+        header('Content-Type: image/gif');
+        /** @noinspection SpellCheckingInspection */
+        echo base64_decode('R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
     }
 }

@@ -9,9 +9,11 @@ class bdImage_Helper_Thumbnail
     const ERROR_DOWNLOAD_REMOTE_URI = '/download/remote/uri.error';
     const HASH_FALLBACK = 'default';
 
+    protected static $startTime = 0;
+
     public static function main()
     {
-        $startTime = microtime(true);
+        self::$startTime = microtime(true);
         if (headers_sent()) {
             die(1);
         }
@@ -26,7 +28,7 @@ class bdImage_Helper_Thumbnail
             || !is_int($size) || $size === 0
             || !is_string($mode) || strlen($mode) === 0
             || !is_string($hash) || strlen($hash) === 0
-            || bdImage_Helper_Data::computeHash($url, $size, $mode) != $hash
+            || bdImage_Helper_Data::computeHash($url, $size, $mode) !== $hash
         ) {
             // invalid request, we may issue 401 but this is more of a security feature
             // so we are issuing 403 response now...
@@ -53,10 +55,6 @@ class bdImage_Helper_Thumbnail
             }
         }
 
-        if (XenForo_Application::debugMode() && !headers_sent()) {
-            header('X-Thumbnail-Time: ' . (microtime(true) - $startTime));
-        }
-
         die(0);
     }
 
@@ -72,6 +70,10 @@ class bdImage_Helper_Thumbnail
 
     public static function handleFatalError()
     {
+        if (XenForo_Application::debugMode() && !headers_sent()) {
+            header('X-Thumbnail-Time: ' . (microtime(true) - self::$startTime));
+        }
+
         $error = @error_get_last();
         if (!$error) {
             return;

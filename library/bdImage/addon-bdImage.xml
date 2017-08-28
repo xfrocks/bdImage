@@ -2041,13 +2041,13 @@ ul.bdImage_Widget_Grid
 		</ul>
 	</div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_slider_threads" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if hascontent="true">	
+    <template title="bdimage_widget_slider_threads" version_id="2020102" version_string="2.2.1"><![CDATA[<xen:if hascontent="true">	
 <xen:require css="bdimage_widget.css" />
 <xen:require js="js/bdImage/widget_slider.min.js" />
-<xen:require js="js/bdImage/owl.carousel/owl.carousel{xen:if '!{$debugMode}', .min}.js" />
+<xen:require js="js/bdImage/Lib/owl.carousel/owl.carousel{xen:if '!{$debugMode}', .min}.js" />
 <xen:container var="$head.bdimage_widget_slider_threads">
-<link rel="stylesheet" href="{xen:helper javascriptUrl, 'js/bdImage/owl.carousel/assets/owl.carousel{xen:if '!{$debugMode}', .min}.css'}">
-<link rel="stylesheet" href="{xen:helper javascriptUrl, 'js/bdImage/owl.carousel/assets/owl.theme.default{xen:if '!{$debugMode}', .min}.css'}">
+<link rel="stylesheet" href="{xen:helper javascriptUrl, 'js/bdImage/Lib/owl.carousel/assets/owl.carousel{xen:if '!{$debugMode}', .min}.css'}">
+<link rel="stylesheet" href="{xen:helper javascriptUrl, 'js/bdImage/Lib/owl.carousel/assets/owl.theme.default{xen:if '!{$debugMode}', .min}.css'}">
 </xen:container>
 
 <div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads_Container"
@@ -2066,12 +2066,12 @@ ul.bdImage_Widget_Grid
 </xen:if>
 
 <xen:edithint template="bdimage_widget_slider_threads_2" />]]></template>
-    <template title="bdimage_widget_slider_threads_2" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if hascontent="true">
+    <template title="bdimage_widget_slider_threads_2" version_id="2020102" version_string="2.2.1"><![CDATA[<xen:if hascontent="true">
 <xen:require css="bdimage_widget.css" />
 <xen:require js="js/bdImage/widget_slider.min.js" />
-<xen:require js="js/bdImage/jquery.bxslider/jquery.bxslider{xen:if '!{$debugMode}', .min}.js" />
+<xen:require js="js/bdImage/Lib/jquery.bxslider/jquery.bxslider{xen:if '!{$debugMode}', .min}.js" />
 <xen:container var="$head.bdimage_widget_slider_threads_2">
-<link rel="stylesheet" href="{xen:helper javascriptUrl, js/bdImage/jquery.bxslider/jquery.bxslider.css}">
+<link rel="stylesheet" href="{xen:helper javascriptUrl, js/bdImage/Lib/jquery.bxslider/jquery.bxslider.css}">
 </xen:container>
 
 <div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads2_Container"

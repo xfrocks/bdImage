@@ -37,6 +37,9 @@ class bdImage_Listener
     {
         define('BDIMAGE_IS_WORKING', 1);
 
+        XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_thumbnail')]
+            = array('bdImage_Integration', 'buildThumbnailLink');
+
         $config = XenForo_Application::getConfig();
 
         $externalDataUrls = $config->get(self::CONFIG_EXTERNAL_DATA_URLS);

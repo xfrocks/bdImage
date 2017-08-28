@@ -36,14 +36,11 @@ class bdImage_Helper_Thumbnail
             die(1);
         }
 
-        ini_set('display_errors', '0');
-        XenForo_Application::disablePhpErrorHandler();
-        set_error_handler(array(__CLASS__, 'handlePhpError'));
-        register_shutdown_function(array(__CLASS__, 'handleFatalError'));
+        self::_bootstrap();
 
         try {
-            $thumbnailUri = bdImage_Helper_Thumbnail::getThumbnailUri($url, $size, $mode, $hash);
-            header('Location: ' . $thumbnailUri, true, 302);
+            $thumbnailLink = self::_buildThumbnailLink($url, $size, $mode, $hash);
+            header('Location: ' . $thumbnailLink, true, 302);
         } catch (bdImage_Exception_WithImage $ewi) {
             $ewi->output();
             XenForo_Error::logException($ewi, false, '[Sent output] ');
@@ -98,30 +95,6 @@ class bdImage_Helper_Thumbnail
      * @param string $hash
      * @return string
      */
-    public static function getThumbnailUri($url, $size, $mode, $hash)
-    {
-        $config = XenForo_Application::getConfig();
-        foreach (array(
-                     'maxAttempt',
-                     'coolDownSeconds',
-                     'cropTopLeft'
-                 ) as $key) {
-            // $config['bdImage_maxAttempt'] = 3;
-            // $config['bdImage_coolDownSeconds'] = 600;
-            // $config['bdImage_cropTopLeft'] = false;
-            self::$$key = $config->get('bdImage_' . $key, self::$$key);
-        }
-
-        return self::_buildThumbnailLink($url, $size, $mode, $hash);
-    }
-
-    /**
-     * @param string $url
-     * @param int $size
-     * @param int|string $mode
-     * @param string $hash
-     * @return string
-     */
     public static function buildPhpLink($url, $size, $mode, $hash)
     {
         $phpUrl = bdImage_Listener::$phpUrl;
@@ -141,6 +114,29 @@ class bdImage_Helper_Thumbnail
             $mode,
             $hash
         );
+    }
+
+    protected static function _bootstrap()
+    {
+        ini_set('display_errors', '0');
+        XenForo_Application::disablePhpErrorHandler();
+        set_error_handler(array(__CLASS__, 'handlePhpError'));
+        register_shutdown_function(array(__CLASS__, 'handleFatalError'));
+
+        $config = XenForo_Application::getConfig();
+        foreach (array(
+                     'maxAttempt',
+                     'coolDownSeconds',
+                     'cropTopLeft'
+                 ) as $key) {
+            self::$$key = $config->get('bdImage_' . $key, self::$$key);
+        }
+
+        /** @noinspection SpellCheckingInspection */
+        $httpReferrerKey = 'HTTP_REFERER';
+        if (!empty($_SERVER[$httpReferrerKey])) {
+            $_POST['_bdImage_httpReferrer'] = $_SERVER[$httpReferrerKey];
+        }
     }
 
     /**

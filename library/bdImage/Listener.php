@@ -76,10 +76,10 @@ class bdImage_Listener
     {
         $addOns = XenForo_Application::get('addOns');
         if (!isset($addOns['widget_framework'])
-            || $addOns['widget_framework'] < 2060318
+            || $addOns['widget_framework'] < 2060320
         ) {
             // realistically we don't need the isset() check
-            // we do need to make sure [bd] Widget Framework is at least v2.6.3 beta 18 though
+            // we do need to make sure [bd] Widget Framework is at least v2.6.3 beta 20 though
             return;
         }
 

@@ -69,6 +69,17 @@ class bdImage_Helper_Template
         return bdImage_ShippableHelper_ImageSize::getDataUriAtSize($params['width'], $params['height']);
     }
 
+    public static function renderAttachImageStyleAttribute($default, array $attachment)
+    {
+        if (empty($attachment['width'])
+            || empty($attachment['height'])) {
+            return '';
+        }
+
+        $percent = $attachment['height'] / $attachment['width'] * 100;
+        return sprintf('padding-bottom:%.6f%%;width:%dpx', $percent, $attachment['width']);
+    }
+
     /**
      * @param string $imageData
      * @param array $params

@@ -159,6 +159,7 @@ step=14</edit_format_params>
       <default_value></default_value>
       <edit_format_params>thread_list_item_thread_image = {xen:phrase bdimage_template_thread_list_item_thread_image}
 thread_view_open_graph_meta = {xen:phrase bdimage_template_thread_view_open_graph_meta}
+bb_code_tag_attach_full = {xen:phrase bdimage_template_bb_code_tag_attach_full}
 thread_view_hidden_attachment = {xen:phrase bdimage_template_thread_view_hidden_attachment}
 node_forum_last_thread_image = {xen:phrase bdimage_template_node_forum_last_thread_image}
 search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_image}
@@ -208,6 +209,7 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="bdimage_small_column_width" version_id="14" version_string="0.9.5"><![CDATA[Second Column Width]]></phrase>
     <phrase title="bdimage_small_size" version_id="14" version_string="0.9.5"><![CDATA[Second Column Thumbnail Width]]></phrase>
     <phrase title="bdimage_small_title" version_id="14" version_string="0.9.5"><![CDATA[Second Column Title]]></phrase>
+    <phrase title="bdimage_template_bb_code_tag_attach_full" version_id="2020102" version_string="2.2.1"><![CDATA[Fixed size full attachment rendering]]></phrase>
     <phrase title="bdimage_template_node_forum_last_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Last Thread Image in Forum List]]></phrase>
     <phrase title="bdimage_template_picker" version_id="2010000" version_string="2.1.0"><![CDATA[Image Picker]]></phrase>
     <phrase title="bdimage_template_search_result_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in search result]]></phrase>
@@ -298,7 +300,7 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     </group>
   </style_properties>
   <templates>
-    <template title="bdimage.css" version_id="2000000" version_string="2.0.0"><![CDATA[.bdImage_lastThreadImage {
+    <template title="bdimage.css" version_id="2020102" version_string="2.2.1"><![CDATA[.bdImage_lastThreadImage {
 	float: left;
 	margin-right: 5px;
 	width: 30px;
@@ -313,6 +315,31 @@ ul.bdImage_Picker {}
 	ul.bdImage_Picker > li.image label { display: inline-block; }
 	ul.bdImage_Picker > li.image input { height: {xen:calc {xen:property bdImage_threadList_imageSize}}px; }
 	ul.bdImage_Picker > li.other { display: block; }
+
+a.bdImage_attachImage,
+a.bdImage_attachImage:link,
+a.bdImage_attachImage:hover {
+	background: {xen:property primaryLightest};
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	display: block;
+	margin: 0;
+	max-width: 100%;
+	overflow: hidden;
+	padding: 0;
+	position: relative;
+	text-align: center;
+	text-decoration: none;
+}
+	a.bdImage_attachImage img {
+		display: block;
+		height: 100%;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 100%;
+	}
 
 /* cover */
 <xen:set var="$coverAvatarSize">96</xen:set>
@@ -539,6 +566,16 @@ html.bdImage_hasCover .titleBar {
 	.Responsive .bdImage_3column .column-3 { display: block; }
 }
 </xen:if>]]></template>
+    <template title="bdimage_bb_code_tag_attach_full" version_id="2020102" version_string="2.2.1"><![CDATA[<xen:if is="{$attachment.width} && {$attachment.height}"><xen:set
+	var="$bdImage_bbCodeTagAttachFull"><xen:callback class="bdImage_Option" method="get"
+	params="{xen:array '0=bb_code_tag_attach_full'}">template</xen:callback></xen:set><xen:if
+	is="{$bdImage_bbCodeTagAttachFull}"><xen:require css="bdimage.css" /><xen:set
+	var="$styleAttr"><xen:callback class="bdImage_Helper_Template" method="renderAttachImageStyleAttribute"
+	params="{$attachment}" /></xen:set><a href="{xen:link full:attachments,
+	$attachment}" target="_blank" class="bdImage_attachImage" style="{$styleAttr}"><img src="{xen:link
+	full:attachments, $attachment}" alt="{xen:phrase loading} {$attachment.filename}" title="{$attachment.filename}" />
+</a></xen:if></xen:if>
+]]></template>
     <template title="bdimage_editor_contents_hero_image.css" version_id="2010000" version_string="2.1.0"><![CDATA[html { background: none; }]]></template>
     <template title="bdimage_grid_inline_css" version_id="19" version_string="0.10.0-dev"><![CDATA[<xen:set var="$gridWidth">{xen:calc '({$widget.options.thumbnail_width} + {$widget.options.gap}) * {$widget.options.grid_columns}'}</xen:set>
 <xen:set var="$maxWidthInSidebar">{xen:calc '{xen:property sidebar.width} - {xen:property secondaryContent.padding-left} - {xen:property secondaryContent.padding-right}'}</xen:set>
@@ -2614,6 +2651,12 @@ hascontent="true"><xen:require css="bdimage_timeline.css" /><xen:comment>
 </xen:foreach>]]></template>
   </templates>
   <public_template_modifications>
+    <modification template="bb_code_tag_attach" modification_key="bdimage_bb_code_tag_attach_full" description="Replace full attach rendering." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<img src="{xen:link full:attachments, $attachment}" alt="{$attachment.filename}" class="bbCodeImage LbImage" />]]></find>
+      <replace><![CDATA[<xen:if hascontent="true"><xen:contentcheck><xen:include
+	template="bdimage_bb_code_tag_attach_full" /></xen:contentcheck><xen:else
+/>$0</xen:if>]]></replace>
+    </modification>
     <modification template="PAGE_CONTAINER" modification_key="bdimage_cover_ad_above_top_breadcrumb" description="Render cover at &quot;ad_above_top_breadcrumb&quot;." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:include template="ad_above_top_breadcrumb" />]]></find>
       <replace><![CDATA[$0

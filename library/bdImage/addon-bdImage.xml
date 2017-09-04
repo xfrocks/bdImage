@@ -316,25 +316,27 @@ ul.bdImage_Picker {}
 	ul.bdImage_Picker > li.image input { height: {xen:calc {xen:property bdImage_threadList_imageSize}}px; }
 	ul.bdImage_Picker > li.other { display: block; }
 
-a.bdImage_attachImage,
-a.bdImage_attachImage:link,
-a.bdImage_attachImage:hover {
-	background: {xen:property primaryLightest};
-	border: 0;
-	border-radius: 0;
-	box-shadow: none;
-	display: block;
-	margin: 0 auto;
+.bdImage_attachImage {
 	max-width: 100%;
-	overflow: hidden;
-	padding: 0;
-	position: relative;
 	text-align: center;
-	text-decoration: none;
 }
-	a.bdImage_attachImage img {
-		display: block;
-		height: 100%;
+	.bdImage_attachImage,
+	.bdImage_attachImage .inner,
+	.bdImage_attachImage img {
+		display: inline-block;
+		float: none;
+		line-height: 0;
+		margin: 0;
+		padding: 0;
+	}
+	.bdImage_attachImage .inner {
+		background: {xen:property primaryLightest};
+		position: relative;
+		overflow: hidden;
+		width: 100%;
+	}
+	.bdImage_attachImage img {
+		height: auto;
 		left: 0;
 		position: absolute;
 		top: 0;
@@ -571,10 +573,15 @@ html.bdImage_hasCover .titleBar {
 	params="{xen:array '0=bb_code_tag_attach_full'}">template</xen:callback></xen:set><xen:if
 	is="{$bdImage_bbCodeTagAttachFull}"><xen:require css="bdimage.css" /><xen:set
 	var="$styleAttr"><xen:callback class="bdImage_Helper_Template" method="renderAttachImageStyleAttribute"
-	params="{$attachment}" /></xen:set><a href="{xen:link full:attachments,
-	$attachment}" target="_blank" class="bdImage_attachImage" style="{$styleAttr}"><img src="{xen:link
-	full:attachments, $attachment}" alt="{xen:phrase loading} {$attachment.filename}" title="{$attachment.filename}" />
-</a></xen:if></xen:if>
+	params="{$attachment}" /></xen:set><xen:set var="$innerStyleAttr"><xen:callback
+	class="bdImage_Helper_Template" method="renderAttachImageStyleAttribute"
+	params="{$attachment}">inner</xen:callback></xen:set><span class="bdImage_attachImage" style="{$styleAttr}">
+	<span class="inner" style="{$innerStyleAttr}">
+		<img src="{xen:link full:attachments, $attachment}" alt="{xen:phrase
+			loading} {$attachment.filename}…" title="{$attachment.filename}" data-width="{$attachment.width}" data-height="{$attachment.height}" />
+	</span>
+</span></xen:if></xen:if><xen:comment>Do NOT use <img /> width and height attributes directly
+	or it will mess up rendering when our CSS rules are missing (e.g. via api etc.)</xen:comment>
 ]]></template>
     <template title="bdimage_editor_contents_hero_image.css" version_id="2010000" version_string="2.1.0"><![CDATA[html { background: none; }]]></template>
     <template title="bdimage_grid_inline_css" version_id="19" version_string="0.10.0-dev"><![CDATA[<xen:set var="$gridWidth">{xen:calc '({$widget.options.thumbnail_width} + {$widget.options.gap}) * {$widget.options.grid_columns}'}</xen:set>

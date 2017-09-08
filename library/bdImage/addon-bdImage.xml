@@ -300,11 +300,16 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     </group>
   </style_properties>
   <templates>
-    <template title="bdimage.css" version_id="2020102" version_string="2.2.1"><![CDATA[.bdImage_lastThreadImage {
+    <template title="bdimage.css" version_id="2020200" version_string="2.2.2"><![CDATA[.bdImage_lastThreadImage {
 	float: left;
 	margin-right: 5px;
 	width: 30px;
 	height: 30px;
+}
+
+.bdImage_searchResult img {
+	width: 48px;
+	height: 48px;
 }
 
 .bdImage_threadImage { text-align: center; }
@@ -1076,16 +1081,15 @@ html.bdImage_hasCover .titleBar {
 	.Responsive .bdimage_thread_view_hero_image .message .messageInfo .item { margin-right: {$heroImageSpacingSmall} !important; }
 }
 </xen:if>]]></template>
-    <template title="bdimage_node_forum_last_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$forum.bdimage_last_post_image}"><xen:set var="$bdImage_nodeForumLastThreadImage"><xen:callback
-	class="bdImage_Option" method="get" params="{xen:array
-	'0=node_forum_last_thread_image'}">template</xen:callback></xen:set><xen:if
-	is="{$bdImage_nodeForumLastThreadImage}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
+    <template title="bdimage_node_forum_last_thread_image" version_id="2020200" version_string="2.2.2"><![CDATA[<xen:set var="$bdImage_imageData"><xen:callback class="bdImage_Helper_Template" method="getImageDataIfTemplateOption"
+	params="{$forum}">node_forum_last_thread_image</xen:callback></xen:set><xen:if
+	is="{$bdImage_imageData}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
 	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
-	'0={xen:property bdImage_forumLastThread_imageSize}'}">{xen:raw $forum.bdimage_last_post_image}</xen:callback></xen:set><xen:if
+	'0={xen:property bdImage_forumLastThread_imageSize}'}">{xen:raw $bdImage_imageData}</xen:callback></xen:set><xen:if
 	is="{$bdImage_thumbnailUrl}"><xen:require css="bdimage.css" /><img src="{$bdImage_thumbnailUrl}" <xen:comment>
 	</xen:comment>width="{xen:property bdImage_forumLastThread_imageSize}" height="{xen:property bdImage_forumLastThread_imageSize}" <xen:comment>
 	</xen:comment>class="bdImage_lastThreadImage"{xen:if $debugMode,
-	' data-image="{xen:jsescape $forum.bdimage_last_post_image}"'} /></xen:if></xen:if></xen:if>]]></template>
+	' data-image="{xen:jsescape $bdImage_imageData}"'} /></xen:if></xen:if>]]></template>
     <template title="bdimage_picker" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:if is="{$bdImage_canUsePicker}">
 	<xen:require css="bdimage.css" />
 
@@ -1215,16 +1219,17 @@ html.bdImage_hasCover .titleBar {
 
 	<input type="hidden" name="bdimage_included" value="1" />
 </xen:if>]]></template>
-    <template title="bdimage_search_result_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_searchResultThreadImage"><xen:callback
-	class="bdImage_Option" method="get" params="{xen:array
-	'0=search_result_thread_image'}">template</xen:callback></xen:set><xen:if
-	is="{$bdImage_searchResultThreadImage}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
+    <template title="bdimage_search_result_thread_image" version_id="2020200" version_string="2.2.2"><![CDATA[<xen:set var="$bdImage_imageData"><xen:callback class="bdImage_Helper_Template" method="getImageDataIfTemplateOption"
+	params="{$thread}">search_result_thread_image</xen:callback></xen:set><xen:if
+	is="{$bdImage_imageData}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
 	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
-	'0={xen:property bdImage_searchResult_imageSize}'}">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:if
-	is="{$bdImage_thumbnailUrl}"><a href="{xen:link threads, $thread}" class="avatar NoOverlay"><xen:comment>
-	</xen:comment><img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_searchResult_imageSize}" <xen:comment>
+	'0={xen:property bdImage_searchResult_imageSize}'}">{xen:raw $bdImage_imageData}</xen:callback></xen:set><xen:if
+	is="{$bdImage_thumbnailUrl}"><xen:require css="bdimage.css" /><a href="{xen:link threads,
+	$thread}" class="avatar NoOverlay bdImage_searchResult">
+	<img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_searchResult_imageSize}" <xen:comment>
 	</xen:comment>height="{xen:property bdImage_searchResult_imageSize}"{xen:if $debugMode,
-	' data-image="{xen:jsescape $thread.bdimage_image}"'} /></a></xen:if></xen:if></xen:if>]]></template>
+	' data-image="{xen:jsescape $bdImage_imageData}"'} />
+</a></xen:if></xen:if>]]></template>
     <template title="bdimage_stylized_grid.css" version_id="2010100" version_string="2.1.1"><![CDATA[<xen:set var="$stylizedGridSpacingHuge">40px</xen:set>
 <xen:set var="$stylizedGridSpacingLarge">30px</xen:set>
 <xen:set var="$stylizedGridSpacingMedium">20px</xen:set>
@@ -1538,10 +1543,12 @@ html.bdImage_hasCover .titleBar {
 	.Responsive .bdImage_stylizedGrid .row-4.has-ad-45 .cell.position-5 .thread-inner { position: relative; }
 }
 </xen:if>]]></template>
-    <template title="bdimage_template_modifications" version_id="1020100" version_string="1.2.1"><![CDATA[<xen:edithint template="bdimage_thread_list_item_thread_image" />
-<xen:edithint template="bdimage_thread_view_open_graph_meta" />
+    <template title="bdimage_template_modifications" version_id="2020200" version_string="2.2.2"><![CDATA[<xen:edithint template="bdimage.css" />
+<xen:edithint template="bdimage_bb_code_tag_attach_full" />
 <xen:edithint template="bdimage_node_forum_last_thread_image" />
 <xen:edithint template="bdimage_search_result_thread_image" />
+<xen:edithint template="bdimage_thread_list_item_thread_image" />
+<xen:edithint template="bdimage_thread_view_open_graph_meta" />
 <xen:edithint template="bdimage_wf_widget_threads_full_thread_image" />
 <xen:edithint template="bdimage_wf_widget_threads_thread_image" />]]></template>
     <template title="bdimage_thread_cover" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:require css="bdimage.css" /><xen:set
@@ -1586,16 +1593,15 @@ is="{$coverOriginalUrl}"><div class="bdImage_coverContainer position-{$position}
 </div></xen:if><xen:comment>
 
 </xen:comment><xen:edithint template="PAGE_CONTAINER" />]]></template>
-    <template title="bdimage_thread_list_item_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_threadListItemThreadImage"><xen:callback
-	class="bdImage_Option" method="get" params="{xen:array
-	'0=thread_list_item_thread_image'}">template</xen:callback></xen:set><xen:if
-	is="{$bdImage_threadListItemThreadImage}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
+    <template title="bdimage_thread_list_item_thread_image" version_id="2020200" version_string="2.2.2"><![CDATA[<xen:set var="$bdImage_imageData"><xen:callback class="bdImage_Helper_Template" method="getImageDataIfTemplateOption"
+	params="{$thread}">thread_list_item_thread_image</xen:callback></xen:set><xen:if
+	is="{$bdImage_imageData}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
 	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
-	'0={xen:property bdImage_threadList_imageSize}'}">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:if
-	is="{$bdImage_thumbnailUrl}"><a href="{xen:link threads, $thread}" class="avatar NoOverlay"><xen:comment>
+	'0={xen:property bdImage_threadList_imageSize}'}">{xen:raw $bdImage_imageData}</xen:callback></xen:set><xen:if
+	is="{$bdImage_thumbnailUrl}"><a href="{xen:link threads, $thread}" class="avatar NoOverlay bdImage_threadListItem"><xen:comment>
 	</xen:comment><img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_threadList_imageSize}" <xen:comment>
 	</xen:comment>height="{xen:property bdImage_threadList_imageSize}"{xen:if $debugMode,
-	' data-image="{xen:jsescape $thread.bdimage_image}"'} /></a></xen:if></xen:if></xen:if>]]></template>
+	' data-image="{xen:jsescape $bdImage_imageData}"'} /></a></xen:if></xen:if>]]></template>
     <template title="bdimage_thread_test" version_id="1020270" version_string="1.2.2"><![CDATA[<xen:title>{xen:phrase bdimage_thread_image}</xen:title>
 
 <form action="{xen:link threads/bd-image/test}" method="post" class="xenForm">
@@ -1784,22 +1790,22 @@ is="{$coverOriginalUrl}"><div class="bdImage_coverContainer position-{$position}
 <xen:edithint template="message" />
 <xen:edithint template="post" />
 <xen:edithint template="wf_PAGE_CONTAINER_simple" />]]></template>
-    <template title="bdimage_thread_view_open_graph_meta" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_threadViewOpenGraphMeta"><xen:callback
-	class="bdImage_Option" method="get" params="{xen:array
-	'0=thread_view_open_graph_meta'}">template</xen:callback></xen:set><xen:if
-	is="{$bdImage_threadViewOpenGraphMeta}"><xen:set var="$bdImage_originalUrl"><xen:callback
-	class="bdImage_Integration" method="getOriginalUrl">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:if
+    <template title="bdimage_thread_view_open_graph_meta" version_id="2020200" version_string="2.2.2"><![CDATA[<xen:set var="$bdImage_imageData"><xen:callback class="bdImage_Helper_Template" method="getImageDataIfTemplateOption"
+	params="{$thread}">thread_view_open_graph_meta</xen:callback></xen:set><xen:if
+	is="{$bdImage_imageData}"><xen:set var="$bdImage_originalUrl"><xen:callback
+	class="bdImage_Integration" method="getOriginalUrl">{xen:raw $bdImage_imageData}</xen:callback></xen:set><xen:if
 	is="{$bdImage_originalUrl}"><xen:set var="$bdImage_width"><xen:callback class="bdImage_Helper_Data"
-	method="get" params="{xen:array '0=width'}">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:set
+	method="get" params="{xen:array '0=width'}">{xen:raw $bdImage_imageData}</xen:callback></xen:set><xen:set
 	var="$bdImage_height"><xen:callback class="bdImage_Helper_Data" method="get" params="{xen:array
-	'0=height'}">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:if is="{$debugMode}">
-<meta property="og-image-generator" content="bdimage_thread_view_open_graph_meta" /></xen:if>
-<meta property="og:image" content="{$bdImage_originalUrl}" /><xen:if is="{$bdImage_width} && {$bdImage_height}">
+	'0=height'}">{xen:raw $bdImage_imageData}</xen:callback></xen:set>
+<meta property="og:image" content="{$bdImage_originalUrl}" />
+<meta property="twitter:image" content="{$bdImage_originalUrl}" /><xen:if
+is="{$bdImage_width} && {$bdImage_height}">
 <meta property="og:image:width" content="{$bdImage_width}" />
-<meta property="og:image:height" content="{$bdImage_height}" /></xen:if>
-<meta property="twitter:image" content="{$bdImage_originalUrl}" /><xen:if is="{$bdImage_width} && {$bdImage_height}">
+<meta property="og:image:height" content="{$bdImage_height}" />
 <meta property="twitter:image:width" content="{$bdImage_width}" />
-<meta property="twitter:image:height" content="{$bdImage_height}" /></xen:if></xen:if></xen:if></xen:if>]]></template>
+<meta property="twitter:image:height" content="{$bdImage_height}" /></xen:if><xen:if is="{$debugMode}">
+<meta property="bdimage-data" content="{xen:jsescape $bdImage_imageData}" /></xen:if></xen:if></xen:if>]]></template>
     <template title="bdimage_timeline.css" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:set var="$spacingHuge">40px</xen:set>
 <xen:set var="$spacingLarge">30px</xen:set>
 <xen:set var="$spacingMedium">20px</xen:set>
@@ -1918,40 +1924,39 @@ is="{$coverOriginalUrl}"><div class="bdImage_coverContainer position-{$position}
 		}
 }
 </xen:if>]]></template>
-    <template title="bdimage_wf_widget_threads_full_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_wfWidgetThreadsThreadImage"><xen:callback
-	class="bdImage_Option" method="get" params="{xen:array
-	'0=wf_widget_threads_thread_image'}">template</xen:callback></xen:set><xen:if
-	is="{$bdImage_wfWidgetThreadsThreadImage}"><xen:set var="$bdImage_thumbnailUrl"><xen:if
+    <template title="bdimage_wf_widget_threads_full_thread_image" version_id="2020200" version_string="2.2.2"><![CDATA[<xen:set var="$bdImage_imageData"><xen:callback class="bdImage_Helper_Template" method="getImageDataIfTemplateOption"
+	params="{$thread}">wf_widget_threads_thread_image</xen:callback></xen:set><xen:if
+	is="{$bdImage_imageData}"><xen:set var="$bdImage_thumbnailUrl"><xen:if
 	is="{xen:property bdImage_wfThreadsFull_imageWidth} && {xen:property bdImage_wfThreadsFull_imageHeight}"><xen:callback
 	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
 	'0={xen:property bdImage_wfThreadsFull_imageWidth}', '1={xen:property bdImage_wfThreadsFull_imageHeight}'}">{xen:raw
-	$thread.bdimage_image}</xen:callback><xen:elseif is="{xen:property bdImage_wfThreadsFull_imageWidth}" /><xen:callback
+	$bdImage_imageData}</xen:callback><xen:elseif is="{xen:property bdImage_wfThreadsFull_imageWidth}" /><xen:callback
 	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
-	'0={xen:property bdImage_wfThreadsFull_imageWidth}'}">{xen:raw $thread.bdimage_image}</xen:callback><xen:elseif
+	'0={xen:property bdImage_wfThreadsFull_imageWidth}'}">{xen:raw $bdImage_imageData}</xen:callback><xen:elseif
 	is="{xen:property bdImage_wfThreadsFull_imageHeight}" /><xen:callback class="bdImage_Helper_Template" method="getThumbnailUrl"
-	params="{xen:array '0={xen:property bdImage_wfThreadsFull_imageHeight}', '1=sw'}">{xen:raw $thread.bdimage_image}</xen:callback><xen:else
+	params="{xen:array '0={xen:property bdImage_wfThreadsFull_imageHeight}', '1=sw'}">{xen:raw $bdImage_imageData}</xen:callback><xen:else
 	/><xen:callback class="bdImage_Integration" method="getOriginalUrl">{xen:raw
-	$thread.bdimage_image}</xen:callback></xen:if></xen:set><xen:if is="{$bdImage_thumbnailUrl}"><xen:require css="bdimage.css"
-	/>
+	$bdImage_imageData}</xen:callback></xen:if></xen:set><xen:if
+	is="{$bdImage_thumbnailUrl}"><xen:require css="bdimage.css"
 
-<div class="bdImage_threadImage">
+/><div class="bdImage_threadImage bdImage_widgetThreadsFull">
 	<a href="{xen:link threads, $thread}">
 		<img src="{$bdImage_thumbnailUrl}"{xen:if {xen:property bdImage_wfThreadsFull_imageWidth},
 			' width="{xen:property bdImage_wfThreadsFull_imageWidth}"'}{xen:if {xen:property bdImage_wfThreadsFull_imageHeight},
 			' height="{xen:property bdImage_wfThreadsFull_imageHeight}"'}{xen:if $debugMode,
-			' data-image="{xen:jsescape $thread.bdimage_image}"'} />
+			' data-image="{xen:jsescape $bdImage_imageData}"'} />
 	</a>
-</div></xen:if></xen:if></xen:if>]]></template>
-    <template title="bdimage_wf_widget_threads_thread_image" version_id="1020300" version_string="1.2.3"><![CDATA[<xen:if is="{$thread.bdimage_image}"><xen:set var="$bdImage_wfWidgetThreadsThreadImage"><xen:callback
-	class="bdImage_Option" method="get" params="{xen:array
-	'0=wf_widget_threads_thread_image'}">template</xen:callback></xen:set><xen:if
-	is="{$bdImage_wfWidgetThreadsThreadImage}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
+</div></xen:if></xen:if>]]></template>
+    <template title="bdimage_wf_widget_threads_thread_image" version_id="2020200" version_string="2.2.2"><![CDATA[<xen:set var="$bdImage_imageData"><xen:callback class="bdImage_Helper_Template" method="getImageDataIfTemplateOption"
+	params="{$thread}">wf_widget_threads_thread_image</xen:callback></xen:set><xen:if
+	is="{$bdImage_imageData}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
 	class="bdImage_Helper_Template" method="getThumbnailUrl" params="{xen:array
-	'0={xen:property bdImage_wfThreadsSidebar_imageSize}'}">{xen:raw $thread.bdimage_image}</xen:callback></xen:set><xen:if
-	is="{$bdImage_thumbnailUrl}"><a href="{xen:link threads, $thread}" class="avatar NoOverlay"><xen:comment>
-	</xen:comment><img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_wfThreadsSidebar_imageSize}" <xen:comment>
-	</xen:comment>height="{xen:property bdImage_wfThreadsSidebar_imageSize}"{xen:if $debugMode,
-	' data-image="{xen:jsescape $thread.bdimage_image}"'} /></a></xen:if></xen:if></xen:if>]]></template>
+	'0={xen:property bdImage_wfThreadsSidebar_imageSize}'}">{xen:raw $bdImage_imageData}</xen:callback></xen:set><xen:if
+	is="{$bdImage_thumbnailUrl}"><a href="{xen:link threads, $thread}" class="avatar NoOverlay bdImage_widgetThreads">
+	<img src="{$bdImage_thumbnailUrl}" width="{xen:property bdImage_wfThreadsSidebar_imageSize}" <xen:comment>
+		</xen:comment>height="{xen:property bdImage_wfThreadsSidebar_imageSize}"{xen:if $debugMode,
+		' data-image="{xen:jsescape $bdImage_imageData}"'} />
+</a></xen:if></xen:if>]]></template>
     <template title="bdimage_widget.css" version_id="30" version_string="1.0.4"><![CDATA[.bdImage_Widget_Slider_Container
 {
 	overflow: hidden;
@@ -2704,13 +2709,10 @@ hascontent="true"><xen:require css="bdimage_timeline.css" /><xen:comment>
 
 <xen:include template="bdimage_node_forum_last_thread_image" />]]></replace>
     </modification>
-    <modification template="open_graph_meta" modification_key="bdimage_open_graph_meta_insert" description="Insert our image(s)." execution_order="10" enabled="1" action="str_replace">
-      <find><![CDATA[{xen:raw $ogExtraHtml}]]></find>
-      <replace><![CDATA[$0{xen:raw $_bdImage_ogExtraHtml}]]></replace>
-    </modification>
-    <modification template="open_graph_meta" modification_key="bdimage_open_graph_meta_remove" description="Remove default images if ours is found." execution_order="10" enabled="1" action="preg_replace">
-      <find><![CDATA[#<meta property="og:image".+?/>#]]></find>
-      <replace><![CDATA[<xen:if is="!{$_bdImage_ogExtraHtml}">$0</xen:if>]]></replace>
+    <modification template="open_graph_meta" modification_key="bdimage_open_graph_meta_extra" description="Render extra html." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#\A.+\z#s]]></find>
+      <replace><![CDATA[<xen:callback class="bdImage_Helper_Template" method="renderOgExtraHtml"
+	params="{xen:array 'extra={$_bdImage_ogExtraHtml}'}">$0</xen:callback>]]></replace>
     </modification>
     <modification template="search_result_thread" modification_key="bdimage_search_result_thread_image" description="Template Modification: Thread Image in search result." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:avatar user="$thread" size="s" img="true" />]]></find>

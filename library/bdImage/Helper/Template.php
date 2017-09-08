@@ -30,6 +30,20 @@ class bdImage_Helper_Template
     }
 
     /**
+     * @param string $templateOptionSubKey
+     * @param array $container
+     * @return string
+     */
+    public static function getImageDataIfTemplateOption($templateOptionSubKey, array $container)
+    {
+        if (!bdImage_Option::get('template', $templateOptionSubKey)) {
+            return '';
+        }
+
+        return self::getImageData('', $container);
+    }
+
+    /**
      * @param string $text
      * @return string "PREFIX" if $text is "[PREFIX] Something else", full $text otherwise
      */
@@ -82,6 +96,21 @@ class bdImage_Helper_Template
         }
 
         return sprintf('width:%dpx', $attachment['width']);
+    }
+
+    /**
+     * @param string $html
+     * @param array $params
+     * @return string
+     */
+    public static function renderOgExtraHtml($html, array $params)
+    {
+        $extra = trim($params['extra']);
+        if (empty($extra)) {
+            return $html;
+        }
+
+        return preg_replace('#<meta[^>]+(og:image|twitter:image)[^>]+/>\s*#s', '', $html) . $extra;
     }
 
     /**

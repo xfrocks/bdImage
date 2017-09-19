@@ -34,7 +34,7 @@ class bdImage_Helper_BbCode
     public static function extractImage($bbCode, array $contentData = array(), $dwOrModel = null)
     {
         $imageDataMany = self::extractImages($bbCode, $contentData, $dwOrModel);
-        if (!is_array($imageDataMany)) {
+        if (!is_array($imageDataMany) || count($imageDataMany) === 0) {
             return null;
         }
 
@@ -43,7 +43,6 @@ class bdImage_Helper_BbCode
             $autoCoverRules = self::parseRules($contentData['autoCover']);
         }
 
-        $image = null;
         foreach ($imageDataMany as $imageData) {
             $unpacked = bdImage_Helper_Data::unpack($imageData);
             if (empty($unpacked[bdImage_Helper_Data::IMAGE_URL])) {
@@ -53,13 +52,9 @@ class bdImage_Helper_BbCode
             $imageUrl = $unpacked[bdImage_Helper_Data::IMAGE_URL];
             $imageSize = bdImage_Integration::getSize($unpacked, false);
             if ($imageSize === false) {
+                // ignore without-sizing image for now
+                // basically we try to use attachment first
                 continue;
-            }
-
-            $unpacked[bdImage_Helper_Data::IMAGE_WIDTH] = $imageSize[0];
-            $unpacked[bdImage_Helper_Data::IMAGE_HEIGHT] = $imageSize[1];
-            if ($image === null) {
-                $image = bdImage_Helper_Data::pack($imageUrl, 0, 0, $unpacked);
             }
 
             if (is_array($autoCoverRules)) {
@@ -69,11 +64,28 @@ class bdImage_Helper_BbCode
                     return $coverImage;
                 }
             } else {
-                return $image;
+                return $imageData;
             }
         }
 
-        return $image;
+        // fallback, just use the first image data available
+        $firstImageData = reset($imageDataMany);
+        $unpacked = bdImage_Helper_Data::unpack($firstImageData);
+        if (empty($unpacked[bdImage_Helper_Data::IMAGE_URL])) {
+            return null;
+        }
+
+        $imageUrl = $unpacked[bdImage_Helper_Data::IMAGE_URL];
+        $imageSize = bdImage_Integration::getSize($unpacked);
+        if ($imageSize === false) {
+            return null;
+        }
+
+        $unpacked[bdImage_Helper_Data::IMAGE_WIDTH] = $imageSize[0];
+        $unpacked[bdImage_Helper_Data::IMAGE_HEIGHT] = $imageSize[1];
+        $firstImageData = bdImage_Helper_Data::pack($imageUrl, 0, 0, $unpacked);
+
+        return $firstImageData;
     }
 
     /**

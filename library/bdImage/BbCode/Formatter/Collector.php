@@ -87,6 +87,7 @@ class bdImage_BbCode_Formatter_Collector extends XenForo_BbCode_Formatter_Base
                             $attachments[$attachmentId]['height'],
                             array(
                                 'type' => 'attachment',
+                                'attachment_id' => $attachmentId,
                                 'filename' => $attachments[$attachmentId]['filename'],
                             )
                         );

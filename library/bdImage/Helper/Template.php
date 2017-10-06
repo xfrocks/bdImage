@@ -22,6 +22,14 @@ class bdImage_Helper_Template
 
         foreach ($keys as $_key) {
             if (!empty($container[$_key])) {
+                if ($_key === 'tinhte_thumbnail_url') {
+                    if (!empty($container['tinhte_thumbnail_cover'])) {
+                        return bdImage_Helper_Data::pack($container[$_key], 0, 0, [
+                            'is_cover' => true
+                        ]);
+                    }
+                }
+
                 return $container[$_key];
             }
         }

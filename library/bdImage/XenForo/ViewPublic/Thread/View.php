@@ -40,24 +40,44 @@ class bdImage_XenForo_ViewPublic_Thread_View extends XFCP_bdImage_XenForo_ViewPu
         $firstPostAttachmentsRef =& $firstPostRef['attachments'];
 
         $unpack = bdImage_Helper_Data::unpack($imageData);
-        $threadImageUrls = array($unpack['url']);
+        $threadImageUrls = array();
+        $threadImageAttachmentIds = array();
+        if (!empty($unpack['is_cover'])) {
+            if (!empty($unpack[bdImage_Helper_Data::IMAGE_URL])) {
+                $threadImageUrls[] = $unpack[bdImage_Helper_Data::IMAGE_URL];
+            }
+
+            if (!empty($unpack['attachment_id'])) {
+                $threadImageAttachmentIds[$unpack['attachment_id']] = true;
+            }
+        }
         if (!empty($unpack[bdImage_Helper_Data::SECONDARY_IMAGES])) {
-            foreach ($unpack[bdImage_Helper_Data::SECONDARY_IMAGES] as $secondaryImage) {
-                $threadImageUrls[] = bdImage_Helper_Data::get($secondaryImage, bdImage_Helper_Data::IMAGE_URL);
+            foreach ($unpack[bdImage_Helper_Data::SECONDARY_IMAGES] as $secondaryData) {
+                $secondaryUnpacked = bdImage_Helper_Data::unpack($secondaryData);
+
+                if (!empty($secondaryUnpacked[bdImage_Helper_Data::IMAGE_URL])) {
+                    $threadImageUrls[] = $secondaryUnpacked[bdImage_Helper_Data::IMAGE_URL];
+                }
+
+                if (!empty($secondaryUnpacked['attachment_id'])) {
+                    $threadImageAttachmentIds[$secondaryUnpacked['attachment_id']] = true;
+                }
             }
         }
 
         foreach (array_keys($firstPostAttachmentsRef) as $attachmentId) {
-            $attachmentUrls = array(
-                XenForo_Link::buildPublicLink('canonical:attachments', $firstPostAttachmentsRef[$attachmentId]),
-                XenForo_Link::buildPublicLink('full:attachments', $firstPostAttachmentsRef[$attachmentId]),
-            );
+            $isThreadImage = isset($threadImageAttachmentIds[$attachmentId]);
 
-            $isThreadImage = false;
-            foreach ($attachmentUrls as $attachmentUrl) {
-                if (in_array($attachmentUrl, $threadImageUrls, true)) {
-                    $isThreadImage = true;
-                    break;
+            if (!$isThreadImage) {
+                $attachmentUrls = array(
+                    XenForo_Link::buildPublicLink('canonical:attachments', $firstPostAttachmentsRef[$attachmentId]),
+                    XenForo_Link::buildPublicLink('full:attachments', $firstPostAttachmentsRef[$attachmentId]),
+                );
+                foreach ($attachmentUrls as $attachmentUrl) {
+                    if (in_array($attachmentUrl, $threadImageUrls, true)) {
+                        $isThreadImage = true;
+                        break;
+                    }
                 }
             }
 

@@ -140,28 +140,59 @@ class bdImage_Helper_File
      */
     public static function existsAndNotEmpty($path)
     {
-        return self::getImageFileSizeIfExists($path) > self::THUMBNAIL_ERROR_FILE_LENGTH;
+        if (!is_string($path) || strlen($path) === 0) {
+            // invalid path
+            return false;
+        }
+
+        $pathStat = @stat($path);
+        if (!is_array($pathStat)
+            || !isset($pathStat['size'])
+        ) {
+            // bad file
+            return false;
+        }
+
+        return $pathStat['size'] > 0;
     }
 
     /**
      * @param string $path
-     * @return int
+     * @param bool $checkFileSize
+     * @param bool $checkFileMtime
+     * @param int $hashLength
+     * @return null|string
      */
-    public static function getImageFileSizeIfExists($path)
+    public static function getCacheFileHash($path, $checkFileSize = true, $checkFileMtime = true, $hashLength = 6)
     {
         if (!is_string($path) || strlen($path) === 0) {
             // invalid path
-            return 0;
+            return null;
         }
 
         $pathStat = @stat($path);
-        if ($pathStat === false
+        if (!is_array($pathStat)
             || !isset($pathStat['size'])
+            || !isset($pathStat['mtime'])
         ) {
-            return 0;
+            // bad file
+            return null;
         }
 
-        return $pathStat['size'];
+        if ($checkFileSize && $pathStat['size'] < bdImage_Helper_File::THUMBNAIL_ERROR_FILE_LENGTH) {
+            // file too small
+            return null;
+        }
+
+        if ($checkFileMtime) {
+            $fileTtlDays = bdImage_Option::get('fileTtlDays');
+            if ($fileTtlDays > 0 && $pathStat['mtime'] < XenForo_Application::$time - $fileTtlDays * 86400) {
+                // file too old
+                return null;
+            }
+        }
+
+        return substr(md5($pathStat['size'] . $pathStat['mtime']), 0, $hashLength);
     }
 
     /**

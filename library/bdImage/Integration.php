@@ -69,14 +69,13 @@ class bdImage_Integration
 
         if (!bdImage_Listener::$skipCacheCheck) {
             $cachePath = bdImage_Helper_File::getCachePath($imageUrl, $size, $mode, $hash);
-            $cacheFileSize = bdImage_Helper_File::getImageFileSizeIfExists($cachePath);
-            if ($cacheFileSize > bdImage_Helper_File::THUMBNAIL_ERROR_FILE_LENGTH) {
-                $thumbnailUrl = sprintf('%s?%d', bdImage_Helper_File::getCacheUrl(
-                    $imageUrl,
-                    $size,
-                    $mode,
-                    $hash
-                ), $cacheFileSize);
+            $cacheFileHash = bdImage_Helper_File::getCacheFileHash($cachePath);
+            if ($cacheFileHash !== null) {
+                $thumbnailUrl = sprintf(
+                    '%s?%s',
+                    bdImage_Helper_File::getCacheUrl($imageUrl, $size, $mode, $hash),
+                    $cacheFileHash
+                );
             }
         }
 

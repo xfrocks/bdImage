@@ -161,18 +161,15 @@ class bdImage_Helper_Thumbnail
         }
 
         $cachePath = bdImage_Helper_File::getCachePath($url, $size, $mode, $hash);
-        $cacheFileSize = bdImage_Helper_File::getImageFileSizeIfExists($cachePath);
-
+        $cacheFileHash = bdImage_Helper_File::getCacheFileHash($cachePath);
         $thumbnailUrl = bdImage_Helper_File::getCacheUrl($url, $size, $mode, $hash);
         $thumbnailUri = XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
-        if ($cacheFileSize > bdImage_Helper_File::THUMBNAIL_ERROR_FILE_LENGTH
-            && !$forceRebuild
-        ) {
-            return sprintf('%s?%d', $thumbnailUri, $cacheFileSize);
+        if ($cacheFileHash !== null && !$forceRebuild) {
+            return sprintf('%s?%d', $thumbnailUri, $cacheFileHash);
         }
 
         $thumbnailError = array();
-        if ($cacheFileSize > 0 && self::$maxAttempt > 1) {
+        if ($cacheFileHash > 0 && self::$maxAttempt > 1) {
             $thumbnailError = bdImage_Helper_File::getThumbnailError($cachePath);
 
             if (isset($thumbnailError['latestAttempt'])
@@ -287,7 +284,6 @@ class bdImage_Helper_Thumbnail
             bdImage_Listener::$imageQuality
         );
 
-        $tempFileSize = filesize($tempFile);
         try {
             XenForo_Helper_File::safeRename($tempFile, $cachePath);
         } catch (Exception $e) {
@@ -307,7 +303,7 @@ class bdImage_Helper_Thumbnail
         unset($imageObj);
 
         self::_log('Done');
-        return sprintf('%s?%d', $thumbnailUri, $tempFileSize);
+        return sprintf('%s?%d', $thumbnailUri, XenForo_Application::$time);
     }
 
     /**

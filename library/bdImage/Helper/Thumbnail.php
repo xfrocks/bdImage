@@ -165,7 +165,7 @@ class bdImage_Helper_Thumbnail
         $thumbnailUrl = bdImage_Helper_File::getCacheUrl($url, $size, $mode, $hash);
         $thumbnailUri = XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
         if ($cacheFileHash !== null && !$forceRebuild) {
-            return sprintf('%s?%d', $thumbnailUri, $cacheFileHash);
+            return sprintf('%s?%s', $thumbnailUri, $cacheFileHash);
         }
 
         $thumbnailError = array();
@@ -262,19 +262,13 @@ class bdImage_Helper_Thumbnail
         } catch (Exception $e) {
             throw new bdImage_Exception_WithImage($e->getMessage(), $imageObj, $e);
         }
-        if (!is_dir($cacheDir) || !is_writable($cacheDir)) {
-            throw new bdImage_Exception_WithImage(sprintf('Dir %s is not writable', $cacheDir), $imageObj);
-        }
-        if (file_exists($cachePath) && !is_writable($cachePath)) {
-            throw new bdImage_Exception_WithImage(sprintf('Path %s is not writable', $cachePath), $imageObj);
-        }
 
         $tempFile = tempnam(XenForo_Helper_File::getTempDir(), 'bdImageThumbnail_');
         if (!is_string($tempFile)) {
-            throw new bdImage_Exception_WithImage(sprintf(
-                'tempnam() returns %s',
-                var_export($tempFile, true)
-            ), $imageObj);
+            throw new bdImage_Exception_WithImage(
+                sprintf('tempnam() returns %s', var_export($tempFile, true)),
+                $imageObj
+            );
         }
 
         /** @noinspection PhpParamsInspection */
@@ -285,16 +279,17 @@ class bdImage_Helper_Thumbnail
         );
 
         try {
-            XenForo_Helper_File::safeRename($tempFile, $cachePath);
+            $renamed = XenForo_Helper_File::safeRename($tempFile, $cachePath);
+            if (!$renamed) {
+                @unlink($tempFile);
+                throw new bdImage_Exception_WithImage(
+                    sprintf('Cannot rename %s to %s', $tempFile, $cachePath),
+                    $imageObj
+                );
+            }
         } catch (Exception $e) {
             @unlink($tempFile);
             throw new bdImage_Exception_WithImage($e->getMessage(), $imageObj, $e);
-        }
-
-        try {
-            XenForo_Helper_File::makeWritableByFtpUser($cachePath);
-        } catch (Exception $e) {
-            // ignore this one
         }
 
         if (is_callable(array($imageObj, 'bdImage_cleanUp'))) {
@@ -303,7 +298,7 @@ class bdImage_Helper_Thumbnail
         unset($imageObj);
 
         self::_log('Done');
-        return sprintf('%s?%d', $thumbnailUri, XenForo_Application::$time);
+        return sprintf('%s?%s', $thumbnailUri, bdImage_Helper_File::getCacheFileHash($cachePath));
     }
 
     /**

@@ -192,7 +192,13 @@ class bdImage_Helper_File
             }
         }
 
-        return substr(md5($pathStat['size'] . $pathStat['mtime']), 0, $hashLength);
+        $hash = substr(md5($pathStat['size'] . $pathStat['mtime']), 0, $hashLength);
+
+        if (XenForo_Application::debugMode()) {
+            $hash = sprintf('s%d-t%d-h%s', $pathStat['size'], $pathStat['mtime'], $hash);
+        }
+
+        return $hash;
     }
 
     /**

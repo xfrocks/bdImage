@@ -12,7 +12,7 @@ class bdImage_bdApi_Extend_Model_Thread extends XFCP_bdImage_bdApi_Extend_Model_
                 $thumbnailSize = intval(XenForo_Application::getOptions()->get('attachmentThumbnailDimensions'));
                 if ($thumbnailSize > 0) {
                     $data['thread_thumbnail'] = array(
-                        'link' => bdImage_Integration::buildThumbnailLink($imageData, $thumbnailSize),
+                        'link' => new bdImage_Helper_LazyThumbnailer($imageData, $thumbnailSize),
                         'width' => $thumbnailSize,
                         'height' => $thumbnailSize,
                     );

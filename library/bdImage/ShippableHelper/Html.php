@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2017-08-04T09:03:27+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2017-11-02T07:30:13+00:00
 
 /**
  * Class bdImage_ShippableHelper_Html
- * @version 18
+ * @version 19
  * @see DevHelper_Helper_ShippableHelper_Html
  */
 class bdImage_ShippableHelper_Html
@@ -212,7 +212,7 @@ class bdImage_ShippableHelper_Html
                 $endPos = utf8_strpos($snippet, '>', $startPos);
                 if ($endPos === false) {
                     // we found a partial open tag, best to delete the whole thing
-                    $snippet = utf8_substr($snippet, 0, $startPos);
+                    $snippet = utf8_rtrim(utf8_substr($snippet, 0, $startPos));
                     break;
                 }
 

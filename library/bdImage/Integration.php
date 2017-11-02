@@ -87,7 +87,7 @@ class bdImage_Integration
     }
 
     /**
-     * @param string $imageData
+     * @param string|array $imageData
      * @return string original url
      */
     public static function getOriginalUrl($imageData)

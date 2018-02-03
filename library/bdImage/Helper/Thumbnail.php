@@ -55,14 +55,13 @@ class bdImage_Helper_Thumbnail
         die(0);
     }
 
-    public static function handlePhpError($errorType)
+    public static function handlePhpError($errorType, $errorMessage)
     {
         if (!($errorType & error_reporting())) {
             return;
         }
 
-        $args = func_get_args();
-        throw new XenForo_Exception(json_encode($args));
+        throw new XenForo_Exception($errorMessage);
     }
 
     public static function handleFatalError()

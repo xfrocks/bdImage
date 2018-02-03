@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2016-11-23T09:20:21+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2018-01-31T12:12:18+00:00
 
 /**
  * Class bdImage_ShippableHelper_Updater
- * @version 7
+ * @version 8
  * @see DevHelper_Helper_ShippableHelper_Updater
  */
 class bdImage_ShippableHelper_Updater
@@ -75,8 +75,9 @@ class bdImage_ShippableHelper_Updater
             = 'bdImage_ShippableHelper_UpdaterCore';
 
         if (!isset($GLOBALS[self::KEY]['onPreRoute'][$apiUrl])) {
-            $GLOBALS[self::KEY]['onPreRoute'][$apiUrl] = create_function('$fc',
-                __CLASS__ . '::onPreRoute($fc, ' . var_export($config, true) . ');');
+            $GLOBALS[self::KEY]['onPreRoute'][$apiUrl] = function ($fc) use ($config) {
+                self::onPreRoute($fc, $config);
+            };
             XenForo_CodeEvent::addListener('front_controller_pre_route',
                 $GLOBALS[self::KEY]['onPreRoute'][$apiUrl]);
         }
@@ -90,6 +91,7 @@ class bdImage_ShippableHelper_Updater
      * @param string|null $apiUrl
      * @param string|null $addOnId
      * @throws Zend_Exception
+     * @throws XenForo_Exception
      */
     public static function onUninstall($apiUrl = null, $addOnId = null)
     {

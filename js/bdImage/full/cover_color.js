@@ -26,6 +26,7 @@
             var self = this,
                 $radio = this.$container.find('input[name=bdimage_image]:checked'),
                 $img = $radio.siblings('img'),
+                src = $img.prop('src'),
                 callback = function ($img) {
                     if (self.colorThief) {
                         var color = self.colorThief.getColor($img[0]);
@@ -37,9 +38,51 @@
                     }
                 };
 
-            if ($img.length === 1) {
-                callback($img);
+            if (!src) {
+                return;
             }
+
+            this.loadBlob(src, function (err, $blobImg) {
+                if (!err) {
+                    return callback($blobImg);
+                }
+
+                callback($img);
+            });
+        },
+
+        loadBlob: function (thumbnailUrl, callback) {
+            var self = this,
+                URL = window.URL || window.webkitURL,
+                xhr = new XMLHttpRequest();
+
+            if (!URL) {
+                // https://developer.mozilla.org/en-US/docs/Web/API/Window/URL
+                return callback('No window.URL');
+            }
+
+            xhr.open('GET', thumbnailUrl, true);
+            xhr.responseType = 'blob';
+
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    var blob = this.response,
+                        objectUrl = URL.createObjectURL(blob),
+                        $img = $('<img />');
+
+                    $img.on('load', function () {
+                        callback(null, $img);
+                    }).attr('src', objectUrl);
+                } else {
+                    callback('xhr.status = ' + this.status);
+                }
+            };
+
+            xhr.onerror = function () {
+                callback('xhr.onerror');
+            };
+
+            xhr.send();
         }
     };
 

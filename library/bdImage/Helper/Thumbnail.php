@@ -38,12 +38,22 @@ class bdImage_Helper_Thumbnail
 
         self::_bootstrap();
 
+        if (!empty($_SERVER['HTTP_ORIGIN'])) {
+            $boardUrl = XenForo_Application::getOptions()->get('boardUrl');
+            if (strpos($boardUrl, $_SERVER['HTTP_ORIGIN']) === 0) {
+                header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+            }
+        }
+
         try {
             $thumbnailLink = self::_buildThumbnailLink($url, $size, $mode, $hash);
             header('Location: ' . $thumbnailLink, true, 302);
         } catch (bdImage_Exception_WithImage $ewi) {
             $ewi->output();
-            XenForo_Error::logException($ewi, false, '[Sent output] ');
+
+            if ($ewi->getMessage()) {
+                XenForo_Error::logException($ewi, false, '[Sent output] ');
+            }
         } catch (Exception $e) {
             self::_echoHttp500WithTinyGif($e->getMessage());
 
@@ -253,6 +263,11 @@ class bdImage_Helper_Thumbnail
                     self::_cropSquare($imageObj, $size);
                 }
                 break;
+        }
+
+        if ($imageObj->getWidth() * $imageObj->getHeight() < 4096) {
+            // Optimization: skip caching if the output is too small
+            throw new bdImage_Exception_WithImage('', $imageObj);
         }
 
         $cacheDir = dirname($cachePath);

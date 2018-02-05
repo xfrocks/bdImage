@@ -287,7 +287,7 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     <property property_name="bdImage_cover" property_type="css" definition="1" group_name="bdImage_cover" title="Cover" description="" css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="10" sub_group=""><![CDATA[{"color":"#fff"}]]></property>
     <property property_name="bdImage_coverBg" property_type="css" definition="1" group_name="bdImage_cover" title="Text Container" description="" css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="100" sub_group=""><![CDATA[{"background-color":"rgba(0, 0, 0, 0.25)","font-size":"21px"}]]></property>
     <property property_name="bdImage_coverHidePageElements" property_type="scalar" definition="1" group_name="bdImage_cover" title="Hide Page Elements" description="Enable this option to hide page elements such as the top breadcrumb, title bar, etc." css_components="" scalar_type="boolean" scalar_parameters="" display_order="100" sub_group=""><![CDATA[1]]></property>
-    <property property_name="bdImage_coverAvatar" property_type="css" definition="1" group_name="bdImage_cover" title="Avatar" description="" css_components="background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="200" sub_group=""><![CDATA[{"background-color":"@primaryLighterStill","border-radius":"48px","height":"96px","width":"96px"}]]></property>
+    <property property_name="bdImage_coverAvatar" property_type="css" definition="1" group_name="bdImage_cover" title="Avatar" description="" css_components="background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="200" sub_group=""><![CDATA[{"background-color":"@primaryLighterStill","border-color":"black","border-radius":"48px","border-style":"none","border-width":"0","extra":"box-shadow: 1px 1px 5px @mutedTextColor;","height":"96px","padding-all":"0","width":"96px"}]]></property>
     <property property_name="bdImage_wfThreadsSidebar_imageSize" property_type="scalar" definition="1" group_name="bdImage" title="Threads Sidebar - Image Size" description="Enter the image size (width / height) for thumbnail used in [bd] Widget Framework's Threads widget (sidebar layout)." css_components="" scalar_type="number" scalar_parameters="" display_order="1000" sub_group="wfThreadsSidebar"><![CDATA[48]]></property>
     <property property_name="bdImage_threadList_imageSize" property_type="scalar" definition="1" group_name="bdImage" title="Thread List - Image Size" description="Enter the image size (width / height) for thumbnail used in thread list." css_components="" scalar_type="number" scalar_parameters="" display_order="10" sub_group="threadList"><![CDATA[48]]></property>
     <property property_name="bdImage_forumLastThread_imageSize" property_type="scalar" definition="1" group_name="bdImage" title="Forum Last Thread - Image Size" description="Enter the image size (width / height) for thumbnail used in forum list (last thread block)." css_components="" scalar_type="number" scalar_parameters="" display_order="20" sub_group="forumLastThread"><![CDATA[48]]></property>
@@ -302,7 +302,7 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     </group>
   </style_properties>
   <templates>
-    <template title="bdimage.css" version_id="2020303" version_string="2.2.3"><![CDATA[.attachedFiles.bdImage_threadViewHiddenAttachment {
+    <template title="bdimage.css" version_id="2020304" version_string="2.2.3"><![CDATA[.attachedFiles.bdImage_threadViewHiddenAttachment {
 	display: none;
 }
 
@@ -321,11 +321,13 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
 .bdImage_threadImage { text-align: center; }
 	.bdImage_threadImage img { max-width: 100%; }
 
-ul.bdImage_Picker {}
-	ul.bdImage_Picker > li.image { display: inline-block; }
-	ul.bdImage_Picker > li.image label { display: inline-block; }
-	ul.bdImage_Picker > li.image input { height: {xen:calc {xen:property bdImage_threadList_imageSize}}px; }
-	ul.bdImage_Picker > li.other { display: block; }
+.bdImage_Picker {}
+	.bdImage_Picker > .image,
+	.bdImage_Picker > .image > * { display: inline-block; white-space: nowrap; }
+	.bdImage_Picker > .image label,
+	.bdImage_Picker > .image input { line-height: {xen:calc {xen:property bdImage_threadList_imageSize}}px; }
+	.bdImage_Picker > .image input { vertical-align: top; }
+	.bdImage_Picker > .other { display: block; }
 
 .bdImage_attachImage {
 	max-width: 100%;

@@ -72,6 +72,9 @@ class bdImage_Deferred_Thread extends XenForo_Deferred_Abstract
 
         $url = $thread['tinhte_thumbnail_url'];
         list($imageWidth, $imageHeight) = bdImage_Integration::getSize($url);
+        if (empty($imageWidth) || empty($imageHeight)) {
+            return null;
+        }
 
         $extraData = array(
             'is_cover' => !empty($thread['tinhte_thumbnail_cover']),

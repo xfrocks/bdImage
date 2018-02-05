@@ -1113,15 +1113,19 @@ html.bdImage_hasCover .titleBar {
 	</xen:comment>width="{xen:property bdImage_forumLastThread_imageSize}" height="{xen:property bdImage_forumLastThread_imageSize}" <xen:comment>
 	</xen:comment>class="bdImage_lastThreadImage"{xen:if $debugMode,
 	' data-image="{xen:jsescape $bdImage_imageData}"'} /></xen:if></xen:if>]]></template>
-    <template title="bdimage_picker" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:if is="{$bdImage_canUsePicker}">
+    <template title="bdimage_picker" version_id="2020303" version_string="2.2.3"><![CDATA[<xen:if is="{$bdImage_canUsePicker}">
 	<xen:require css="bdimage.css" />
 
 	<xen:set var="$currentImageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
 		params="{xen:array '0=url'}">{xen:raw $currentImageData}</xen:callback></xen:set><xen:set
 		var="$currentImageIsCover"><xen:callback class="bdImage_Helper_Data" method="get"
-		params="{xen:array '0=is_cover'}">{xen:raw $currentImageData}</xen:callback></xen:set>
+		params="{xen:array '0=is_cover'}">{xen:raw $currentImageData}</xen:callback></xen:set><xen:set
+		var="$currentImageCoverColor"><xen:callback class="bdImage_Helper_Data" method="get"
+		params="{xen:array '0=cover_color'}">{xen:raw $currentImageData}</xen:callback></xen:set>
 
-	<dl class="ctrlUnit">
+	<dl class="ctrlUnit bdImagePicker"
+		data-cover-color-demo-selector=".coverColorDemo"
+		data-cover-color-input-selector=".js-coverColorInput">
 		<dt>
 			<label for="ctrl_bdimage_image">
 				{xen:phrase bdimage_thread_image}:
@@ -1183,11 +1187,15 @@ html.bdImage_hasCover .titleBar {
 				</xen:if>
 
 				<xen:if is="{$bdImage_canSetCover}">
+				<xen:require js="js/bdImage/Lib/color-thief.min.js" />
+				<xen:require js="js/bdImage/cover_color.min.js" />
 				<li>
 					<label>
 						<input type="checkbox" name="bdimage_extra_data[is_cover]" value="1" {xen:checked $currentImageIsCover} />
 						{xen:phrase bdimage_is_cover}
+						<span class="coverColorDemo" style="{xen:if $currentImageCoverColor, 'background: {$currentImageCoverColor}'}">&nbsp;&nbsp;&nbsp;&nbsp;</span>
 					</label>
+					<input type="hidden" name="bdimage_extra_data[cover_color]" value="{$currentImageCoverColor}" class="js-coverColorInput" />
 					<input type="hidden" name="bdimage_extra_data[is_cover_included]" value="1" />
 				</li>
 				</xen:if>
@@ -1576,7 +1584,7 @@ html.bdImage_hasCover .titleBar {
 <xen:edithint template="bdimage_thread_view_open_graph_meta" />
 <xen:edithint template="bdimage_wf_widget_threads_full_thread_image" />
 <xen:edithint template="bdimage_wf_widget_threads_thread_image" />]]></template>
-    <template title="bdimage_thread_cover" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:require css="bdimage.css" /><xen:set
+    <template title="bdimage_thread_cover" version_id="2020303" version_string="2.2.3"><![CDATA[<xen:require css="bdimage.css" /><xen:set
 var="$coverTitleEscaped">{$thread.title}</xen:set><xen:set
 var="$coverDescriptionEscaped">{xen:phrase bdimage_discussion_in_x_started_by_y_date_z_replies_m_views_n,
 	'forum=<a href="{xen:link forums, $forum}">{$forum.title}</a>',
@@ -1587,7 +1595,9 @@ var="$coverDescriptionEscaped">{xen:phrase bdimage_discussion_in_x_started_by_y_
 var="$coverImageData"><xen:callback class="bdImage_Helper_Template"
 	method="getImageData" params="{$thread}" /></xen:set><xen:set
 var="$coverOriginalUrl"><xen:callback class="bdImage_Integration"
-	method="getOriginalUrl">{xen:raw $coverImageData}</xen:callback></xen:set><xen:if
+	method="getOriginalUrl">{xen:raw $coverImageData}</xen:callback></xen:set><xen:set
+var="$coverColor"><xen:callback class="bdImage_Helper_Data"
+	method="get" params="{xen:array '0=cover_color'}">{xen:raw $coverImageData}</xen:callback></xen:set><xen:if
 
 is="{$coverOriginalUrl}"><div class="bdImage_coverContainer position-{$position}">
 	<p class="title coverContent">{xen:raw $coverTitleEscaped}</p>
@@ -1597,7 +1607,8 @@ is="{$coverOriginalUrl}"><div class="bdImage_coverContainer position-{$position}
 			method="getDataUriTransparentAtSameSize">{xen:raw
 			$coverImageData}</xen:callback></xen:set></xen:if><xen:if
 		is="{$dataUri}"><img class="cover" src="{xen:raw
-			$dataUri}" style="background-image: url({$coverOriginalUrl}); background-size: cover;" /><xen:else
+			$dataUri}" style="background-image:url({$coverOriginalUrl});background-size:cover;{xen:if
+				$coverColor, 'background-color:{$coverColor}'}" /><xen:else
 		/><img class="cover" src="{$coverOriginalUrl}" /></xen:if>
 
 		<div class="bg coverContent">

@@ -3,6 +3,25 @@
 class bdImage_Helper_Template
 {
     /**
+     * @param int $color
+     * @return string
+     */
+    public static function getCoverColorFromTinhteThreadThumbnail($color)
+    {
+        if ($color < 2) {
+            return '';
+        }
+
+        $code = $color - 2;
+        $b = $code % 6;
+        $code = ($code - $b) / 6;
+        $g = $code % 6;
+        $code = ($code - $g) / 6;
+        $r = $code;
+        return sprintf('rgb(%d,%d,%d)', $r * 51, $g * 51, $b * 51);
+    }
+
+    /**
      * @param string $key
      * @param array $container
      * @return string
@@ -25,6 +44,7 @@ class bdImage_Helper_Template
                 if ($_key === 'tinhte_thumbnail_url') {
                     if (!empty($container['tinhte_thumbnail_cover'])) {
                         return bdImage_Helper_Data::pack($container[$_key], 0, 0, [
+                            'cover_color' => self::getCoverColorFromTinhteThreadThumbnail($container['tinhte_thumbnail_cover']),
                             'is_cover' => true
                         ]);
                     }

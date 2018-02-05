@@ -45,14 +45,12 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
             XenForo_Input::ARRAY_SIMPLE
         ));
 
-        $extraDataFilters = array();
-        if ($visitor->hasPermission('general', 'bdImage_setCover')) {
-            $extraDataFilters['is_cover'] = XenForo_Input::BOOLEAN;
-        }
-        foreach ($extraDataFilters as $extraDataKey => $extraDataFilter) {
-            if ($extraDataInput->filterSingle($extraDataKey . '_included', XenForo_Input::BOOLEAN)) {
-                $extraData[$extraDataKey] = $extraDataInput->filterSingle($extraDataKey, $extraDataFilter);
-            }
+        if ($visitor->hasPermission('general', 'bdImage_setCover')
+            && $extraDataInput->filterSingle('is_cover_included', XenForo_Input::BOOLEAN)) {
+            $extraData += $extraDataInput->filter(array(
+                'is_cover' => XenForo_Input::BOOLEAN,
+                'cover_color' => XenForo_Input::STRING,
+            ));
         }
 
         $extraData['_locked'] = true;

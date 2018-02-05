@@ -71,10 +71,8 @@ class bdImage_Deferred_Thread extends XenForo_Deferred_Abstract
         }
 
         $url = $thread['tinhte_thumbnail_url'];
-        list($imageWidth, $imageHeight) = bdImage_Integration::getSize($url);
-        if (empty($imageWidth) || empty($imageHeight)) {
-            return null;
-        }
+        $imageWidth = 0;
+        $imageHeight = 0;
 
         $extraData = array(
             'is_cover' => !empty($thread['tinhte_thumbnail_cover']),
@@ -82,6 +80,12 @@ class bdImage_Deferred_Thread extends XenForo_Deferred_Abstract
         );
 
         if ($extraData['is_cover']) {
+            list($imageWidth, $imageHeight) = bdImage_Integration::getSize($url);
+            if (empty($imageWidth) || empty($imageHeight)) {
+                $extraData['is_cover'] = false;
+                $extraData['was_cover'] = true;
+            }
+
             $extraData['cover_color'] = bdImage_Helper_Template::getCoverColorFromTinhteThreadThumbnail($thread['tinhte_thumbnail_cover']);
         }
 

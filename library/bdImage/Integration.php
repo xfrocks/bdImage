@@ -169,7 +169,7 @@ class bdImage_Integration
      */
     public static function getDataUriTransparentAtSameSize($imageData)
     {
-        list($width, $height) = self::getSize($imageData, false);
+        list($width, $height) = self::getSize($imageData);
         if (empty($width) || empty($height)) {
             return '';
         }

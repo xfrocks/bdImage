@@ -279,8 +279,8 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
   <style_properties>
     <property property_name="bdImage_wfThreadsFull_imageWidth" property_type="scalar" definition="1" group_name="bdImage" title="Threads Full - Image Width" description="Enter the image width for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch width." css_components="" scalar_type="number" scalar_parameters="" display_order="1000" sub_group="wfThreadsFull"><![CDATA[500]]></property>
     <property property_name="bdImage_wfThreadsFull_imageHeight" property_type="scalar" definition="1" group_name="bdImage" title="Threads Full - Image Height" description="Enter the image height for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch height." css_components="" scalar_type="number" scalar_parameters="" display_order="1010" sub_group="wfThreadsFull"><![CDATA[]]></property>
-    <property property_name="bdImage_coverPositionContentDirectChild" property_type="scalar" definition="1" group_name="bdImage_cover" title="Positioning: Above Content" description="Cover will span across the entire browser width." css_components="" scalar_type="boolean" scalar_parameters="" display_order="10" sub_group="position"><![CDATA[1]]></property>
-    <property property_name="bdImage_coverPositionAboveTopBreadcrumb" property_type="scalar" definition="1" group_name="bdImage_cover" title="Positioning: Content Top" description="Cover will show up at the top of content block (next to sidebar, if available)" css_components="" scalar_type="boolean" scalar_parameters="" display_order="20" sub_group="position"><![CDATA[0]]></property>
+    <property property_name="bdImage_coverPositionContentDirectChild" property_type="scalar" definition="1" group_name="bdImage_cover" title="Positioning: Above Content" description="Cover will span across the entire browser width." css_components="" scalar_type="boolean" scalar_parameters="" display_order="10" sub_group="position"><![CDATA[0]]></property>
+    <property property_name="bdImage_coverPositionAboveTopBreadcrumb" property_type="scalar" definition="1" group_name="bdImage_cover" title="Positioning: Content Top" description="Cover will show up at the top of content block (next to sidebar, if available)" css_components="" scalar_type="boolean" scalar_parameters="" display_order="20" sub_group="position"><![CDATA[1]]></property>
     <property property_name="bdImage_cover" property_type="css" definition="1" group_name="bdImage_cover" title="Cover" description="" css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="10" sub_group=""><![CDATA[{"color":"#fff"}]]></property>
     <property property_name="bdImage_coverBg" property_type="css" definition="1" group_name="bdImage_cover" title="Text Container" description="" css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="100" sub_group=""><![CDATA[{"background-color":"rgba(0, 0, 0, 0.25)","font-size":"21px"}]]></property>
     <property property_name="bdImage_coverHidePageElements" property_type="scalar" definition="1" group_name="bdImage_cover" title="Hide Page Elements" description="Enable this option to hide page elements such as the top breadcrumb, title bar, etc." css_components="" scalar_type="boolean" scalar_parameters="" display_order="100" sub_group=""><![CDATA[1]]></property>
@@ -299,7 +299,7 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     </group>
   </style_properties>
   <templates>
-    <template title="bdimage.css" version_id="2020302" version_string="2.2.3"><![CDATA[.attachedFiles.bdImage_threadViewHiddenAttachment {
+    <template title="bdimage.css" version_id="2020303" version_string="2.2.3"><![CDATA[.attachedFiles.bdImage_threadViewHiddenAttachment {
 	display: none;
 }
 
@@ -371,6 +371,9 @@ html.bdImage_hasCover .titleBar {
 	padding-left: {xen:property content.padding-left};
 	padding-right: {xen:property content.padding-right};
 }
+	.bdImage_coverContainer.position-ad_below_top_breadcrumb {
+		margin-bottom: 10px;
+	}
 
 .bdImage_cover {
 	{xen:property bdImage_cover}
@@ -378,11 +381,11 @@ html.bdImage_hasCover .titleBar {
 	overflow: hidden;
 	position: relative;
 }
-	.position-ad_above_top_breadcrumb .bdImage_cover {
-		margin-left: {xen:calc '0 - {xen:property content.padding-left}'}px;
-		margin-right: {xen:calc '0 - {xen:property content.padding-right}'}px;
+	.position-ad_below_top_breadcrumb .bdImage_cover {
+		margin-left: -{xen:property content.padding-left};
+		margin-right: -{xen:property content.padding-right};
 	}
-	.Sidebar .position-ad_above_top_breadcrumb .bdImage_cover {
+	.Sidebar .position-ad_below_top_breadcrumb .bdImage_cover {
 		margin-right: 0;
 	}
 	.bdImage_cover a { color: inherit; }
@@ -391,7 +394,7 @@ html.bdImage_hasCover .titleBar {
 	border-radius: {xen:property bdImage_coverAvatar.border-radius};
 	position: absolute;
 		bottom: 0;
-		left: {xen:calc 'floor({xen:property content.padding-left} / 2)'}px;
+		left: {xen:property content.padding-left};
 }
 	.bdImage_cover .avatar img,
 	.bdImage_cover .avatar amp-img {
@@ -402,7 +405,7 @@ html.bdImage_hasCover .titleBar {
 	font-size: {xen:property h1.font-size};
 	position: absolute;
 		bottom: {xen:calc 'floor({xen:property content.padding-bottom} / 2)'}px;
-		left: {xen:calc '{$coverAvatarSize} + {xen:property content.padding-left}'}px;
+		left: {xen:calc '{$coverAvatarSize} + {xen:property content.padding-left} + 5'}px;
 	text-rendering: optimizelegibility;
 	text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
 }
@@ -445,21 +448,22 @@ html.bdImage_hasCover .titleBar {
 }
 
 .bdImage_coverContainer > .title { display: none; }
-.bdImage_coverContainer.position-ad_above_top_breadcrumb > .title { padding: 0 !important; }
+.bdImage_coverContainer.position-ad_below_top_breadcrumb > .title { padding: 0 !important; }
 
 .bdImage_coverContainer .share_bar {
 	display: block;
 	position: absolute;
 		bottom: {xen:property content.padding-bottom};
-		right: 0;
+		right: {xen:property content.padding-right};
 	text-align: right;
 }
+	.bdImage_coverContainer.position-ad_below_top_breadcrumb .share_bar { right: {xen:property content.padding-bottom}; }
 	.bdImage_coverContainer .share_bar .sharePage .shareControl { display: inline-block; float: none; }
 	.bdImage_coverContainer .share_bar .textHeading { display: none; }
 
 <xen:if is="{xen:property enableResponsive}">
 @media (max-width:{xen:property maxResponsiveWideWidth}) {
-	.Responsive .position-ad_above_top_breadcrumb .bdImage_cover {
+	.Responsive .position-ad_below_top_breadcrumb .bdImage_cover {
 		margin-left: {xen:calc '0 - ceil({xen:property content.padding-left} / 2)'}px;
 		margin-right: {xen:calc '0 - ceil({xen:property content.padding-right} / 2)'}px;
 	}
@@ -478,11 +482,16 @@ html.bdImage_hasCover .titleBar {
 	}
 
 	.Responsive .bdImage_cover .author .username { 
-		left: {xen:calc 'floor({xen:property bdImage_coverAvatar.width} * 0.6666) + {xen:property content.padding-left}'}px;
+		left: {xen:calc 'floor({xen:property bdImage_coverAvatar.width} * 0.6666) + {xen:property content.padding-left} + 5'}px;
 	}
 
-	.bdImage_coverContainer > .title { display: block; }
-	.bdImage_cover .bg { display: none; }
+	html.Responsive.bdImage_hasCover .breadBoxTop { display: block; }
+	.Responsive .bdImage_coverContainer > .title {
+		display: block;
+
+		{xen:property h1}
+	}
+	.Responsive .bdImage_cover .bg { display: none; }
 	.Responsive .thread-cover-container .share_bar { margin-top: {xen:property content.padding-top}; position: relative; bottom: 0; }
 	.Responsive .thread-cover-container .sharePage { display: block; }
 }
@@ -495,7 +504,7 @@ html.bdImage_hasCover .titleBar {
 	}
 
 	.Responsive .bdImage_cover .author .username { 
-		left: {xen:calc 'floor({xen:property bdImage_coverAvatar.width} * 0.5) + {xen:property content.padding-left}'}px;
+		left: {xen:calc 'floor({xen:property bdImage_coverAvatar.width} * 0.5) + {xen:property content.padding-left} + 5'}px;
 	}
 }
 </xen:if>
@@ -2687,14 +2696,14 @@ $1{xen:if $bdImageExtraClass, ' {$bdImageExtraClass}'}$2]]></replace>
 	template="bdimage_bb_code_tag_attach_full" /></xen:contentcheck><xen:else
 />$0</xen:if>]]></replace>
     </modification>
-    <modification template="PAGE_CONTAINER" modification_key="bdimage_cover_ad_above_top_breadcrumb" description="Render cover at &quot;ad_above_top_breadcrumb&quot;." execution_order="10" enabled="1" action="str_replace">
-      <find><![CDATA[<xen:include template="ad_above_top_breadcrumb" />]]></find>
+    <modification template="PAGE_CONTAINER" modification_key="bdimage_cover_ad_below_top_breadcrumb" description="Render cover at &quot;ad_below_top_breadcrumb&quot;." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:include template="ad_below_top_breadcrumb" />]]></find>
       <replace><![CDATA[$0
 
 <xen:if is="{$bdImage_threadWithCover}
 			&& {xen:property bdImage_coverPositionAboveTopBreadcrumb}">
 	<xen:include template="bdimage_thread_cover">
-		<xen:set var="$position">ad_above_top_breadcrumb</xen:set>
+		<xen:set var="$position">ad_below_top_breadcrumb</xen:set>
 		<xen:map from="$bdImage_threadWithCover" to="$thread" />
 		<xen:map from="$bdImage_threadWithCover.forum" to="$forum" />
 	</xen:include>

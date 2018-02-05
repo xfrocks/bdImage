@@ -9,9 +9,6 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
     public function getPickedData()
     {
         $visitor = XenForo_Visitor::getInstance();
-        if (!$visitor->hasPermission('general', 'bdImage_usePicker')) {
-            return null;
-        }
 
         $pickedImage = $this->getPickedImage();
         if (!is_string($pickedImage)) {

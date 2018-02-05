@@ -163,7 +163,8 @@ thread_view_hidden_attachment = {xen:phrase bdimage_template_thread_view_hidden_
 node_forum_last_thread_image = {xen:phrase bdimage_template_node_forum_last_thread_image}
 search_result_thread_image = {xen:phrase bdimage_template_search_result_thread_image}
 wf_widget_threads_thread_image = {xen:phrase bdimage_template_wf_widget_threads_thread_image}
-picker = {xen:phrase bdimage_template_picker}</edit_format_params>
+picker = {xen:phrase bdimage_template_picker}
+thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format_params>
       <sub_options>*</sub_options>
       <relation group_id="bdImage" display_order="2000"/>
     </option>
@@ -193,6 +194,7 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="bdimage_columns" version_id="18" version_string="0.9.7b"><![CDATA[Columns]]></phrase>
     <phrase title="bdimage_column_gap" version_id="14" version_string="0.9.5"><![CDATA[Column Gap]]></phrase>
     <phrase title="bdimage_discussion_in_x_started_by_y_date_z_replies_m_views_n" version_id="30" version_string="1.0.4"><![CDATA[Discussion in '{forum}' started by {name}, {date}. Replies: {replies}. Views: {views}.]]></phrase>
+    <phrase title="bdimage_edit_thread_image" version_id="2020303" version_string="2.2.3"><![CDATA[Edit Thread Image]]></phrase>
     <phrase title="bdimage_feature_body" version_id="14" version_string="0.9.5"><![CDATA[Display first post message of the feature thread]]></phrase>
     <phrase title="bdimage_feature_height" version_id="14" version_string="0.9.5"><![CDATA[Feature Image Height]]></phrase>
     <phrase title="bdimage_feature_width" version_id="14" version_string="0.9.5"><![CDATA[Feature Image Width]]></phrase>
@@ -212,10 +214,11 @@ picker = {xen:phrase bdimage_template_picker}</edit_format_params>
     <phrase title="bdimage_template_node_forum_last_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Last Thread Image in Forum List]]></phrase>
     <phrase title="bdimage_template_picker" version_id="2010000" version_string="2.1.0"><![CDATA[Image Picker]]></phrase>
     <phrase title="bdimage_template_search_result_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in search result]]></phrase>
+    <phrase title="bdimage_template_thread_image_link" version_id="2020303" version_string="2.2.3"><![CDATA[Link to edit Thread Image in Thread View]]></phrase>
     <phrase title="bdimage_template_thread_list_item_thread_image" version_id="14" version_string="0.9.5"><![CDATA[Thread Image in Thread List]]></phrase>
     <phrase title="bdimage_template_thread_view_hidden_attachment" version_id="2020302" version_string="2.2.3"><![CDATA[Hidden Attachments in Thread View]]></phrase>
     <phrase title="bdimage_template_thread_view_open_graph_meta" version_id="30" version_string="1.0.4"><![CDATA[Open Graph Image in Thread View]]></phrase>
-    <phrase title="bdimage_template_wf_widget_threads_thread_image" version_id="2010200" version_string="2.1.2"><![CDATA[Thread Image in [bd] Widget Framework Threads widget.]]></phrase>
+    <phrase title="bdimage_template_wf_widget_threads_thread_image" version_id="2020303" version_string="2.2.3"><![CDATA[Thread Image in [bd] Widget Framework Threads widget]]></phrase>
     <phrase title="bdimage_thread_cover_image" version_id="30" version_string="1.0.4"><![CDATA[Cover Image]]></phrase>
     <phrase title="bdimage_thread_image" version_id="13" version_string="0.9.4"><![CDATA[Thread Image]]></phrase>
     <phrase title="bdimage_thumbnail_height" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Height]]></phrase>
@@ -1563,12 +1566,13 @@ html.bdImage_hasCover .titleBar {
 	.Responsive .bdImage_stylizedGrid .row-4.has-ad-45 .cell.position-5 .thread-inner { position: relative; }
 }
 </xen:if>]]></template>
-    <template title="bdimage_template_modifications" version_id="2020302" version_string="2.2.3"><![CDATA[<xen:edithint template="bdimage.css" />
+    <template title="bdimage_template_modifications" version_id="2020303" version_string="2.2.3"><![CDATA[<xen:edithint template="bdimage.css" />
 <xen:edithint template="bdimage_attached_files_extra_class" />
 <xen:edithint template="bdimage_bb_code_tag_attach_full" />
 <xen:edithint template="bdimage_node_forum_last_thread_image" />
 <xen:edithint template="bdimage_search_result_thread_image" />
 <xen:edithint template="bdimage_thread_list_item_thread_image" />
+<xen:edithint template="bdimage_thread_view_tools_links" />
 <xen:edithint template="bdimage_thread_view_open_graph_meta" />
 <xen:edithint template="bdimage_wf_widget_threads_full_thread_image" />
 <xen:edithint template="bdimage_wf_widget_threads_thread_image" />]]></template>
@@ -1614,6 +1618,32 @@ is="{$coverOriginalUrl}"><div class="bdImage_coverContainer position-{$position}
 </div></xen:if><xen:comment>
 
 </xen:comment><xen:edithint template="PAGE_CONTAINER" />]]></template>
+    <template title="bdimage_thread_image" version_id="2020303" version_string="2.2.3"><![CDATA[<xen:title>{xen:phrase bdimage_edit_thread_image}: {xen:helper threadPrefix, $thread, escaped}{$thread.title}</xen:title>
+<xen:h1>{xen:phrase bdimage_edit_thread_image}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb source="$nodeBreadCrumbs" />
+	<xen:breadcrumb href="{xen:link full:threads, $thread}">{xen:helper threadPrefix, $thread}{$thread.title}</xen:breadcrumb>
+</xen:navigation>
+
+<form action="{xen:link threads/image, $thread}" method="post" class="xenForm formOverlay">
+
+	<xen:include template="bdimage_picker">
+		<xen:set var="$bdImage_canUsePicker">1</xen:set>
+		<xen:map from="$canSetCover" to="$bdImage_canSetCover" />
+		<xen:set var="$currentImageData">{xen:raw $thread.bdimage_image}</xen:set>
+	</xen:include>
+
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd>
+			<input type="submit" value="{xen:phrase save_changes}" accesskey="s" class="button primary" />
+		</dd>
+	</dl>
+
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+	<input type="hidden" name="_xfConfirm" value="1" />
+</form>]]></template>
     <template title="bdimage_thread_list_item_thread_image" version_id="2020200" version_string="2.2.2"><![CDATA[<xen:set var="$bdImage_imageData"><xen:callback class="bdImage_Helper_Template" method="getImageDataIfTemplateOption"
 	params="{$thread}">thread_list_item_thread_image</xen:callback></xen:set><xen:if
 	is="{$bdImage_imageData}"><xen:set var="$bdImage_thumbnailUrl"><xen:callback
@@ -1827,6 +1857,11 @@ is="{$bdImage_width} && {$bdImage_height}">
 <meta property="twitter:image:width" content="{$bdImage_width}" />
 <meta property="twitter:image:height" content="{$bdImage_height}" /></xen:if><xen:if is="{$debugMode}">
 <meta property="bdimage-data" content="{xen:jsescape $bdImage_imageData}" /></xen:if></xen:if></xen:if>]]></template>
+    <template title="bdimage_thread_view_tools_links" version_id="2020303" version_string="2.2.3"><![CDATA[<xen:if is="{$xenOptions.bdImage_template.thread_image_link}
+			&& {$thread.first_post_id} === {$firstPost.post_id}
+			&& {$firstPost.canEdit}">
+	<li><a href="{xen:link threads/image, $thread}" class="OverlayTrigger">{xen:phrase bdimage_edit_thread_image}</a></li>
+</xen:if>]]></template>
     <template title="bdimage_timeline.css" version_id="2010200" version_string="2.1.2"><![CDATA[<xen:set var="$spacingHuge">40px</xen:set>
 <xen:set var="$spacingLarge">30px</xen:set>
 <xen:set var="$spacingMedium">20px</xen:set>
@@ -2789,6 +2824,12 @@ $0]]></replace>
       <replace><![CDATA[$0
 
 <xen:set var="$_bdImage_ogExtraHtml"><xen:include template="bdimage_thread_view_open_graph_meta" /></xen:set>]]></replace>
+    </modification>
+    <modification template="thread_view" modification_key="bdimage_thread_view_tools_links" description="Render tools links." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:hook name="thread_view_tools_links"]]></find>
+      <replace><![CDATA[<xen:include template="bdimage_thread_view_tools_links" />
+
+$0]]></replace>
     </modification>
     <modification template="wf_widget_threads_thread_full" modification_key="bdimage_wf_widget_threads_full_thread_image" description="Template Modification: Thread Image in [bd] Widget Framework Threads widget (full layout)." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<blockquote class="messageText ugc baseHtml">]]></find>

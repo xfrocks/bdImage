@@ -55,6 +55,11 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
             return;
         }
 
+        $visitor = XenForo_Visitor::getInstance();
+        if (!$visitor->hasPermission('general', 'bdImage_usePicker')) {
+            return;
+        }
+
         /** @var bdImage_ControllerHelper_Picker $picker */
         $picker = $this->getHelper('bdImage_ControllerHelper_Picker');
         $pickedImage = $picker->getPickedData();
@@ -63,6 +68,61 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
             /** @var bdImage_XenForo_DataWriter_Discussion_Thread $threadDw */
             $threadDw->bdImage_setThreadImage($pickedImage);
         }
+    }
+
+    public function actionImage()
+    {
+        $this->_assertRegistrationRequired();
+
+        $threadId = $this->_input->filterSingle('thread_id', XenForo_Input::UINT);
+
+        /** @var XenForo_ControllerHelper_ForumThreadPost $ftpHelper */
+        $ftpHelper = $this->getHelper('ForumThreadPost');
+        list($thread, $forum) = $ftpHelper->assertThreadValidAndViewable($threadId);
+
+        $post = $ftpHelper->getPostOrError($thread['first_post_id']);
+        $postModel = $this->_getPostModel();
+        if (!$postModel->canViewPost($post, $thread, $forum, $errorPhraseKey)) {
+            throw $this->getErrorOrNoPermissionResponseException($errorPhraseKey);
+        }
+
+        if ($this->isConfirmedPost()) {
+            /** @var bdImage_ControllerHelper_Picker $picker */
+            $picker = $this->getHelper('bdImage_ControllerHelper_Picker');
+            $pickedImage = $picker->getPickedData();
+
+            if (is_string($pickedImage)) {
+                /** @var bdImage_XenForo_DataWriter_Discussion_Thread $threadDw */
+                $threadDw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread');
+                $threadDw->setExistingData($thread, true);
+
+                $threadDw->bdImage_setThreadImage($pickedImage);
+                $threadDw->save();
+            }
+
+            return $this->responseRedirect(
+                XenForo_ControllerResponse_Redirect::SUCCESS,
+                $this->_buildLink('threads', $thread)
+            );
+        }
+
+        $visitor = XenForo_Visitor::getInstance();
+
+        /** @var bdImage_XenForo_DataWriter_DiscussionMessage_Post $firstPostDw */
+        $firstPostDw = XenForo_DataWriter::create('XenForo_DataWriter_DiscussionMessage_Post');
+        $firstPostDw->setExistingData($post, true);
+
+        $viewParams = array(
+            'thread' => $thread,
+            'forum' => $forum,
+
+            'nodeBreadCrumbs' => $ftpHelper->getNodeBreadCrumbs($forum),
+
+            'images' => $firstPostDw->bdImage_extractImage(true),
+            'canSetCover' => $visitor->hasPermission('general', 'bdImage_setCover')
+        );
+
+        return $this->responseView('bdImage_ViewPublic_Thread_Image', 'bdimage_thread_image', $viewParams);
     }
 
     public function actionBdImageTest()

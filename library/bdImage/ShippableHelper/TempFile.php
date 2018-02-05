@@ -1,10 +1,10 @@
 <?php
 
-// updated by DevHelper_Helper_ShippableHelper at 2018-02-05T19:21:04+00:00
+// updated by DevHelper_Helper_ShippableHelper at 2018-02-05T19:25:54+00:00
 
 /**
  * Class bdImage_ShippableHelper_TempFile
- * @version 15
+ * @version 16
  * @see DevHelper_Helper_ShippableHelper_TempFile
  */
 class bdImage_ShippableHelper_TempFile
@@ -158,7 +158,7 @@ class bdImage_ShippableHelper_TempFile
         if ($error === null
             && isset($curlInfo['download_content_length'])
             && $curlInfo['download_content_length'] > 0
-            && $fileSize !== $curlInfo['download_content_length']
+            && $fileSize !== intval($curlInfo['download_content_length'])
         ) {
             // file size is different from Content-Length header, probably a cancelled download (or corrupted)
             $error = sprintf('file size %d, Content-Length %d', $fileSize, $curlInfo['download_content_length']);

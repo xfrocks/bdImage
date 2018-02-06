@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="bdImage" title="[bd] Image" version_string="2.2.3" version_id="2020306" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="bdImage" title="[bd] Image" version_string="2.2.3" version_id="2020307" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -594,14 +594,15 @@ html.bdImage_hasCover .titleBar {
 	.Responsive .bdImage_3column .column-3 { display: block; }
 }
 </xen:if>]]></template>
-    <template title="bdimage_attached_files_extra_class" version_id="2020302" version_string="2.2.3"><![CDATA[<xen:if is="{$thread} && {$thread.first_post_id} === {$post.post_id}"><xen:set var="$bdImage_imageData"><xen:callback
+    <template title="bdimage_attached_files_extra_class" version_id="2020306" version_string="2.2.3"><![CDATA[<xen:if is="{$thread} && {$thread.first_post_id} === {$post.post_id}"><xen:set var="$bdImage_imageData"><xen:callback
 	class="bdImage_Helper_Template" method="getImageDataIfTemplateOption"
 	params="{$thread}">thread_view_hidden_attachment</xen:callback></xen:set><xen:if
 	is="{$bdImage_imageData}"><xen:set var="$bdImage_locked"><xen:callback class="bdImage_Helper_Data"
 	method="get" params="{xen:array '0=_locked'}">{xen:raw $bdImage_imageData}</xen:callback></xen:set><xen:set
 	var="$bdImage_isCover"><xen:callback class="bdImage_Helper_Data" method="get" params="{xen:array
-	'0=is_cover'}">{xen:raw $bdImage_imageData}</xen:callback></xen:set>{xen:if
-	'{$bdImage_locked} || {$bdImage_isCover}', bdImage_threadViewHiddenAttachment}</xen:if></xen:if>]]></template>
+	'0=is_cover'}">{xen:raw $bdImage_imageData}</xen:callback></xen:set><xen:if
+	is="{$bdImage_locked} || {$bdImage_isCover}"> bdImage_threadViewHiddenAttachment<xen:require css="bdimage.css"
+	/></xen:if></xen:if></xen:if>]]></template>
     <template title="bdimage_bb_code_tag_attach_full" version_id="2020102" version_string="2.2.1"><![CDATA[<xen:if is="{$attachment.width} && {$attachment.height}"><xen:set
 	var="$bdImage_bbCodeTagAttachFull"><xen:callback class="bdImage_Option" method="get"
 	params="{xen:array '0=bb_code_tag_attach_full'}">template</xen:callback></xen:set><xen:if
@@ -2740,7 +2741,7 @@ hascontent="true"><xen:require css="bdimage_timeline.css" /><xen:comment>
       <find><![CDATA[#(<div class="attachedFiles.*)(">)#]]></find>
       <replace><![CDATA[<xen:set var="$bdImageExtraClass"><xen:include template="bdimage_attached_files_extra_class" /></xen:set>
 
-$1{xen:if $bdImageExtraClass, ' {$bdImageExtraClass}'}$2]]></replace>
+$1{$bdImageExtraClass}$2]]></replace>
     </modification>
     <modification template="bb_code_tag_attach" modification_key="bdimage_bb_code_tag_attach_full" description="Replace full attach rendering." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<img src="{xen:link full:attachments, $attachment}" alt="{$attachment.filename}" class="bbCodeImage LbImage" />]]></find>

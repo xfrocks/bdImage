@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="bdImage" title="[bd] Image" version_string="2.2.3" version_id="2020307" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="bdImage" title="[bd] Image" version_string="2.2.3" version_id="2020308" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -267,6 +267,10 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     <phrase title="style_property_bdImage_searchResult_imageSize_master" version_id="1020100" version_string="1.2.1"><![CDATA[Search Result - Image Size]]></phrase>
     <phrase title="style_property_bdImage_threadList_imageSize_description_master" version_id="1020100" version_string="1.2.1"><![CDATA[Enter the image size (width / height) for thumbnail used in thread list.]]></phrase>
     <phrase title="style_property_bdImage_threadList_imageSize_master" version_id="1020100" version_string="1.2.1"><![CDATA[Thread List - Image Size]]></phrase>
+    <phrase title="style_property_bdImage_wfThreadsBigTitle_imageSize_description_master" version_id="2020307" version_string="2.2.3"><![CDATA[Enter the image size (width / height) for thumbnail used in bdimage_widget_threads_big_title template.]]></phrase>
+    <phrase title="style_property_bdImage_wfThreadsBigTitle_imageSize_master" version_id="2020307" version_string="2.2.3"><![CDATA[Threads Big Title - Image Size]]></phrase>
+    <phrase title="style_property_bdImage_wfThreadsBigTitle_title_description_master" version_id="2020307" version_string="2.2.3"><![CDATA[]]></phrase>
+    <phrase title="style_property_bdImage_wfThreadsBigTitle_title_master" version_id="2020307" version_string="2.2.3"><![CDATA[Thread Big Title - The Title]]></phrase>
     <phrase title="style_property_bdImage_wfThreadsFull_imageHeight_description_master" version_id="28" version_string="1.0.2b"><![CDATA[Enter the image height for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch height.]]></phrase>
     <phrase title="style_property_bdImage_wfThreadsFull_imageHeight_master" version_id="28" version_string="1.0.2b"><![CDATA[Threads Full - Image Height]]></phrase>
     <phrase title="style_property_bdImage_wfThreadsFull_imageWidth_description_master" version_id="28" version_string="1.0.2b"><![CDATA[Enter the image width for thumbnail used in [bd] Widget Framework's Threads widget (full layout). Leave it blank to stretch width.]]></phrase>
@@ -288,10 +292,12 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     <property property_name="bdImage_coverBg" property_type="css" definition="1" group_name="bdImage_cover" title="Text Container" description="" css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="100" sub_group=""><![CDATA[{"background-color":"rgba(0, 0, 0, 0.25)","font-size":"21px"}]]></property>
     <property property_name="bdImage_coverHidePageElements" property_type="scalar" definition="1" group_name="bdImage_cover" title="Hide Page Elements" description="Enable this option to hide page elements such as the top breadcrumb, title bar, etc." css_components="" scalar_type="boolean" scalar_parameters="" display_order="100" sub_group=""><![CDATA[1]]></property>
     <property property_name="bdImage_coverAvatar" property_type="css" definition="1" group_name="bdImage_cover" title="Avatar" description="" css_components="background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="200" sub_group=""><![CDATA[{"background-color":"@primaryLighterStill","border-color":"black","border-radius":"48px","border-style":"none","border-width":"0","extra":"box-shadow: 1px 1px 5px @mutedTextColor;","height":"96px","padding-all":"0","width":"96px"}]]></property>
-    <property property_name="bdImage_wfThreadsSidebar_imageSize" property_type="scalar" definition="1" group_name="bdImage" title="Threads Sidebar - Image Size" description="Enter the image size (width / height) for thumbnail used in [bd] Widget Framework's Threads widget (sidebar layout)." css_components="" scalar_type="number" scalar_parameters="" display_order="1000" sub_group="wfThreadsSidebar"><![CDATA[48]]></property>
+    <property property_name="bdImage_wfThreadsSidebar_imageSize" property_type="scalar" definition="1" group_name="bdImage" title="Threads Sidebar - Image Size" description="Enter the image size (width / height) for thumbnail used in [bd] Widget Framework's Threads widget (sidebar layout)." css_components="" scalar_type="number" scalar_parameters="" display_order="1000" sub_group="wfThreads"><![CDATA[48]]></property>
     <property property_name="bdImage_threadList_imageSize" property_type="scalar" definition="1" group_name="bdImage" title="Thread List - Image Size" description="Enter the image size (width / height) for thumbnail used in thread list." css_components="" scalar_type="number" scalar_parameters="" display_order="10" sub_group="threadList"><![CDATA[48]]></property>
     <property property_name="bdImage_forumLastThread_imageSize" property_type="scalar" definition="1" group_name="bdImage" title="Forum Last Thread - Image Size" description="Enter the image size (width / height) for thumbnail used in forum list (last thread block)." css_components="" scalar_type="number" scalar_parameters="" display_order="20" sub_group="forumLastThread"><![CDATA[48]]></property>
     <property property_name="bdImage_searchResult_imageSize" property_type="scalar" definition="1" group_name="bdImage" title="Search Result - Image Size" description="Enter the image size (width / height) for thumbnail used in search result list." css_components="" scalar_type="number" scalar_parameters="" display_order="30" sub_group="searchResult"><![CDATA[48]]></property>
+    <property property_name="bdImage_wfThreadsBigTitle_imageSize" property_type="scalar" definition="1" group_name="bdImage" title="Threads Big Title - Image Size" description="Enter the image size (width / height) for thumbnail used in bdimage_widget_threads_big_title template." css_components="" scalar_type="number" scalar_parameters="" display_order="1010" sub_group="wfThreads"><![CDATA[72]]></property>
+    <property property_name="bdImage_wfThreadsBigTitle_title" property_type="css" definition="1" group_name="bdImage" title="Thread Big Title - The Title" description="" css_components="text,extra" scalar_type="" scalar_parameters="" display_order="1010" sub_group="wfThreads"><![CDATA[{"font-size":"15px"}]]></property>
     <group group_name="bdImage" display_order="9999">
       <title>[bd] Image</title>
       <description></description>
@@ -302,7 +308,7 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     </group>
   </style_properties>
   <templates>
-    <template title="bdimage.css" version_id="2020305" version_string="2.2.3"><![CDATA[.attachedFiles.bdImage_threadViewHiddenAttachment {
+    <template title="bdimage.css" version_id="2020307" version_string="2.2.3"><![CDATA[.attachedFiles.bdImage_threadViewHiddenAttachment {
 	display: none;
 }
 
@@ -355,6 +361,18 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
 		top: 0;
 		width: 100%;
 	}
+
+/* bdimage_widget_threads_big_title */
+.bdImage_Widget_Threads_BigTitle.avatarList .avatar img {
+	height: {xen:property bdImage_wfThreadsBigTitle_imageSize}px;
+	width: {xen:property bdImage_wfThreadsBigTitle_imageSize}px;
+}
+.bdImage_Widget_Threads_BigTitle .title {
+	{xen:property bdImage_wfThreadsBigTitle_title}
+
+	display: block;
+	margin-left: {xen:calc '{xen:property bdImage_wfThreadsBigTitle_imageSize} + 5'}px;
+}
 
 /* cover */
 <xen:set var="$coverAvatarSize">96</xen:set>
@@ -2322,8 +2340,34 @@ ul.bdImage_Widget_Grid
 </xen:if></xen:foreach></xen:contentcheck>
 </div></div><!-- .container + .bdImage_3column -->
 </xen:if>]]></template>
-    <template title="bdimage_widget_threads_custom" version_id="2010000" version_string="2.1.0"><![CDATA[<xen:edithint template="bdimage_widget_threads_3_column" />
+    <template title="bdimage_widget_threads_big_title" version_id="2020307" version_string="2.2.3"><![CDATA[<xen:if hascontent="true">
+<xen:require css="bdimage.css" />
+<div class="bdImage_Widget_Threads_BigTitle avatarList">
+	<ul>
+		<xen:contentcheck>
+		<xen:foreach loop="$threads" value="$thread">
+		<li class="thread-{$thread.thread_id} thread-node-{$thread.node_id}{xen:if '{$thread.isNew}', ' unread'}">
+		<xen:set var="$threadImageData"><xen:callback class="bdImage_Helper_Template"
+			method="getImageData" params="{$thread}"/></xen:set><xen:if
+			is="{$threadImageData}"><a href="{xen:link threads, $thread}" class="avatar">
+			<img src="{xen:helper bdImage_thumbnail, $threadImageData, {xen:property bdImage_wfThreadsBigTitle_imageSize}}"
+				 alt="{xen:jsescape $thread.title}">
+			</a><xen:else /><xen:avatar user="$thread" size="l" img="true" /></xen:if>
+
+			<a href="{xen:link threads, $thread}" class="title">{$thread.title}</a>
+		</li>
+		</xen:foreach>
+		</xen:contentcheck>
+	</ul>
+</div>
+</xen:if>
+]]></template>
+    <template title="bdimage_widget_threads_custom" version_id="2020307" version_string="2.2.3"><![CDATA[<xen:edithint template="bdimage.css" />
+
+<xen:edithint template="bdimage_widget_threads_3_column" />
 <xen:edithint template="bdimage_3_column.css" />
+
+<xen:edithint template="bdimage_widget_threads_big_title" />
 
 <xen:edithint template="bdimage_widget_threads_hero_image" />
 <xen:edithint template="bdimage_thread_view_hero_image" />

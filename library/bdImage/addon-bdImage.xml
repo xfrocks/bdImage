@@ -2784,7 +2784,7 @@ $1{$bdImageExtraClass}$2]]></replace>
       <replace><![CDATA[$0{xen:if $bdImage_editorContentsHeroImage, ',bdimage_editor_contents_hero_image'}]]></replace>
     </modification>
     <modification template="message" modification_key="bdimage_message_extra_classes" description="Add extra classes for .message." execution_order="10" enabled="1" action="preg_replace">
-      <find><![CDATA[#class="message\s#]]></find>
+      <find><![CDATA[#<li[^>]+class="[^"]*message\s#]]></find>
       <replace><![CDATA[$0{xen:if '{$message.post_id} && {$thread} && {$message.post_id} === {$thread.first_post_id}',
 	'bdImage--firstPost '}]]></replace>
     </modification>

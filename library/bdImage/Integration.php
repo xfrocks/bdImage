@@ -80,7 +80,7 @@ class bdImage_Integration
         }
 
         if (empty($thumbnailUrl)) {
-            $thumbnailUrl = bdImage_Helper_Thumbnail::buildPhpLink($imageUrl, $size, $mode, $hash);
+            $thumbnailUrl = bdImage_Helper_Thumbnail::buildPhpLink($imageUrl, $size, $mode);
         }
 
         return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);

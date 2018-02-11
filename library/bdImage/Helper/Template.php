@@ -72,6 +72,18 @@ class bdImage_Helper_Template
     }
 
     /**
+     * @param string $imageData
+     * @return string
+     */
+    public static function getPreviewUrl($imageData)
+    {
+        $url = bdImage_Integration::getOriginalUrl($imageData);
+        $size = XenForo_Application::getOptions()->get('attachmentThumbnailDimensions') * 2;
+        $mode = bdImage_Integration::MODE_STRETCH_WIDTH;
+        return bdImage_Helper_Thumbnail::buildPhpLink($url, $size, $mode, array('_xfNoRedirect' => true));
+    }
+
+    /**
      * @param string $text
      * @return string "PREFIX" if $text is "[PREFIX] Something else", full $text otherwise
      */

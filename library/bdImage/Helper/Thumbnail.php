@@ -101,10 +101,10 @@ class bdImage_Helper_Thumbnail
      * @param string $url
      * @param int $size
      * @param int|string $mode
-     * @param string $hash
+     * @param array $params
      * @return string
      */
-    public static function buildPhpLink($url, $size, $mode, $hash)
+    public static function buildPhpLink($url, $size, $mode, array $params = array())
     {
         $phpUrl = bdImage_Listener::$phpUrl;
         if (!is_string($phpUrl) || strlen($phpUrl) === 0) {
@@ -115,14 +115,22 @@ class bdImage_Helper_Thumbnail
             );
         }
 
-        return sprintf(
-            '%s?url=%s&size=%d&mode=%s&hash=%s',
-            $phpUrl,
-            rawurlencode($url),
-            intval($size),
-            $mode,
-            $hash
-        );
+        $params['url'] = $url;
+        $params['size'] = intval($size);
+        $params['mode'] = strval($mode);
+        $params['hash'] = bdImage_Helper_Data::computeHash($params['url'], $params['size'], $params['mode']);
+
+        $url = $phpUrl;
+        foreach ($params as $key => $param) {
+            if (strpos($url, '?') === false) {
+                $url .= '?';
+            } else {
+                $url .= '&';
+            }
+            $url .= sprintf('%s=%s', $key, rawurlencode($param));
+        }
+
+        return $url;
     }
 
     protected static function _bootstrap()
@@ -162,18 +170,26 @@ class bdImage_Helper_Thumbnail
         $forceRebuild = false;
         if (!empty($_REQUEST['rebuild'])) {
             $rebuildHash = bdImage_Helper_Data::computeHash(
-                self::buildPhpLink($url, $size, $mode, $hash),
+                self::buildPhpLink($url, $size, $mode),
                 0,
                 'rebuild'
             );
             $forceRebuild = $_REQUEST['rebuild'] === $rebuildHash;
         }
 
+        $noRedirect = !empty($_REQUEST['_xfNoRedirect']);
+
         $cachePath = bdImage_Helper_File::getCachePath($url, $size, $mode, $hash);
         $cacheFileHash = bdImage_Helper_File::getCacheFileHash($cachePath);
         $thumbnailUrl = bdImage_Helper_File::getCacheUrl($url, $size, $mode, $hash);
         $thumbnailUri = XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
         if ($cacheFileHash !== null && !$forceRebuild) {
+            if ($noRedirect) {
+                self::_log('readfile %s', $cachePath);
+                readfile($cachePath);
+                exit(0);
+            }
+
             return sprintf('%s?%s', $thumbnailUri, $cacheFileHash);
         }
 
@@ -265,8 +281,8 @@ class bdImage_Helper_Thumbnail
                 break;
         }
 
-        if ($imageObj->getWidth() * $imageObj->getHeight() < 4096) {
-            // Optimization: skip caching if the output is too small
+        if ($noRedirect) {
+            self::_log('$noRedirect');
             throw new bdImage_Exception_WithImage('', $imageObj);
         }
 

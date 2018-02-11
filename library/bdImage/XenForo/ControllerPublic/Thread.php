@@ -158,8 +158,7 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
                 $mode = $imageSize[1];
             }
 
-            $hash = bdImage_Helper_Data::computeHash($input['url'], $size, $mode);
-            $thumbnailUrl = bdImage_Helper_Thumbnail::buildPhpLink($input['url'], $size, $mode, $hash);
+            $thumbnailUrl = bdImage_Helper_Thumbnail::buildPhpLink($input['url'], $size, $mode);
             if (!empty($input['rebuild'])) {
                 $rebuildHash = bdImage_Helper_Data::computeHash($thumbnailUrl, 0, 'rebuild');
                 $thumbnailUrl .= sprintf('&rebuild=%s', $rebuildHash);

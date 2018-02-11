@@ -23,6 +23,9 @@ class bdImage_Listener
 
     const CONFIG_SKIP_CACHE_CHECK = 'bdImage_skipCacheCheck';
 
+    const HTTP_API_THREAD_THUMBNAIL_WIDTH = 'HTTP_API_THREAD_THUMBNAIL_WIDTH';
+    const HTTP_API_THREAD_THUMBNAIL_HEIGHT = 'HTTP_API_THREAD_THUMBNAIL_HEIGHT';
+
     /**
      * Useful to be used with $phpUrl if there is one dedicated thumbnail server.
      *

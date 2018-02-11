@@ -53,6 +53,11 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
             ));
         }
 
+        if (empty($imageUrl)) {
+            $extraData['is_cover'] = false;
+            $extraData['cover_color'] = '';
+        }
+
         $extraData['_locked'] = true;
 
         return bdImage_Helper_Data::pack($imageUrl, $imageWidth, $imageHeight, $extraData);

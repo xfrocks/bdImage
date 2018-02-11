@@ -2,6 +2,10 @@
 
 class bdImage_Listener
 {
+    const API_HTTP_HEADER_WIDTH = 'HTTP_API_THREAD_THUMBNAIL_WIDTH';
+    const API_HTTP_HEADER_HEIGHT = 'HTTP_API_THREAD_THUMBNAIL_HEIGHT';
+    const API_GLOBALS_SECONDARY_KEY = 'bdImage_bdApi_Extend_Model_Thread::prepareApiDataForThread::secondaryKey';
+
     const CONFIG_EXTERNAL_DATA_URLS = 'bdImage_externalDataUrls';
     public static $externalDataUrls = array();
 
@@ -23,9 +27,6 @@ class bdImage_Listener
 
     const CONFIG_SKIP_CACHE_CHECK = 'bdImage_skipCacheCheck';
 
-    const HTTP_API_THREAD_THUMBNAIL_WIDTH = 'HTTP_API_THREAD_THUMBNAIL_WIDTH';
-    const HTTP_API_THREAD_THUMBNAIL_HEIGHT = 'HTTP_API_THREAD_THUMBNAIL_HEIGHT';
-
     /**
      * Useful to be used with $phpUrl if there is one dedicated thumbnail server.
      *
@@ -37,7 +38,7 @@ class bdImage_Listener
 
     public static function init_dependencies(XenForo_Dependencies_Abstract $dependencies, array $data)
     {
-        define('BDIMAGE_IS_WORKING', 1);
+        define('BDIMAGE_IS_WORKING', !empty($data['addOns']['bdImage']) ? $data['addOns']['bdImage'] : 1);
 
         XenForo_Template_Helper_Core::$helperCallbacks[strtolower('bdImage_thumbnail')]
             = array('bdImage_Integration', 'buildThumbnailLink');

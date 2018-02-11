@@ -8,7 +8,7 @@ class bdImage_Helper_Data
     const SECONDARY_IMAGES = 'secondary';
 
     /**
-     * @param string $rawData
+     * @param array|string $rawData
      * @param string|array $subKey
      * @return mixed|null
      */
@@ -32,7 +32,7 @@ class bdImage_Helper_Data
     }
 
     /**
-     * @param string $rawData
+     * @param array|string $rawData
      * @param string $secondaryKey
      * @param string $secondaryData
      * @return string
@@ -85,7 +85,7 @@ class bdImage_Helper_Data
     }
 
     /**
-     * @param string $rawData
+     * @param array|string $rawData
      * @param string $secondaryKey
      * @return array|string
      */
@@ -100,7 +100,7 @@ class bdImage_Helper_Data
     }
 
     /**
-     * @param string $rawData
+     * @param array|string $rawData
      * @return array
      */
     public static function unpack($rawData)

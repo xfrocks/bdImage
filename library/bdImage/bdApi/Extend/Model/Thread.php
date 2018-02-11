@@ -12,19 +12,28 @@ class bdImage_bdApi_Extend_Model_Thread extends XFCP_bdImage_bdApi_Extend_Model_
         }
 
         $unpacked = bdImage_Helper_Data::unpack($imageData);
+
+        $secondaryKey = '';
+        if (!empty($GLOBALS[bdImage_Listener::API_GLOBALS_SECONDARY_KEY])) {
+            $secondaryKey = $GLOBALS[bdImage_Listener::API_GLOBALS_SECONDARY_KEY];
+        }
+        if (!empty($secondaryKey)) {
+            $unpacked = bdImage_Helper_Data::unpackSecondaryOrDefault($unpacked, $secondaryKey);
+        }
+
         $imageUrl = bdImage_Integration::getOriginalUrl($unpacked);
         if (empty($imageUrl)) {
             return $data;
         }
 
         $thumbnailWidth = $thumbnailHeight = intval(XenForo_Application::getOptions()->get('attachmentThumbnailDimensions'));
-        if (!empty($_SERVER[bdImage_Listener::HTTP_API_THREAD_THUMBNAIL_WIDTH])) {
+        if (!empty($_SERVER[bdImage_Listener::API_HTTP_HEADER_WIDTH])) {
             // include headers `Api-Thread-Thumbnail-Width`
             // and `Api-Thread-Thumbnail-Height` to adjust thumbnail dimensions
-            $thumbnailWidth = intval($_SERVER[bdImage_Listener::HTTP_API_THREAD_THUMBNAIL_WIDTH]);
+            $thumbnailWidth = intval($_SERVER[bdImage_Listener::API_HTTP_HEADER_WIDTH]);
 
-            if (!empty($_SERVER[bdImage_Listener::HTTP_API_THREAD_THUMBNAIL_HEIGHT])) {
-                $thumbnailHeight = $_SERVER[bdImage_Listener::HTTP_API_THREAD_THUMBNAIL_HEIGHT];
+            if (!empty($_SERVER[bdImage_Listener::API_HTTP_HEADER_HEIGHT])) {
+                $thumbnailHeight = $_SERVER[bdImage_Listener::API_HTTP_HEADER_HEIGHT];
                 if (is_numeric($thumbnailHeight)) {
                     $thumbnailHeight = intval($thumbnailHeight);
                 }

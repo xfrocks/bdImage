@@ -43,10 +43,6 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
 
     protected function _discussionPreSave()
     {
-        if (isset($GLOBALS[bdImage_Listener::XENFORO_CONTROLLERPUBLIC_THREAD_SAVE])) {
-            $GLOBALS[bdImage_Listener::XENFORO_CONTROLLERPUBLIC_THREAD_SAVE]->bdImage_actionSave($this);
-        }
-
         if (bdImage_Option::get('threadAuto')
             && $this->_firstMessageDw
         ) {

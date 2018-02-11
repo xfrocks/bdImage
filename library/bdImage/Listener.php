@@ -31,7 +31,6 @@ class bdImage_Listener
     public static $skipCacheCheck = false;
 
     const XENFORO_CONTROLLERPUBLIC_POST_SAVE = 'bdImage_XenForo_ControllerPublic_Post::actionSave';
-    const XENFORO_CONTROLLERPUBLIC_THREAD_SAVE = 'bdImage_XenForo_ControllerPublic_Thread::actionSave';
 
     public static function init_dependencies(XenForo_Dependencies_Abstract $dependencies, array $data)
     {

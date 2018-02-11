@@ -20,56 +20,6 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
         return $response;
     }
 
-    public function actionEdit()
-    {
-        $response = parent::actionEdit();
-        $visitor = XenForo_Visitor::getInstance();
-
-        if (bdImage_Option::get('template', 'picker')
-            && $response instanceof XenForo_ControllerResponse_View
-            && !empty($response->params['thread']['first_post_id'])
-            && $visitor->hasPermission('general', 'bdImage_usePicker')
-        ) {
-            $response->params['bdImage_canUsePicker'] = true;
-            $response->params['bdImage_canSetCover'] = $visitor->hasPermission('general', 'bdImage_setCover');
-
-            /** @var bdImage_XenForo_DataWriter_DiscussionMessage_Post $firstPostDw */
-            $firstPostDw = XenForo_DataWriter::create('XenForo_DataWriter_DiscussionMessage_Post');
-            $firstPostDw->setExistingData($response->params['thread']['first_post_id']);
-            $response->params['bdImage_images'] = $firstPostDw->bdImage_extractImage(true);
-        }
-
-        return $response;
-    }
-
-    public function actionSave()
-    {
-        $GLOBALS[bdImage_Listener::XENFORO_CONTROLLERPUBLIC_THREAD_SAVE] = $this;
-
-        return parent::actionSave();
-    }
-
-    public function bdImage_actionSave(XenForo_DataWriter_Discussion_Thread $threadDw)
-    {
-        if (!bdImage_Option::get('template', 'picker')) {
-            return;
-        }
-
-        $visitor = XenForo_Visitor::getInstance();
-        if (!$visitor->hasPermission('general', 'bdImage_usePicker')) {
-            return;
-        }
-
-        /** @var bdImage_ControllerHelper_Picker $picker */
-        $picker = $this->getHelper('bdImage_ControllerHelper_Picker');
-        $pickedImage = $picker->getPickedData();
-
-        if (is_string($pickedImage)) {
-            /** @var bdImage_XenForo_DataWriter_Discussion_Thread $threadDw */
-            $threadDw->bdImage_setThreadImage($pickedImage);
-        }
-    }
-
     public function actionImage()
     {
         $this->_assertRegistrationRequired();

@@ -217,12 +217,14 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     <phrase title="bdimage_template_thread_view_hidden_attachment" version_id="2020302" version_string="2.2.3"><![CDATA[Hidden Attachments in Thread View]]></phrase>
     <phrase title="bdimage_template_thread_view_open_graph_meta" version_id="30" version_string="1.0.4"><![CDATA[Open Graph Image in Thread View]]></phrase>
     <phrase title="bdimage_template_wf_widget_threads_thread_image" version_id="2020303" version_string="2.2.3"><![CDATA[Thread Image in [bd] Widget Framework Threads widget]]></phrase>
-    <phrase title="bdimage_thread_cover_image" version_id="30" version_string="1.0.4"><![CDATA[Cover Image]]></phrase>
     <phrase title="bdimage_thread_image" version_id="13" version_string="0.9.4"><![CDATA[Thread Image]]></phrase>
     <phrase title="bdimage_thumbnail_height" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Height]]></phrase>
     <phrase title="bdimage_thumbnail_width" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Width]]></phrase>
     <phrase title="bdimage_visible_count" version_id="10" version_string="0.9-dev"><![CDATA[Visible Thumbnails]]></phrase>
     <phrase title="cron_entry_bdImage_pruneFiles" version_id="23" version_string="1.0.0b"><![CDATA[[bd] Image: Prune Files]]></phrase>
+    <phrase title="moderator_log_thread_bdImage_remove" version_id="2020308" version_string="2.2.3"><![CDATA[Thread image removed]]></phrase>
+    <phrase title="moderator_log_thread_bdImage_set" version_id="2020308" version_string="2.2.3"><![CDATA[Thread image set ({url})]]></phrase>
+    <phrase title="moderator_log_thread_bdImage_setCover" version_id="2020308" version_string="2.2.3"><![CDATA[Thread cover set ({url})]]></phrase>
     <phrase title="option_bdImage_allAttachments" version_id="20" version_string="0.10.0-dev"><![CDATA[Consider All Attachments for Image]]></phrase>
     <phrase title="option_bdImage_allAttachments_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[By default, only attachments that are included in the message are considered to be the feature image of a piece of content. Enable this option to check for all attachments.]]></phrase>
     <phrase title="option_bdImage_fallbackImages" version_id="1010006" version_string="1.1.0"><![CDATA[Fallback Images]]></phrase>

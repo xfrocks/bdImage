@@ -184,7 +184,6 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     <permission_groups/>
     <permissions>
       <permission permission_group_id="general" permission_id="bdImage_setCover" permission_type="flag" default_value="unset" interface_group_id="generalModeratorPermissions" display_order="9999"/>
-      <permission permission_group_id="general" permission_id="bdImage_usePicker" permission_type="flag" default_value="unset" interface_group_id="generalModeratorPermissions" display_order="9999"/>
     </permissions>
     <interface_groups/>
   </permissions>
@@ -247,8 +246,7 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     <phrase title="option_bdImage_threadAuto_explain" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
     <phrase title="option_group_bdImage" version_id="14" version_string="0.9.5"><![CDATA[[bd] Image]]></phrase>
     <phrase title="option_group_bdImage_description" version_id="14" version_string="0.9.5"><![CDATA[]]></phrase>
-    <phrase title="permission_general_bdImage_setCover" version_id="2010000" version_string="2.1.0"><![CDATA[Use Image Picker: Set Cover]]></phrase>
-    <phrase title="permission_general_bdImage_usePicker" version_id="2010000" version_string="2.1.0"><![CDATA[Use Image Picker]]></phrase>
+    <phrase title="permission_general_bdImage_setCover" version_id="2020308" version_string="2.2.3"><![CDATA[Set image as cover]]></phrase>
     <phrase title="style_property_bdImage_coverAvatar_description_master" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
     <phrase title="style_property_bdImage_coverAvatar_master" version_id="30" version_string="1.0.4"><![CDATA[Avatar]]></phrase>
     <phrase title="style_property_bdImage_coverBg_description_master" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>

@@ -110,16 +110,18 @@ class bdImage_Helper_BbCode
         }
 
         $apiJson = @json_decode($apiResponse, true);
-        if (empty($apiJson)) {
+        if (empty($apiJson) || empty($apiJson['items'][0]['snippet']['thumbnails'])) {
             return self::prepareDefaultYouTubeThumbnails($youtubeId);
         }
 
-        if (empty($apiJson['items'][0]['snippet']['thumbnails'])) {
-            return self::prepareDefaultYouTubeThumbnails($youtubeId);
+        $snippetRef =& $apiJson['items'][0]['snippet'];
+        $filename = 'youtube_' . $youtubeId;
+        if (!empty($snippetRef['title'])) {
+            $filename = $snippetRef['title'];
         }
 
         $imageDataMany = array();
-        foreach ($apiJson['items'][0]['snippet']['thumbnails'] as $thumbnail) {
+        foreach ($snippetRef['thumbnails'] as $thumbnail) {
             if (empty($thumbnail['width'])
                 || empty($thumbnail['height'])
             ) {
@@ -130,7 +132,10 @@ class bdImage_Helper_BbCode
                 $thumbnail['url'],
                 $thumbnail['width'],
                 $thumbnail['height'],
-                array('type' => 'youtube')
+                array(
+                    'type' => 'youtube',
+                    'filename' => $filename,
+                )
             );
         }
 
@@ -160,7 +165,10 @@ class bdImage_Helper_BbCode
                 $candidate,
                 $imageSize['width'],
                 $imageSize['height'],
-                array('type' => 'youtube')
+                array(
+                    'type' => 'youtube',
+                    'filename' => 'youtube_' . $youtubeId,
+                )
             );
         }
 

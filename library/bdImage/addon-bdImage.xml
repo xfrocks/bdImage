@@ -1142,7 +1142,7 @@ html.bdImage_hasCover .titleBar {
 	</xen:comment>width="{xen:property bdImage_forumLastThread_imageSize}" height="{xen:property bdImage_forumLastThread_imageSize}" <xen:comment>
 	</xen:comment>class="bdImage_lastThreadImage"{xen:if $debugMode,
 	' data-image="{xen:jsescape $bdImage_imageData}"'} /></xen:if></xen:if>]]></template>
-    <template title="bdimage_picker" version_id="2020308" version_string="2.2.3"><![CDATA[<xen:require css="bdimage.css" />
+    <template title="bdimage_picker" version_id="2020309" version_string="2.2.3"><![CDATA[<xen:require css="bdimage.css" />
 <xen:require js="js/bdImage/picker.min.js" />
 
 <xen:set var="$currentImageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
@@ -1173,13 +1173,16 @@ html.bdImage_hasCover .titleBar {
 					<xen:foreach loop="$images" value="$imageData">
 					<xen:set var="$imageUrl"><xen:callback class="bdImage_Helper_Data" method="get"
 						params="{xen:array '0=url'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
+					var="$imageType"><xen:callback class="bdImage_Helper_Data" method="get"
+						params="{xen:array '0=type'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
 					var="$imageFileName"><xen:callback class="bdImage_Helper_Data" method="get"
 						params="{xen:array '0=filename'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
 					var="$imageWidth"><xen:callback class="bdImage_Helper_Data" method="get"
 						params="{xen:array '0=width'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
 					var="$imageHeight"><xen:callback class="bdImage_Helper_Data" method="get"
 						params="{xen:array '0=height'}">{xen:raw $imageData}</xen:callback></xen:set><xen:set
-					var="$imageTooltip">{$imageFileName}{xen:if '{$imageWidth} && {$imageHeight}',
+					var="$imageTooltip">{xen:if $imageFileName, {xen:raw $imageFileName},
+						$imageType}{xen:if '{$imageWidth} && {$imageHeight}',
 						' ({xen:number $imageWidth} x {xen:number $imageHeight})'}</xen:set><xen:set
 					var="$imagePreview"><xen:callback class="bdImage_Helper_Template"
 						method="getPreviewUrl">{xen:raw $imageData}</xen:callback></xen:set>
@@ -1188,7 +1191,7 @@ html.bdImage_hasCover .titleBar {
 					<option value="{$imageData}"
 							data-preview-url="{$imagePreview}"
 							{xen:selected '{$imageUrl} == {$currentImageUrl}'}>
-						{$imageTooltip}
+						{xen:raw $imageTooltip}
 					</option>
 					</xen:foreach>
 

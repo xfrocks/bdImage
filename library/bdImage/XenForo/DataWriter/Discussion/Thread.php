@@ -29,52 +29,10 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
         return $this->set('bdimage_image', $image);
     }
 
-    protected function _getFields()
-    {
-        $fields = parent::_getFields();
-
-        $fields['xf_thread']['bdimage_image'] = array(
-            'type' => XenForo_DataWriter::TYPE_STRING,
-            'default' => ''
-        );
-
-        return $fields;
-    }
-
-    protected function _discussionPreSave()
-    {
-        if (bdImage_Option::get('threadAuto')
-            && $this->_firstMessageDw
-        ) {
-            /** @var bdImage_XenForo_DataWriter_DiscussionMessage_Post $firstMessageDw */
-            $firstMessageDw = $this->_firstMessageDw;
-            $image = $firstMessageDw->bdImage_extractImage();
-            if (is_string($image)) {
-                $this->bdImage_setThreadImage($image);
-            }
-
-            // tell the post data writer not to update the thread again
-            $optionName = bdImage_XenForo_DataWriter_DiscussionMessage_Post::OPTION_SKIP_THREAD_AUTO;
-            $this->_firstMessageDw->setOption($optionName, true);
-        } elseif (bdImage_Option::get('imageFromTags')
-            && $this->isChanged('tags')
-        ) {
-            $existingImage = $this->bdImage_getThreadImage();
-            if (empty($existingImage['_locked'])) {
-                $image = $this->_bdImage_getImageFromTags();
-                if (is_string($image)) {
-                    $this->bdImage_setThreadImage($image);
-                }
-            }
-        }
-
-        parent::_discussionPreSave();
-    }
-
     /**
      * @return null|string
      */
-    protected function _bdImage_getImageFromTags()
+    public function bdImage_getImageFromTags()
     {
         $tags = $this->get('tags');
         $tags = XenForo_Helper_Php::safeUnserialize($tags);
@@ -108,5 +66,47 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
         }
 
         return null;
+    }
+
+    protected function _getFields()
+    {
+        $fields = parent::_getFields();
+
+        $fields['xf_thread']['bdimage_image'] = array(
+            'type' => XenForo_DataWriter::TYPE_STRING,
+            'default' => ''
+        );
+
+        return $fields;
+    }
+
+    protected function _discussionPreSave()
+    {
+        if (bdImage_Option::get('threadAuto')
+            && $this->_firstMessageDw
+        ) {
+            /** @var bdImage_XenForo_DataWriter_DiscussionMessage_Post $firstMessageDw */
+            $firstMessageDw = $this->_firstMessageDw;
+            $image = $firstMessageDw->bdImage_extractImage();
+            if (is_string($image)) {
+                $this->bdImage_setThreadImage($image);
+            }
+
+            // tell the post data writer not to update the thread again
+            $optionName = bdImage_XenForo_DataWriter_DiscussionMessage_Post::OPTION_SKIP_THREAD_AUTO;
+            $this->_firstMessageDw->setOption($optionName, true);
+        } elseif (bdImage_Option::get('imageFromTags')
+            && $this->isChanged('tags')
+        ) {
+            $existingImage = $this->bdImage_getThreadImage();
+            if (empty($existingImage['_locked'])) {
+                $image = $this->bdImage_getImageFromTags();
+                if (is_string($image)) {
+                    $this->bdImage_setThreadImage($image);
+                }
+            }
+        }
+
+        parent::_discussionPreSave();
     }
 }

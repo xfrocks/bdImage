@@ -314,7 +314,7 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     </group>
   </style_properties>
   <templates>
-    <template title="bdimage.css" version_id="2020308" version_string="2.2.3"><![CDATA[.attachedFiles.bdImage_threadViewHiddenAttachment {
+    <template title="bdimage.css" version_id="2020310" version_string="2.2.3"><![CDATA[.attachedFiles.bdImage_threadViewHiddenAttachment {
 	display: none;
 }
 
@@ -429,14 +429,14 @@ html.bdImage_hasCover .titleBar {
 	}
 	.bdImage_cover a { color: inherit; }
 
-.bdImage_cover .avatar {
+.bdImage_cover .author .avatar {
 	border-radius: {xen:property bdImage_coverAvatar.border-radius};
 	position: absolute;
 		bottom: 0;
 		left: {xen:property content.padding-left};
 }
-	.bdImage_cover .avatar img,
-	.bdImage_cover .avatar amp-img {
+	.bdImage_cover .author .avatar img,
+	.bdImage_cover .author .avatar amp-img {
 		{xen:property bdImage_coverAvatar}
 	}
 
@@ -514,8 +514,8 @@ html.bdImage_hasCover .titleBar {
 }
 
 @media (max-width:{xen:property maxResponsiveMediumWidth}) {
-	.Responsive .bdImage_cover .avatar img,
-	.Responsive .bdImage_cover .avatar amp-img {
+	.Responsive .bdImage_cover .author .avatar img,
+	.Responsive .bdImage_cover .author .avatar amp-img {
 		width: {xen:calc 'floor({xen:property bdImage_coverAvatar.width} * 0.6666)'}px;
 		height: {xen:calc 'floor({xen:property bdImage_coverAvatar.height} * 0.6666)'}px;
 	}
@@ -536,8 +536,8 @@ html.bdImage_hasCover .titleBar {
 }
 
 @media (max-width:{xen:property maxResponsiveNarrowWidth}) {
-	.Responsive .bdImage_cover .avatar img,
-	.Responsive .bdImage_cover .avatar amp-img {
+	.Responsive .bdImage_cover .author .avatar img,
+	.Responsive .bdImage_cover .author .avatar amp-img {
 		width: {xen:calc 'floor({xen:property bdImage_coverAvatar.width} * 0.5)'}px;
 		height: {xen:calc 'floor({xen:property bdImage_coverAvatar.height} * 0.5)'}px;
 	}
@@ -1571,7 +1571,7 @@ html.bdImage_hasCover .titleBar {
 <xen:edithint template="bdimage_thread_view_open_graph_meta" />
 <xen:edithint template="bdimage_wf_widget_threads_full_thread_image" />
 <xen:edithint template="bdimage_wf_widget_threads_thread_image" />]]></template>
-    <template title="bdimage_thread_cover" version_id="2020303" version_string="2.2.3"><![CDATA[<xen:require css="bdimage.css" /><xen:set
+    <template title="bdimage_thread_cover" version_id="2020310" version_string="2.2.3"><![CDATA[<xen:require css="bdimage.css" /><xen:set
 var="$coverTitleEscaped">{$thread.title}</xen:set><xen:set
 var="$coverDescriptionEscaped">{xen:phrase bdimage_discussion_in_x_started_by_y_date_z_replies_m_views_n,
 	'forum=<a href="{xen:link forums, $forum}">{$forum.title}</a>',
@@ -1602,10 +1602,10 @@ is="{$coverOriginalUrl}"><div class="bdImage_coverContainer position-{$position}
 			<p class="title">{xen:raw $coverTitleEscaped}</p>
 			<p class="description">{xen:raw $coverDescriptionEscaped}</p>
 		</div>
-		<xen:avatar user="$thread" size="m" img="true" />
-		<a class="author" href="{xen:link members, $thread}" title="{$thread.username}">
-			<span class="username">{$thread.username}</span>
-		</a>
+		<div class="author">
+			<xen:avatar user="$thread" size="m" img="true" />
+			<xen:username user="$thread" rich="true" />
+		</div>
 	</div>
 
 	<xen:if is="!{$hideShareBar}"><div class="share_bar">

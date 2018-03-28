@@ -135,4 +135,14 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
 
         return $this->responseView('bdImage_ViewPublic_Thread_Test', 'bdimage_thread_test');
     }
+
+    protected function _getThreadForumFetchOptions()
+    {
+        $result = parent::_getThreadForumFetchOptions();
+
+        // for rich username in thread cover
+        $result[0]['join'] |= XenForo_Model_Thread::FETCH_USER;
+
+        return $result;
+    }
 }

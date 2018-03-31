@@ -2,8 +2,6 @@
 
 class bdImage_Listener
 {
-    const API_HTTP_HEADER_WIDTH = 'HTTP_API_THREAD_THUMBNAIL_WIDTH';
-    const API_HTTP_HEADER_HEIGHT = 'HTTP_API_THREAD_THUMBNAIL_HEIGHT';
     const API_GLOBALS_SECONDARY_KEY = 'bdImage_bdApi_Extend_Model_Thread::prepareApiDataForThread::secondaryKey';
 
     const CONFIG_EXTERNAL_DATA_URLS = 'bdImage_externalDataUrls';
@@ -154,6 +152,13 @@ class bdImage_Listener
     {
         if ($class === 'WidgetFramework_Model_Thread') {
             $extend[] = 'bdImage_WidgetFramework_Model_Thread';
+        }
+    }
+
+    public static function load_class_bdApi_ControllerApi_Thread($class, array &$extend)
+    {
+        if ($class === 'bdApi_ControllerApi_Thread') {
+            $extend[] = 'bdImage_bdApi_ControllerApi_Thread';
         }
     }
 }

@@ -4,7 +4,7 @@ class bdImage_bdApi_Extend_Model_Thread extends XFCP_bdImage_bdApi_Extend_Model_
 {
     public function prepareApiDataForThread(array $thread, array $forum, array $firstPost)
     {
-        $data = call_user_func(array('parent', 'prepareApiDataForThread'), $thread, $forum, $firstPost);
+        $data = parent::prepareApiDataForThread($thread, $forum, $firstPost);
 
         $imageData = bdImage_Helper_Template::getImageData('', $thread);
         if (empty($imageData)) {
@@ -26,36 +26,33 @@ class bdImage_bdApi_Extend_Model_Thread extends XFCP_bdImage_bdApi_Extend_Model_
             return $data;
         }
 
-        $thumbnailWidth = $thumbnailHeight = intval(XenForo_Application::getOptions()->get('attachmentThumbnailDimensions'));
-        if (!empty($_SERVER[bdImage_Listener::API_HTTP_HEADER_WIDTH])) {
-            // include headers `Api-Thread-Thumbnail-Width`
-            // and `Api-Thread-Thumbnail-Height` to adjust thumbnail dimensions
-            $thumbnailWidth = intval($_SERVER[bdImage_Listener::API_HTTP_HEADER_WIDTH]);
-
-            if (!empty($_SERVER[bdImage_Listener::API_HTTP_HEADER_HEIGHT])) {
-                $thumbnailHeight = $_SERVER[bdImage_Listener::API_HTTP_HEADER_HEIGHT];
-                if (is_numeric($thumbnailHeight)) {
-                    $thumbnailHeight = intval($thumbnailHeight);
+        $thumbnailSize = $thumbnailMode = intval(XenForo_Application::getOptions()->get('attachmentThumbnailDimensions'));
+        if (!empty($thread['_bdImage_thumbnailConfig'])) {
+            $thumbnailConfig = $thread['_bdImage_thumbnailConfig'];
+            if (is_array($thumbnailConfig)) {
+                if (isset($thumbnailConfig['size'])) {
+                    $thumbnailSize = $thumbnailConfig['size'];
                 }
-            } else {
-                $thumbnailHeight = $thumbnailWidth;
+                if (isset($thumbnailConfig['mode'])) {
+                    $thumbnailMode = $thumbnailConfig['mode'];
+                }
             }
         }
 
-        if ($thumbnailWidth > 0) {
+        if ($thumbnailSize > 0) {
             $data['thread_thumbnail'] = array(
-                'link' => new bdImage_Helper_LazyThumbnailer($unpacked, $thumbnailWidth, $thumbnailHeight)
+                'link' => new bdImage_Helper_LazyThumbnailer($unpacked, $thumbnailSize, $thumbnailMode)
             );
 
-            if (is_int($thumbnailWidth) && is_int($thumbnailHeight)) {
+            if (is_numeric($thumbnailMode)) {
                 $data['thread_thumbnail'] += array(
-                    'width' => $thumbnailWidth,
-                    'height' => $thumbnailHeight,
+                    'width' => intval($thumbnailSize),
+                    'height' => intval($thumbnailMode),
                 );
             } else {
                 $data['thread_thumbnail'] += array(
-                    'size' => $thumbnailWidth,
-                    'mode' => $thumbnailHeight,
+                    'size' => $thumbnailSize,
+                    'mode' => $thumbnailMode,
                 );
             }
         }

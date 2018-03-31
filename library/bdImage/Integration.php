@@ -176,4 +176,63 @@ class bdImage_Integration
 
         return bdImage_ShippableHelper_ImageSize::getDataUriAtSize($width, $height);
     }
+
+    /**
+     * @param XenForo_Controller $controller
+     * @param string $sizeHeader
+     * @param string|null $modeHeader
+     * @return array|bool
+     */
+    public static function parseApiThumbnailConfig($controller, $sizeHeader, $modeHeader = null)
+    {
+        $session = bdApi_Data_Helper_Core::safeGetSession();
+        if (empty($session)) {
+            return false;
+        }
+        $oauthClientId = $session->getOAuthClientId();
+        if (empty($oauthClientId)) {
+            return false;
+        }
+
+        $request = $controller->getRequest();
+        $size = self::_parseApiThumbnailRequestHeaderOrParam($request, $sizeHeader);
+        if ($size === false) {
+            return false;
+        }
+
+        $size = intval($size);
+        if ($size === 0) {
+            return false;
+        }
+
+        $mode = $size;
+        if (is_string($modeHeader)) {
+            $modeHeaderValue = self::_parseApiThumbnailRequestHeaderOrParam($request, $modeHeader);
+            if ($modeHeaderValue !== false) {
+                $mode = $modeHeaderValue;
+            }
+        }
+
+        return array(
+            'size' => $size,
+            'mode' => $mode
+        );
+    }
+
+    /**
+     * @param Zend_Controller_Request_Http $request
+     * @param string $header
+     * @return string|bool
+     */
+    protected static function _parseApiThumbnailRequestHeaderOrParam($request, $header)
+    {
+        $headerValue = $request->getHeader($header);
+        if ($headerValue !== false) {
+            return $headerValue;
+        }
+
+        $paramKey = '_bdImage' . str_replace('-', '', $header);
+        $paramValue = $request->getParam($paramKey, false);
+        return $paramValue;
+    }
 }

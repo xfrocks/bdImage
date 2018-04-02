@@ -222,17 +222,17 @@ class bdImage_Integration
     /**
      * @param Zend_Controller_Request_Http $request
      * @param string $header
-     * @return string|bool
+     * @return string|false
      */
     protected static function _parseApiThumbnailRequestHeaderOrParam($request, $header)
     {
-        $headerValue = $request->getHeader($header);
-        if ($headerValue !== false) {
-            return $headerValue;
+        $paramKey = '_bdImage' . str_replace('-', '', $header);
+        $paramValue = $request->getParam($paramKey);
+        if (is_string($paramValue)) {
+            return $paramValue;
         }
 
-        $paramKey = '_bdImage' . str_replace('-', '', $header);
-        $paramValue = $request->getParam($paramKey, false);
-        return $paramValue;
+        $headerValue = $request->getHeader($header);
+        return $headerValue;
     }
 }

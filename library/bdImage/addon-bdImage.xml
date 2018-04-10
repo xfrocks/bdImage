@@ -315,7 +315,7 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     </group>
   </style_properties>
   <templates>
-    <template title="bdimage.css" version_id="2020310" version_string="2.2.3"><![CDATA[.attachedFiles.bdImage_threadViewHiddenAttachment {
+    <template title="bdimage.css" version_id="2020312" version_string="2.2.3"><![CDATA[.attachedFiles.bdImage_threadViewHiddenAttachment {
 	display: none;
 }
 
@@ -429,6 +429,17 @@ html.bdImage_hasCover .titleBar {
 		margin-right: 0;
 	}
 	.bdImage_cover a { color: inherit; }
+
+.bdImage_cover .placeholder {
+	height: 0;
+	padding-bottom: 56.25%;
+	position: relative;
+	width: 100%;
+}
+	.bdImage_cover .placeholder > .cover {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+	}
 
 .bdImage_cover .author .avatar {
 	border-radius: {xen:property bdImage_coverAvatar.border-radius};
@@ -1572,7 +1583,7 @@ html.bdImage_hasCover .titleBar {
 <xen:edithint template="bdimage_thread_view_open_graph_meta" />
 <xen:edithint template="bdimage_wf_widget_threads_full_thread_image" />
 <xen:edithint template="bdimage_wf_widget_threads_thread_image" />]]></template>
-    <template title="bdimage_thread_cover" version_id="2020310" version_string="2.2.3"><![CDATA[<xen:require css="bdimage.css" /><xen:set
+    <template title="bdimage_thread_cover" version_id="2020312" version_string="2.2.3"><![CDATA[<xen:require css="bdimage.css" /><xen:set
 var="$coverTitleEscaped">{$thread.title}</xen:set><xen:set
 var="$coverDescriptionEscaped">{xen:phrase bdimage_discussion_in_x_started_by_y_date_z_replies_m_views_n,
 	'forum=<a href="{xen:link forums, $forum}">{$forum.title}</a>',
@@ -1590,14 +1601,16 @@ var="$coverColor"><xen:callback class="bdImage_Helper_Data"
 is="{$coverOriginalUrl}"><div class="bdImage_coverContainer position-{$position}">
 	<p class="title coverContent">{xen:raw $coverTitleEscaped}</p>
 	<div class="bdImage_cover bdImage_threadCover-{$thread.thread_id}">
-		<xen:if is="!{$bdCache_isAmp}"><xen:set
-			var="$dataUri"><xen:callback class="bdImage_Integration"
-			method="getDataUriTransparentAtSameSize">{xen:raw
-			$coverImageData}</xen:callback></xen:set></xen:if><xen:if
-		is="{$dataUri}"><img class="cover" src="{xen:raw
-			$dataUri}" style="background-image:url({$coverOriginalUrl});background-size:cover;{xen:if
-				$coverColor, 'background-color:{$coverColor}'}" /><xen:else
-		/><img class="cover" src="{$coverOriginalUrl}" /></xen:if>
+		<xen:set var="$coverWidth"><xen:callback class="bdImage_Helper_Data"
+			method="get" params="{xen:array '0=width'}">{xen:raw $coverImageData}</xen:callback></xen:set><xen:set 
+			var="$coverHeight"><xen:callback class="bdImage_Helper_Data"
+			method="get" params="{xen:array '0=height'}">{xen:raw $coverImageData}</xen:callback></xen:set><xen:set 
+			var="$coverImgHtml"><img class="cover" src="{$coverOriginalUrl}"{xen:if
+				'{$coverWidth} && {$coverHeight}', ' width="{$coverWidth}" height="{$coverHeight}"'}/></xen:set><xen:if
+			is="{$bdCache_isAmp} || !{$coverWidth} || !{$coverHeight}">{xen:raw $coverImgHtml}<xen:else
+			/><div class="placeholder" style="padding-bottom: {xen:calc '{$coverHeight} / {$coverWidth} * 100'}%">
+			{xen:raw $coverImgHtml}
+		</div></xen:if>
 
 		<div class="bg coverContent">
 			<p class="title">{xen:raw $coverTitleEscaped}</p>

@@ -166,6 +166,7 @@ class bdImage_Integration
     /**
      * @param string $imageData
      * @return string
+     * @deprecated
      */
     public static function getDataUriTransparentAtSameSize($imageData)
     {

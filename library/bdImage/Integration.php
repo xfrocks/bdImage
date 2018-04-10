@@ -65,6 +65,20 @@ class bdImage_Integration
         }
 
         $thumbnailUrl = null;
+
+        if (bdImage_Listener::$customBuildThumbnailLink !== null) {
+            try {
+                $thumbnailUrl = call_user_func(bdImage_Listener::$customBuildThumbnailLink, $imageUrl, $size, $mode);
+            } catch (Exception $e) {
+                if (XenForo_Application::debugMode()) {
+                    XenForo_Error::logException($e, false, 'Ignored: ');
+                }
+            }
+        }
+        if ($thumbnailUrl !== null) {
+            return $thumbnailUrl;
+        }
+
         $hash = bdImage_Helper_Data::computeHash($imageUrl, $size, $mode);
 
         if (!bdImage_Listener::$skipCacheCheck) {

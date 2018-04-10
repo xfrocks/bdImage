@@ -4,6 +4,34 @@ class bdImage_Listener
 {
     const API_GLOBALS_SECONDARY_KEY = 'bdImage_bdApi_Extend_Model_Thread::prepareApiDataForThread::secondaryKey';
 
+    const CONFIG_CUSTOM_BUILD_THUMBNAIL_LINK = 'bdImage_customBuildThumbnailLink';
+
+    /**
+     * Implement custom builder to use an independent image resizer,
+     * below is a simplified example for https://github.com/willnorris/imageproxy
+     *
+     * ```
+     *     $config['bdImage_customBuildThumbnailLink'] = function ($imageUrl, $size, $mode) {
+     *         $options = sprintf('%dx%d', $size, $mode);
+     *         switch ($mode) {
+     *             case bdImage_Integration::MODE_STRETCH_WIDTH:
+     *                 $options = sprintf('x%d', $size);
+     *                 break;
+     *             case bdImage_Integration::MODE_STRETCH_HEIGHT:
+     *                 $options = sprintf('%dx', $size);
+     *                 break;
+     *             case bdImage_Integration::MODE_CROP_EQUAL:
+     *                 $options = sprintf('%d', $size);
+     *                 break;
+     *         }
+     *         return sprintf('https://imageproxy.domain.com/%s/%s', $options, $imageUrl);
+     *     }
+     * ```
+     *
+     * @var null|string|callable
+     */
+    public static $customBuildThumbnailLink = null;
+
     const CONFIG_EXTERNAL_DATA_URLS = 'bdImage_externalDataUrls';
     public static $externalDataUrls = array();
 
@@ -42,6 +70,8 @@ class bdImage_Listener
             = array('bdImage_Integration', 'buildThumbnailLink');
 
         $config = XenForo_Application::getConfig();
+
+        self::$customBuildThumbnailLink = $config->get(self::CONFIG_CUSTOM_BUILD_THUMBNAIL_LINK);
 
         $externalDataUrls = $config->get(self::CONFIG_EXTERNAL_DATA_URLS);
         if (!empty($externalDataUrls)) {

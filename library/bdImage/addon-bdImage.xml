@@ -43,7 +43,15 @@
 <xen:spinboxunit label="{xen:phrase title}" name="{$namePrefix}title" value="{xen:if 'isset({$options.title})', {$options.title}, 50}" min="0" step="25" />
 
 <xen:spinboxunit label="{xen:phrase bdimage_gap}" name="{$namePrefix}gap" value="{xen:if 'isset({$options.gap})', {$options.gap}, 10}" min="1" step="10" />
-<xen:spinboxunit label="{xen:phrase bdimage_visible_count}" name="{$namePrefix}visible_count" value="{xen:if 'isset({$options.visible_count})', {$options.visible_count}, 1}" min="1" />]]></template>
+
+<input type="hidden" name="{$namePrefix}dots" value="0" />
+<input type="hidden" name="{$namePrefix}nav" value="0" />
+<xen:checkboxunit label="" name="{$namePrefix}title">
+	<xen:option name="{$namePrefix}dots" value="1" selected="{xen:if 'isset({$options.dots})', {$options.dots}, 1}">{xen:phrase bdimage_show_dots}</xen:option>
+	<xen:option name="{$namePrefix}nav" value="1" selected="{$options.nav}">{xen:phrase bdimage_show_nav}</xen:option>
+</xen:checkboxunit>
+
+<xen:edithint template="bdimage_widget_options_slider_threads_2" />]]></template>
     <template title="bdimage_widget_options_slider_threads_2"><![CDATA[<xen:include template="wf_widget_options_threads">
 	<xen:set var="$hideThreadsLayout">1</xen:set>
 </xen:include>
@@ -210,6 +218,8 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     <phrase title="bdimage_rebuild_thread_images" version_id="1020100" version_string="1.2.1"><![CDATA[Rebuild Thread Images]]></phrase>
     <phrase title="bdimage_rows" version_id="18" version_string="0.9.7b"><![CDATA[Rows]]></phrase>
     <phrase title="bdimage_row_gap" version_id="14" version_string="0.9.5"><![CDATA[Row Gap]]></phrase>
+    <phrase title="bdimage_show_dots" version_id="2020400" version_string="2.2.4"><![CDATA[Show dots]]></phrase>
+    <phrase title="bdimage_show_nav" version_id="2020400" version_string="2.2.4"><![CDATA[Show nav]]></phrase>
     <phrase title="bdimage_show_pager" version_id="24" version_string="1.0.1"><![CDATA[Show Pager]]></phrase>
     <phrase title="bdimage_small_column_explain" version_id="14" version_string="0.9.5"><![CDATA[Set the size of the second column to control how it show up next to the feature thread. To disable thumbnail for this column, choose 0 as the thumbnail size.]]></phrase>
     <phrase title="bdimage_small_column_width" version_id="14" version_string="0.9.5"><![CDATA[Second Column Width]]></phrase>
@@ -226,7 +236,6 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     <phrase title="bdimage_thread_image" version_id="13" version_string="0.9.4"><![CDATA[Thread Image]]></phrase>
     <phrase title="bdimage_thumbnail_height" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Height]]></phrase>
     <phrase title="bdimage_thumbnail_width" version_id="10" version_string="0.9-dev"><![CDATA[Thumbnail Width]]></phrase>
-    <phrase title="bdimage_visible_count" version_id="10" version_string="0.9-dev"><![CDATA[Visible Thumbnails]]></phrase>
     <phrase title="cron_entry_bdImage_pruneFiles" version_id="23" version_string="1.0.0b"><![CDATA[[bd] Image: Prune Files]]></phrase>
     <phrase title="moderator_log_thread_bdImage_remove" version_id="2020308" version_string="2.2.3"><![CDATA[Thread image removed]]></phrase>
     <phrase title="moderator_log_thread_bdImage_set" version_id="2020308" version_string="2.2.3"><![CDATA[Thread image set ({url})]]></phrase>
@@ -2157,7 +2166,7 @@ ul.bdImage_Widget_Grid
 		</ul>
 	</div>
 </xen:if>]]></template>
-    <template title="bdimage_widget_slider_threads" version_id="2020102" version_string="2.2.1"><![CDATA[<xen:if hascontent="true">	
+    <template title="bdimage_widget_slider_threads" version_id="2020400" version_string="2.2.4"><![CDATA[<xen:if hascontent="true">	
 <xen:require css="bdimage_widget.css" />
 <xen:require js="js/bdImage/widget_slider.min.js" />
 <xen:require js="js/bdImage/Lib/owl.carousel/owl.carousel{xen:if '!{$debugMode}', .min}.js" />
@@ -2167,10 +2176,10 @@ ul.bdImage_Widget_Grid
 </xen:container>
 
 <div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads_Container"
+	 data-thumbnail-width="{$widget.options.thumbnail_width}"
+	 data-thumbnail-height="{$widget.options.thumbnail_height}"
 	 data-layout="owlcarousel"
-	 data-layout-options='{xen:helper json, {xen:array
-						  'items={$widget.options.visible_count}',
-						  'margin={$widget.options.gap}'}}'>
+	 data-layout-options="{xen:escape {xen:helper json, $owlCarouselOptions}}">
 	<ul class="bdImage_Widget_Slider_Items">
 		<xen:contentcheck>
 		<xen:include template="bdimage_widget_thread_item">
@@ -2182,7 +2191,7 @@ ul.bdImage_Widget_Grid
 </xen:if>
 
 <xen:edithint template="bdimage_widget_slider_threads_2" />]]></template>
-    <template title="bdimage_widget_slider_threads_2" version_id="2020102" version_string="2.2.1"><![CDATA[<xen:if hascontent="true">
+    <template title="bdimage_widget_slider_threads_2" version_id="2020400" version_string="2.2.4"><![CDATA[<xen:if hascontent="true">
 <xen:require css="bdimage_widget.css" />
 <xen:require js="js/bdImage/widget_slider.min.js" />
 <xen:require js="js/bdImage/Lib/jquery.bxslider/jquery.bxslider{xen:if '!{$debugMode}', .min}.js" />
@@ -2192,6 +2201,8 @@ ul.bdImage_Widget_Grid
 
 <div class="bdImage_Widget_Slider_Container bdImage_Widget_SliderThreads2_Container"
 	 style="max-width: {$widget.options.thumbnail_width}px;"
+	 data-thumbnail-width="{$widget.options.thumbnail_width}"
+	 data-thumbnail-height="{$widget.options.thumbnail_height}"
 	 data-layout="bxslider"
 	 data-layout-options='{xen:helper json, {xen:array
 						  'auto={$widget.options.auto}',

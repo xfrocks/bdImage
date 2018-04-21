@@ -13,7 +13,8 @@ class bdImage_WidgetRenderer_SliderThreads extends bdImage_WidgetRenderer_Thread
             'title' => XenForo_Input::UINT,
 
             'gap' => XenForo_Input::UINT,
-            'visible_count' => XenForo_Input::UINT,
+            'dots' => XenForo_Input::BOOLEAN,
+            'nav' => XenForo_Input::BOOLEAN,
         );
 
         return $config;
@@ -38,8 +39,6 @@ class bdImage_WidgetRenderer_SliderThreads extends bdImage_WidgetRenderer_Thread
                 case 'gap':
                     $optionValue = 10;
                     break;
-                case 'visible_count':
-                    $optionValue = 1;
             }
         }
 
@@ -49,5 +48,22 @@ class bdImage_WidgetRenderer_SliderThreads extends bdImage_WidgetRenderer_Thread
     protected function _getRenderTemplate(array $widget, $positionCode, array $params)
     {
         return 'bdimage_widget_slider_threads';
+    }
+
+    protected function _render(
+        array $widget,
+        $positionCode,
+        array $params,
+        XenForo_Template_Abstract $renderTemplateObject
+    ) {
+        $options = array();
+        $options['dots'] = isset($widget['options']['dots']) ? $widget['options']['dots'] : true;
+        if (!empty($widget['options']['gap'])) {
+            $options['margin'] = $widget['options']['gap'];
+        }
+        $options['nav'] = !empty($widget['options']['nav']);
+        $renderTemplateObject->setParam('owlCarouselOptions', $options);
+
+        return parent::_render($widget, $positionCode, $params, $renderTemplateObject);
     }
 }

@@ -1,15 +1,18 @@
-//noinspection ThisExpressionReferencesGlobalObjectJS
+/* global jQuery, XenForo */
+/* jslint -W030 */
 !function ($) {
+    'use strict';
 
     XenForo.bdImage_Widget_Slider_Container = function ($container) {
         this.__construct($container);
     };
 
-    XenForo.bdImage_Widget_Slider_Container.prototype =
-    {
+    XenForo.bdImage_Widget_Slider_Container.prototype = {
         __construct: function ($container) {
-            var layout = $container.data('layout');
-            var layoutOptions = $container.data('layoutOptions');
+            var $items = $container.find('.bdImage_Widget_Slider_Items'),
+                layout = $container.data('layout'),
+                layoutOptions = $container.data('layoutOptions'),
+                thumbnailWidth = $container.data('thumbnailWidth');
 
             if (layout === 'bxslider') {
                 var bxsliderOptions = this.buildOptions({
@@ -32,59 +35,44 @@
                     bxsliderOptions.autoHover = true;
                 }
 
-                $container.find('.bdImage_Widget_Slider_Items').bxSlider(bxsliderOptions);
+                $items.bxSlider(bxsliderOptions);
             }
 
             if (layout === 'owlcarousel') {
                 var owlcarouselOptions = this.buildOptions({
-                    autoplay: false,
-                    autoplayHoverPause: false,
-                    center: false,
-                    dots: false,
+                    dots: true,
                     items: 1,
-                    lazyLoad: true,
                     loop: true,
                     margin: 10,
-                    nav: false
+                    responsiveClass: true,
+                    responsive: {}
                 }, layoutOptions);
 
-                if (owlcarouselOptions.autoplay) {
-                    owlcarouselOptions.autoplayHoverPause = true;
+                if (owlcarouselOptions.responsiveClass === true &&
+                    JSON.stringify(owlcarouselOptions.responsive) === '{}') {
+                    owlcarouselOptions.responsive[0] = {
+                        items: 1,
+                        autoWidth: false
+                    };
+                    owlcarouselOptions.responsive[thumbnailWidth] = {
+                        items: 2,
+                        autoWidth: false
+                    };
+
+                    owlcarouselOptions.responsive[thumbnailWidth * 2] = {
+                        items: 2,
+                        autoWidth: true
+                    };
                 }
 
-                if (owlcarouselOptions.items === 1
-                    && typeof layoutOptions['dots'] === 'undefined') {
-                    owlcarouselOptions.dots = true;
-                }
-                if (!owlcarouselOptions.dots && !owlcarouselOptions.nav) {
-                    owlcarouselOptions.dots = true;
-                }
-
-                $container.find('.bdImage_Widget_Slider_Items').owlCarousel(owlcarouselOptions);
+                $items.addClass('owl-carousel owl-theme')
+                    .owlCarousel(owlcarouselOptions);
             }
         },
 
         buildOptions: function (defaultOptions, layoutOptions) {
-            var options = $.extend({}, defaultOptions);
-
-            for (var i in layoutOptions) {
-                if (!layoutOptions.hasOwnProperty(i)) {
-                    continue;
-                }
-
-                var typeOf = typeof options[i];
-
-                switch (typeOf) {
-                    case 'boolean':
-                        options[i] = (layoutOptions[i] > 0);
-                        break;
-                    case 'number':
-                        options[i] = parseInt(layoutOptions[i]);
-                        break;
-                }
-            }
-
-            return options;
+            // noinspection JSUnresolvedFunction
+            return $.extend({}, defaultOptions, layoutOptions);
         }
     };
 

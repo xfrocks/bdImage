@@ -12,8 +12,8 @@ class bdImage_WidgetRenderer_SliderThreads2 extends bdImage_WidgetRenderer_Threa
             'thumbnail_height' => XenForo_Input::UINT,
             'title' => XenForo_Input::UINT,
 
-            'auto' => XenForo_Input::UINT,
-            'pager' => XenForo_Input::UINT,
+            'dots' => XenForo_Input::BOOLEAN,
+            'nav' => XenForo_Input::BOOLEAN,
         );
 
         $config['useWrapper'] = false;
@@ -39,14 +39,6 @@ class bdImage_WidgetRenderer_SliderThreads2 extends bdImage_WidgetRenderer_Threa
                 case 'title':
                     $optionValue = 50;
                     break;
-                case 'auto':
-                    $optionValue = 0;
-                    break;
-                case 'pager':
-                    if (strval($optionValue) === '') {
-                        $optionValue = 1;
-                    }
-                    break;
             }
         }
 
@@ -56,5 +48,20 @@ class bdImage_WidgetRenderer_SliderThreads2 extends bdImage_WidgetRenderer_Threa
     protected function _getRenderTemplate(array $widget, $positionCode, array $params)
     {
         return 'bdimage_widget_slider_threads_2';
+    }
+
+    protected function _render(
+        array $widget,
+        $positionCode,
+        array $params,
+        XenForo_Template_Abstract $renderTemplateObject
+    ) {
+        $options = array();
+        $options['captions'] = !empty($widget['options']['title']);
+        $options['controls'] = !empty($widget['options']['nav']);
+        $options['pager'] = isset($widget['options']['dots']) ? $widget['options']['dots'] : true;
+        $renderTemplateObject->setParam('bxsliderOptions', $options);
+
+        return parent::_render($widget, $positionCode, $params, $renderTemplateObject);
     }
 }

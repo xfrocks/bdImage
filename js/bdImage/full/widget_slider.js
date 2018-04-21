@@ -16,25 +16,12 @@
 
             if (layout === 'bxslider') {
                 var bxsliderOptions = this.buildOptions({
-                    auto: false,
-                    autoControls: false,
-                    autoControlsCombine: false,
-                    autoHover: false,
-                    captions: false,
                     controls: false,
                     infiniteLoop: true,
-                    pager: false
+                    pager: true
                 }, layoutOptions);
 
-                if (bxsliderOptions.auto) {
-                    if (bxsliderOptions.controls) {
-                        bxsliderOptions.autoControls = true;
-                        bxsliderOptions.autoControlsCombine = true;
-                    }
-
-                    bxsliderOptions.autoHover = true;
-                }
-
+                // noinspection JSUnresolvedFunction
                 $items.bxSlider(bxsliderOptions);
             }
 

@@ -59,7 +59,28 @@
 
         buildOptions: function (defaultOptions, layoutOptions) {
             // noinspection JSUnresolvedFunction
-            return $.extend({}, defaultOptions, layoutOptions);
+            var merged = $.extend({}, defaultOptions);
+
+            for (var k in layoutOptions) {
+                if (!layoutOptions.hasOwnProperty(k)) {
+                    continue;
+                }
+
+                var v = layoutOptions[k];
+                if (typeof v === 'string') {
+                    if (v === 'false') {
+                        v = false;
+                    } else if (v === 'true') {
+                        v = true;
+                    } else if (v.match(/^[0-9]+$/)) {
+                        v = parseInt(v);
+                    }
+                }
+
+                merged[k] = v;
+            }
+
+            return merged;
         }
     };
 

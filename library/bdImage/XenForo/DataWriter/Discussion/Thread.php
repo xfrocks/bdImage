@@ -99,7 +99,7 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
             && $this->isChanged('tags')
         ) {
             $existingImage = $this->bdImage_getThreadImage();
-            if (empty($existingImage['_locked'])) {
+            if (empty($existingImage[bdImage_Helper_Data::IMAGE_URL])) {
                 $image = $this->bdImage_getImageFromTags();
                 if (is_string($image)) {
                     $this->bdImage_setThreadImage($image);

@@ -50,10 +50,6 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
 
                 if (empty($existingImage['_locked'])) {
                     $image = $this->bdImage_extractImage();
-                    if (bdImage_Option::get('imageFromTags') && empty($image)) {
-                        $image = $threadDw->bdImage_getImageFromTags();
-                    }
-
                     if (is_string($image)) {
                         $threadDw->bdImage_setThreadImage($image);
                         $threadDw->save();

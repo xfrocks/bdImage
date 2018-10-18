@@ -163,12 +163,6 @@ step=14</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="bdImage" display_order="1099"/>
     </option>
-    <option option_id="bdImage_imageFromTags" edit_format="onoff" data_type="boolean" can_backup="1">
-      <default_value>0</default_value>
-      <edit_format_params></edit_format_params>
-      <sub_options></sub_options>
-      <relation group_id="bdImage" display_order="1020"/>
-    </option>
     <option option_id="bdImage_template" edit_format="checkbox" data_type="array" can_backup="1">
       <default_value></default_value>
       <edit_format_params>thread_list_item_thread_image = {xen:phrase bdimage_template_thread_list_item_thread_image}
@@ -248,8 +242,6 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     <phrase title="option_bdImage_forumLastPostImage_explain" version_id="1020270" version_string="1.2.2"><![CDATA[]]></phrase>
     <phrase title="option_bdImage_googleApiKey" version_id="1020100" version_string="1.2.1"><![CDATA[Google API Key]]></phrase>
     <phrase title="option_bdImage_googleApiKey_explain" version_id="1020100" version_string="1.2.1"><![CDATA[Enter Google API key, it will be used for accurate YouTube thumbnail fetching (instead of guessing).]]></phrase>
-    <phrase title="option_bdImage_imageFromTags" version_id="2020309" version_string="2.2.3"><![CDATA[Image from Thread Tags]]></phrase>
-    <phrase title="option_bdImage_imageFromTags_explain" version_id="2020309" version_string="2.2.3"><![CDATA[]]></phrase>
     <phrase title="option_bdImage_template" version_id="14" version_string="0.9.5"><![CDATA[Template Modification]]></phrase>
     <phrase title="option_bdImage_template_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[Tick the modifications you wish to apply automatically.]]></phrase>
     <phrase title="option_bdImage_threadAuto" version_id="30" version_string="1.0.4"><![CDATA[Thread: Auto-extract Image]]></phrase>

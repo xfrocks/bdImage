@@ -29,45 +29,6 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
         return $this->set('bdimage_image', $image);
     }
 
-    /**
-     * @return null|string
-     */
-    public function bdImage_getImageFromTags()
-    {
-        $tags = $this->get('tags');
-        $tags = XenForo_Helper_Php::safeUnserialize($tags);
-
-        if (empty($tags)) {
-            return null;
-        }
-
-        /** @var XenForo_Model_Tag $tagModel */
-        $tagModel = $this->getModelFromCache('XenForo_Model_Tag');
-        $tags = $tagModel->getTags(XenForo_Application::arrayColumn($tags, 'tag'));
-
-        if (empty($tags)) {
-            return null;
-        }
-
-        foreach ($tags as $tag) {
-            if (!empty($tag['tinhte_xentagnhattao_thumbnail'])) {
-                $imageSize = bdImage_Integration::getSize($tag['tinhte_xentagnhattao_thumbnail']);
-                if ($imageSize === false) {
-                    continue;
-                }
-
-                return bdImage_Helper_Data::pack(
-                    $tag['tinhte_xentagnhattao_thumbnail'],
-                    $imageSize[0],
-                    $imageSize[1],
-                    array('type' => 'tag')
-                );
-            }
-        }
-
-        return null;
-    }
-
     protected function _getFields()
     {
         $fields = parent::_getFields();
@@ -95,16 +56,6 @@ class bdImage_XenForo_DataWriter_Discussion_Thread extends XFCP_bdImage_XenForo_
             // tell the post data writer not to update the thread again
             $optionName = bdImage_XenForo_DataWriter_DiscussionMessage_Post::OPTION_SKIP_THREAD_AUTO;
             $this->_firstMessageDw->setOption($optionName, true);
-        } elseif (bdImage_Option::get('imageFromTags')
-            && $this->isChanged('tags')
-        ) {
-            $existingImage = $this->bdImage_getThreadImage();
-            if (empty($existingImage[bdImage_Helper_Data::IMAGE_URL])) {
-                $image = $this->bdImage_getImageFromTags();
-                if (is_string($image)) {
-                    $this->bdImage_setThreadImage($image);
-                }
-            }
         }
 
         parent::_discussionPreSave();

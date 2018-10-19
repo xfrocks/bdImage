@@ -35,7 +35,7 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
     {
         if (bdImage_Option::get('threadAuto')
             && !$this->getOption(self::OPTION_SKIP_THREAD_AUTO)
-            && $this->isChanged('message')
+            && $this->_bdImage_needRebuildThreadImage()
             && $this->get('thread_id') > 0
             && $this->get('position') == 0
         ) {
@@ -59,5 +59,10 @@ class bdImage_XenForo_DataWriter_DiscussionMessage_Post extends XFCP_bdImage_Xen
         }
 
         parent::_messagePostSave();
+    }
+
+    protected function _bdImage_needRebuildThreadImage()
+    {
+        return $this->isChanged('message');
     }
 }

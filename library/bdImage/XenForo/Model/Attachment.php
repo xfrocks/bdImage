@@ -11,7 +11,7 @@ class bdImage_XenForo_Model_Attachment extends XFCP_bdImage_XenForo_Model_Attach
                 $imageData = $this->getAttachmentDataFilePath($data);
             }
 
-            $size = XenForo_Application::get('options')->attachmentThumbnailDimensions;
+            $size = XenForo_Application::getOptions()->attachmentThumbnailDimensions;
             $mode = bdImage_Integration::MODE_CROP_EQUAL;
 
             if (isset($data['height']) && $data['height'] > 0 && isset($data['width'])) {

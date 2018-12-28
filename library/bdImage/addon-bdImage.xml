@@ -124,6 +124,7 @@
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_WidgetFramework_Model_Thread" active="1" hint="WidgetFramework_Model_Thread" description="WidgetFramework_Model_Thread"/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_Model_Thread" active="1" hint="XenForo_Model_Thread" description="XenForo_Model_Thread"/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_Model_Attachment" active="1" hint="XenForo_Model_Attachment" description="XenForo_Model_Attachment"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenGallery_Model_Media" active="1" hint="XenGallery_Model_Media" description="XenGallery_Model_Media"/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="bdImage_Listener" callback_method="widget_framework_ready" active="1" hint="" description=""/>
   </code_event_listeners>
   <cron>

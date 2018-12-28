@@ -205,4 +205,11 @@ class bdImage_Listener
             $extend[] = 'bdImage_XenForo_Model_Attachment';
         }
     }
+
+    public static function load_class_XenGallery_Model_Media($class, array &$extend)
+    {
+        if ($class === 'XenGallery_Model_Media') {
+            $extend[] = 'bdImage_XenGallery_Model_Media';
+        }
+    }
 }

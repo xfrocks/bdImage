@@ -120,8 +120,10 @@
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_DataWriter_Discussion_Thread" active="1" hint="XenForo_DataWriter_Discussion_Thread" description="XenForo_DataWriter_Discussion_Thread"/>
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_4f477c58235ffb475271e2521731d700" active="1" hint="XenForo_DataWriter_DiscussionMessage_Post" description="XenForo_DataWriter_DiscussionMessage_Post"/>
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_DataWriter_Forum" active="1" hint="XenForo_DataWriter_Forum" description="XenForo_DataWriter_Forum"/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_DataWriter_AttachmentData" active="1" hint="XenForo_DataWriter_AttachmentData" description="XenForo_DataWriter_AttachmentData"/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_WidgetFramework_Model_Thread" active="1" hint="WidgetFramework_Model_Thread" description="WidgetFramework_Model_Thread"/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_Model_Thread" active="1" hint="XenForo_Model_Thread" description="XenForo_Model_Thread"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_Model_Attachment" active="1" hint="XenForo_Model_Attachment" description="XenForo_Model_Attachment"/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="bdImage_Listener" callback_method="widget_framework_ready" active="1" hint="" description=""/>
   </code_event_listeners>
   <cron>
@@ -162,6 +164,12 @@ step=14</edit_format_params>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="bdImage" display_order="1099"/>
+    </option>
+    <option option_id="bdImage_takeOverAttachThumbnail" edit_format="onoff" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdImage" display_order="10"/>
     </option>
     <option option_id="bdImage_template" edit_format="checkbox" data_type="array" can_backup="1">
       <default_value></default_value>
@@ -242,6 +250,8 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
     <phrase title="option_bdImage_forumLastPostImage_explain" version_id="1020270" version_string="1.2.2"><![CDATA[]]></phrase>
     <phrase title="option_bdImage_googleApiKey" version_id="1020100" version_string="1.2.1"><![CDATA[Google API Key]]></phrase>
     <phrase title="option_bdImage_googleApiKey_explain" version_id="1020100" version_string="1.2.1"><![CDATA[Enter Google API key, it will be used for accurate YouTube thumbnail fetching (instead of guessing).]]></phrase>
+    <phrase title="option_bdImage_takeOverAttachThumbnail" version_id="2020401" version_string="2.2.4"><![CDATA[Take over attachment thumbnail generation]]></phrase>
+    <phrase title="option_bdImage_takeOverAttachThumbnail_explain" version_id="2020401" version_string="2.2.4"><![CDATA[Enable this option to use dynamically generated thumbnail for attachments. Only the full size images are saved to disk, which should help with file management and storage space (just a little bit). Turning this off after having it running will require a <a href="/admin.php?tools/rebuild" target="_blank">Rebuild Attachment Thumbnails</a>.]]></phrase>
     <phrase title="option_bdImage_template" version_id="14" version_string="0.9.5"><![CDATA[Template Modification]]></phrase>
     <phrase title="option_bdImage_template_explain" version_id="20" version_string="0.10.0-dev"><![CDATA[Tick the modifications you wish to apply automatically.]]></phrase>
     <phrase title="option_bdImage_threadAuto" version_id="30" version_string="1.0.4"><![CDATA[Thread: Auto-extract Image]]></phrase>

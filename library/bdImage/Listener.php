@@ -191,4 +191,18 @@ class bdImage_Listener
             $extend[] = 'bdImage_bdApi_ControllerApi_Thread';
         }
     }
+
+    public static function load_class_XenForo_DataWriter_AttachmentData($class, array &$extend)
+    {
+        if ($class === 'XenForo_DataWriter_AttachmentData') {
+            $extend[] = 'bdImage_XenForo_DataWriter_AttachmentData';
+        }
+    }
+
+    public static function load_class_XenForo_Model_Attachment($class, array &$extend)
+    {
+        if ($class === 'XenForo_Model_Attachment') {
+            $extend[] = 'bdImage_XenForo_Model_Attachment';
+        }
+    }
 }

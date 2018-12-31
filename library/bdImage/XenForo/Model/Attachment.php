@@ -2,6 +2,20 @@
 
 class bdImage_XenForo_Model_Attachment extends XFCP_bdImage_XenForo_Model_Attachment
 {
+    public function getAttachmentThumbnailFilePath(array $data, $externalDataPath = null)
+    {
+        if (bdImage_Option::get('takeOverAttachThumbnail') &&
+            isset($data['thumbnail_width']) &&
+            intval($data['thumbnail_width']) === 1 &&
+            isset($data['thumbnail_height']) &&
+            intval($data['thumbnail_height']) === 1
+        ) {
+            return '/dev/null';
+        }
+
+        return parent::getAttachmentThumbnailFilePath($data, $externalDataPath);
+    }
+
     public function getAttachmentThumbnailUrl(array $data)
     {
         if (bdImage_Option::get('takeOverAttachThumbnail')) {

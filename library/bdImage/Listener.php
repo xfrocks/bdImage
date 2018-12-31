@@ -48,6 +48,9 @@ class bdImage_Listener
     const CONFIG_IMAGE_QUALITY = 'bdImage_imageQuality';
     public static $imageQuality = 66;
 
+    const CONFIG_MAX_IMAGE_RESIZE_PIXEL_COUNT = 'bdImage_maxImageResizePixelCount';
+    const CONFIG_MAX_IMAGE_RESIZE_PIXEL_COUNT_DEFAULT = 20000000;
+
     const CONFIG_PHP_URL = 'bdImage_phpUrl';
     public static $phpUrl = null;
 

@@ -10,7 +10,9 @@ class bdImage_XenForo_Model_Attachment extends XFCP_bdImage_XenForo_Model_Attach
             isset($data['thumbnail_height']) &&
             intval($data['thumbnail_height']) === 1
         ) {
-            return '/dev/null';
+            $method = __METHOD__;
+            $dataId = isset($data['data_id']) ? $data['data_id'] : XenForo_Application::$time;
+            return "/tmp/$method/$dataId";
         }
 
         return parent::getAttachmentThumbnailFilePath($data, $externalDataPath);

@@ -124,10 +124,12 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
                 $mode = $imageSize[1];
             }
 
-            $thumbnailUrl = bdImage_Helper_Thumbnail::buildPhpLink($input['url'], $size, $mode);
             if (!empty($input['rebuild'])) {
+                $thumbnailUrl = bdImage_Helper_Thumbnail::buildPhpLink($input['url'], $size, $mode);
                 $rebuildHash = bdImage_Helper_Data::computeHash($thumbnailUrl, 0, 'rebuild');
                 $thumbnailUrl .= sprintf('&rebuild=%s', $rebuildHash);
+            } else {
+                $thumbnailUrl = bdImage_Integration::buildThumbnailLink($input['url'], $size, $mode);
             }
 
             return $this->responseRedirect(XenForo_ControllerResponse_Redirect::SUCCESS, $thumbnailUrl);

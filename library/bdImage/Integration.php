@@ -64,40 +64,38 @@ class bdImage_Integration
             }
         }
 
-        $thumbnailUrl = null;
-
-        if (bdImage_Listener::$customBuildThumbnailLink !== null) {
-            try {
-                $thumbnailUrl = call_user_func(bdImage_Listener::$customBuildThumbnailLink, $imageUrl, $size, $mode);
-            } catch (Exception $e) {
-                if (XenForo_Application::debugMode()) {
-                    XenForo_Error::logException($e, false, 'Ignored: ');
+        $rules = bdImage_Option::getThumbnailRules();
+        if (count($rules) > 0) {
+            foreach ($rules as $matcher => $kvPairs) {
+                $ruleUrl = null;
+                try {
+                    $ruleUrl = bdImage_Helper_ThumbnailRules::check($matcher, $kvPairs, $imageUrl, $size, $mode);
+                } catch (Exception $ruleException) {
+                    if (XenForo_Application::debugMode()) {
+                        XenForo_Error::logException($ruleException, false, 'Ignored: ');
+                    }
+                }
+                if ($ruleUrl !== null) {
+                    return $ruleUrl;
                 }
             }
         }
-        if ($thumbnailUrl !== null) {
-            return $thumbnailUrl;
-        }
 
-        $hash = bdImage_Helper_Data::computeHash($imageUrl, $size, $mode);
-
-        if (!bdImage_Listener::$skipCacheCheck) {
-            $cachePath = bdImage_Helper_File::getCachePath($imageUrl, $size, $mode, $hash);
-            $cacheFileHash = bdImage_Helper_File::getCacheFileHash($cachePath);
-            if ($cacheFileHash !== null) {
-                $thumbnailUrl = sprintf(
-                    '%s?%s',
-                    bdImage_Helper_File::getCacheUrl($imageUrl, $size, $mode, $hash),
-                    $cacheFileHash
-                );
+        if (bdImage_Listener::$customBuildThumbnailLink !== null) {
+            $customUrl = null;
+            try {
+                $customUrl = call_user_func(bdImage_Listener::$customBuildThumbnailLink, $imageUrl, $size, $mode);
+            } catch (Exception $customException) {
+                if (XenForo_Application::debugMode()) {
+                    XenForo_Error::logException($customException, false, 'Ignored: ');
+                }
+            }
+            if ($customUrl !== null) {
+                return $customUrl;
             }
         }
 
-        if (empty($thumbnailUrl)) {
-            $thumbnailUrl = bdImage_Helper_Thumbnail::buildPhpLink($imageUrl, $size, $mode);
-        }
-
-        return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
+        return bdImage_Helper_ThumbnailRules::builtIn($imageUrl, $size, $mode);
     }
 
     /**

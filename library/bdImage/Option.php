@@ -14,4 +14,34 @@ class bdImage_Option
 
         return XenForo_Application::getOptions()->get('bdImage_' . $key, $subKey);
     }
+
+    public static function getThumbnailRules()
+    {
+        static $parsedRules = null;
+
+        if ($parsedRules === null) {
+            $parsedRules = array();
+            $lines = self::get('thumbnailRules');
+            foreach (explode("\n", $lines) as $line) {
+                $parts = explode(' ', $line);
+                $matcher = array_shift($parts);
+
+                $kvPairs = array();
+                foreach ($parts as $part) {
+                    $keyAndValue = explode('=', $part, 2);
+                    if (count($keyAndValue) === 2) {
+                        list($key, $value) = $keyAndValue;
+                        $kvPairs[$key] = $value;
+                    }
+                }
+
+                if (count($kvPairs) === 0) {
+                    continue;
+                }
+                $parsedRules[$matcher] = $kvPairs;
+            }
+        }
+
+        return $parsedRules;
+    }
 }

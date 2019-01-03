@@ -198,6 +198,12 @@ thread_image_link = {xen:phrase bdimage_template_thread_image_link}</edit_format
       <sub_options></sub_options>
       <relation group_id="bdImage" display_order="1010"/>
     </option>
+    <option option_id="bdImage_thumbnailRules" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>rows=5</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdImage" display_order="100"/>
+    </option>
   </optiongroups>
   <permissions>
     <permission_groups/>
@@ -266,6 +272,17 @@ Advanced usage: add <span style="font-family: monospace">$config['maxImageResize
 <span style="font-family: monospace">width</span>: image width must be equal to or greater than the specified value (in pixel, e.g. width=1024).<br />
 <span style="font-family: monospace">height</span>: image height must be equal to or greater than the specified value (in pixel, e.g. height=300).<br />]]></phrase>
     <phrase title="option_bdImage_threadAuto_explain" version_id="30" version_string="1.0.4"><![CDATA[]]></phrase>
+    <phrase title="option_bdImage_thumbnailRules" version_id="2020402" version_string="2.2.4"><![CDATA[Thumbnail Rules]]></phrase>
+    <phrase title="option_bdImage_thumbnailRules_explain" version_id="2020402" version_string="2.2.4"><![CDATA[Enter rules to generate thumbnails. Rules will be checked from top to bottom. If it matches, the rule is applied and exit. Image urls that don't match any rules will be generated with the built-in script. Format: <span style="font-family: Monospace">matcher key1=value1 key2=value2 ...</span>.<br />
+<br />
+- matcher: must be a valid regex (e.g. <span style="font-family: Monospace">#^photo\d+\.domain\.com#i</span>)<br />
+- engine: <a href="https://github.com/willnorris/imageproxy" target="_blank">imageproxy</a>, <a href="https://github.com/DarthSim/imgproxy" target="_blank">imgproxy</a> or built-in<br />
+- imageproxy_root: Address of imageproxy server (e.g. https://imageproxy.domain.com)<br />
+- imageproxy_key<br />
+- imgproxy_root: Address of imgproxy server (e.g. https://imgproxy.domain.com)<br />
+- imgproxy_key<br />
+- imgproxy_salt<br />
+- sed: Must start with "s" and use "#" as delimiter (e.g. <span style="font-family: Monospace">s#cdn.domain.com#ftp.domain.com#</span>)<br />]]></phrase>
     <phrase title="option_group_bdImage" version_id="14" version_string="0.9.5"><![CDATA[[bd] Image]]></phrase>
     <phrase title="option_group_bdImage_description" version_id="14" version_string="0.9.5"><![CDATA[]]></phrase>
     <phrase title="permission_general_bdImage_setCover" version_id="2020308" version_string="2.2.3"><![CDATA[Set image as cover]]></phrase>

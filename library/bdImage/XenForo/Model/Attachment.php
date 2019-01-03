@@ -47,11 +47,11 @@ class bdImage_XenForo_Model_Attachment extends XFCP_bdImage_XenForo_Model_Attach
 
     public function insertUploadedAttachmentData(XenForo_Upload $file, $userId, array $extra = array())
     {
-        if (bdImage_Option::get('takeOverAttachThumbnail') &&
-            intval(XenForo_Application::getConfig()->get('maxImageResizePixelCount')) === 1 &&
-            $file->isImage() &&
-            !isset($extra['thumbnail_width']) &&
-            !isset($extra['thumbnail_height'])
+        if (!isset($extra['width']) &&
+            !isset($extra['height']) &&
+            bdImage_Option::get('takeOverAttachThumbnail') &&
+            bdImage_Listener::$maxImageResizePixelCountEq1 &&
+            $file->isImage()
         ) {
             $extra['width'] = $file->getImageInfoField('width');
             $extra['height'] = $file->getImageInfoField('height');

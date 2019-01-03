@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="bdImage" title="[bd] Image" version_string="2.2.4" version_id="2020401" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="bdImage" title="[bd] Image" version_string="2.2.4" version_id="2020402" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -125,6 +125,7 @@
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_Model_Thread" active="1" hint="XenForo_Model_Thread" description="XenForo_Model_Thread"/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_Model_Attachment" active="1" hint="XenForo_Model_Attachment" description="XenForo_Model_Attachment"/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenGallery_Model_Media" active="1" hint="XenGallery_Model_Media" description="XenGallery_Model_Media"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="bdImage_Listener" callback_method="load_class_XenForo_Model_Avatar" active="1" hint="XenForo_Model_Avatar" description="XenForo_Model_Avatar"/>
     <listener event_id="widget_framework_ready" execute_order="10" callback_class="bdImage_Listener" callback_method="widget_framework_ready" active="1" hint="" description=""/>
   </code_event_listeners>
   <cron>

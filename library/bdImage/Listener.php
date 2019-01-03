@@ -50,6 +50,7 @@ class bdImage_Listener
 
     const CONFIG_MAX_IMAGE_RESIZE_PIXEL_COUNT = 'bdImage_maxImageResizePixelCount';
     const CONFIG_MAX_IMAGE_RESIZE_PIXEL_COUNT_DEFAULT = 20000000;
+    public static $maxImageResizePixelCountEq1 = false;
 
     const CONFIG_PHP_URL = 'bdImage_phpUrl';
     public static $phpUrl = null;
@@ -103,6 +104,11 @@ class bdImage_Listener
 
         if (isset($data['routesAdmin'])) {
             bdImage_ShippableHelper_Updater::onInitDependencies($dependencies);
+        }
+
+        if (intval($config->get('maxImageResizePixelCount')) === 1) {
+            require(__DIR__ . '/Image/Abstract.php');
+            self::$maxImageResizePixelCountEq1 = true;
         }
     }
 
@@ -213,6 +219,17 @@ class bdImage_Listener
     {
         if ($class === 'XenGallery_Model_Media') {
             $extend[] = 'bdImage_XenGallery_Model_Media';
+        }
+    }
+
+    public static function load_class_XenForo_Model_Avatar($class, array &$extend)
+    {
+        if (!self::$maxImageResizePixelCountEq1) {
+            return;
+        }
+
+        if ($class === 'XenForo_Model_Avatar') {
+            $extend[] = 'bdImage_XenForo_Model_Avatar';
         }
     }
 }

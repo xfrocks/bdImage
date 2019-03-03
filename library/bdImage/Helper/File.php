@@ -161,7 +161,7 @@ class bdImage_Helper_File
      * @param bool $checkFileSize
      * @param bool $checkFileMtime
      * @param int $hashLength
-     * @return null|string
+     * @return null|array
      */
     public static function getCacheFileHash($path, $checkFileSize = true, $checkFileMtime = true, $hashLength = 6)
     {
@@ -198,7 +198,7 @@ class bdImage_Helper_File
             $hash = sprintf('s%d-t%d-h%s', $pathStat['size'], $pathStat['mtime'], $hash);
         }
 
-        return $hash;
+        return array($pathStat['size'], $pathStat['mtime'], $hash);
     }
 
     /**

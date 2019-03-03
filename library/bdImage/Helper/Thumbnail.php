@@ -180,10 +180,10 @@ class bdImage_Helper_Thumbnail
         $noRedirect = !empty($_REQUEST['_xfNoRedirect']);
 
         $cachePath = bdImage_Helper_File::getCachePath($url, $size, $mode, $hash);
-        $cacheFileHash = bdImage_Helper_File::getCacheFileHash($cachePath);
+        list($cacheFileSize, , $cacheFileHash) = bdImage_Helper_File::getCacheFileHash($cachePath);
         $thumbnailUrl = bdImage_Helper_File::getCacheUrl($url, $size, $mode, $hash);
         $thumbnailUri = XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
-        if ($cacheFileHash !== null && !$forceRebuild) {
+        if ($cacheFileHash && $cacheFileSize !== bdImage_Helper_File::THUMBNAIL_ERROR_FILE_LENGTH && !$forceRebuild) {
             if ($noRedirect) {
                 self::_log('readfile %s', $cachePath);
                 readfile($cachePath);
@@ -194,7 +194,7 @@ class bdImage_Helper_Thumbnail
         }
 
         $thumbnailError = array();
-        if ($cacheFileHash > 0 && self::$maxAttempt > 1) {
+        if ($cacheFileSize === bdImage_Helper_File::THUMBNAIL_ERROR_FILE_LENGTH && self::$maxAttempt > 1) {
             $thumbnailError = bdImage_Helper_File::getThumbnailError($cachePath);
 
             if (isset($thumbnailError['latestAttempt'])
@@ -204,7 +204,10 @@ class bdImage_Helper_Thumbnail
             ) {
                 $fallbackImage = self::_getFallbackImage($size, $mode);
                 if ($fallbackImage !== null) {
-                    self::_log('Cooling down...');
+                    self::_log(
+                        'Cooling down... Seconds since latest attempt = %d',
+                        XenForo_Application::$time - $thumbnailError['latestAttempt']
+                    );
                     return self::_buildThumbnailLink($fallbackImage, $size, $mode, self::HASH_FALLBACK);
                 }
             }
@@ -334,7 +337,9 @@ class bdImage_Helper_Thumbnail
         unset($imageObj);
 
         self::_log('Done');
-        return sprintf('%s?%s', $thumbnailUri, bdImage_Helper_File::getCacheFileHash($cachePath));
+
+        list(, , $newCacheFileHash) = bdImage_Helper_File::getCacheFileHash($cachePath);
+        return sprintf('%s?%s', $thumbnailUri, $newCacheFileHash);
     }
 
     /**

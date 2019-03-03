@@ -8,8 +8,8 @@ class bdImage_Helper_ThumbnailRules
 
         if (!bdImage_Listener::$skipCacheCheck) {
             $cachePath = bdImage_Helper_File::getCachePath($imageUrl, $size, $mode, $hash);
-            $cacheFileHash = bdImage_Helper_File::getCacheFileHash($cachePath);
-            if ($cacheFileHash !== null) {
+            list(, , $cacheFileHash) = bdImage_Helper_File::getCacheFileHash($cachePath);
+            if ($cacheFileHash) {
                 $thumbnailUrl = sprintf(
                     '%s?%s',
                     bdImage_Helper_File::getCacheUrl($imageUrl, $size, $mode, $hash),

@@ -49,8 +49,8 @@ class bdImage_Listener
     public static $imageQuality = 66;
 
     const CONFIG_MAX_IMAGE_RESIZE_PIXEL_COUNT = 'bdImage_maxImageResizePixelCount';
-    const CONFIG_MAX_IMAGE_RESIZE_PIXEL_COUNT_DEFAULT = 20000000;
     public static $maxImageResizePixelCountEq1 = false;
+    public static $maxImageResizePixelOurs = 0;
 
     const CONFIG_PHP_URL = 'bdImage_phpUrl';
     public static $phpUrl = null;
@@ -107,8 +107,16 @@ class bdImage_Listener
         }
 
         if (intval($config->get('maxImageResizePixelCount')) === 1) {
-            require(__DIR__ . '/Image/Abstract.php');
+            if (!empty($_FILES)) {
+                require(__DIR__ . '/XenForo/Patch/Image/Abstract.php');
+                require(__DIR__ . '/XenForo/Patch/Upload.php');
+            }
             self::$maxImageResizePixelCountEq1 = true;
+        }
+
+        $maxImageResizePixelCount = $config->get(self::CONFIG_MAX_IMAGE_RESIZE_PIXEL_COUNT);
+        if ($maxImageResizePixelCount > 0) {
+            self::$maxImageResizePixelOurs = $maxImageResizePixelCount;
         }
     }
 

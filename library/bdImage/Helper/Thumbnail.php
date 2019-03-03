@@ -217,13 +217,11 @@ class bdImage_Helper_Thumbnail
             $config = XenForo_Application::getConfig();
             $maxImageResizePixelCount = intval($config->get('maxImageResizePixelCount'));
             if ($maxImageResizePixelCount === 1) {
-                $maxImageResizePixelCount = $config->get(
-                    bdImage_Listener::CONFIG_MAX_IMAGE_RESIZE_PIXEL_COUNT,
-                    bdImage_Listener::CONFIG_MAX_IMAGE_RESIZE_PIXEL_COUNT_DEFAULT
-                );
-                self::_log('maxImageResizePixelCount=%d', $maxImageResizePixelCount);
+                $maxImageResizePixelCount = bdImage_Listener::$maxImageResizePixelOurs;
             }
-            if ($imageInfo['width'] * $imageInfo['height'] > $maxImageResizePixelCount) {
+            if ($maxImageResizePixelCount > 0 &&
+                $imageInfo['width'] * $imageInfo['height'] > $maxImageResizePixelCount
+            ) {
                 self::_log(
                     'Image too big (%dx%d, type %d), maxImageResizePixelCount=%d',
                     $imageInfo['width'],

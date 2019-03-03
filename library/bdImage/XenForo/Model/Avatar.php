@@ -11,15 +11,15 @@ class bdImage_XenForo_Model_Avatar extends XFCP_bdImage_XenForo_Model_Avatar
         $permissions = false
     ) {
         if (bdImage_Listener::$maxImageResizePixelCountEq1) {
-            $GLOBALS['bdImage_Image_Abstract::canResize']++;
+            $GLOBALS['bdImage_XenForo_Patch_Image_Abstract::canResize']++;
         }
 
         try {
             return parent::applyAvatar($userId, $fileName, $imageType, $width, $height, $permissions);
-        } catch (Exception $e) {
-            throw $e;
+        } catch (Throwable $t) {
+            throw $t;
         } finally {
-            $GLOBALS['bdImage_Image_Abstract::canResize']--;
+            $GLOBALS['bdImage_XenForo_Patch_Image_Abstract::canResize']--;
         }
     }
 }

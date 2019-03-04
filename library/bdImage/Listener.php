@@ -108,8 +108,10 @@ class bdImage_Listener
 
         if (intval($config->get('maxImageResizePixelCount')) === 1) {
             if (!empty($_FILES)) {
-                require(__DIR__ . '/XenForo/Patch/Image/Abstract.php');
                 require(__DIR__ . '/XenForo/Patch/Upload.php');
+            }
+            if (!empty($_POST)) {
+                require(__DIR__ . '/XenForo/Patch/Image/Abstract.php');
             }
             self::$maxImageResizePixelCountEq1 = true;
         }

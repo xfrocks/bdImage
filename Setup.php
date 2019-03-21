@@ -9,7 +9,7 @@ use XF\AddOn\StepRunnerUpgradeTrait;
 
 class Setup extends AbstractSetup
 {
-	use StepRunnerInstallTrait;
-	use StepRunnerUpgradeTrait;
-	use StepRunnerUninstallTrait;
+    use StepRunnerInstallTrait;
+    use StepRunnerUpgradeTrait;
+    use StepRunnerUninstallTrait;
 }

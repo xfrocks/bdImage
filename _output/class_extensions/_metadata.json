@@ -1,0 +1,14 @@
+{
+    "XF-Entity-Post_Xfrocks-Image-XF-Entity-Post.json": {
+        "hash": "dda055302429fb2d4eb1e9f87fbd98b6"
+    },
+    "XF-Entity-Thread_Xfrocks-Image-XF-Entity-Thread.json": {
+        "hash": "d42dd723a2093946cf51b4f6e99cb104"
+    },
+    "XF-Service-Post-Preparer_Xfrocks-Image-XF-Service-Post-Preparer.json": {
+        "hash": "970a5c292561ab9ce46ebdd1b29a0fc8"
+    },
+    "Xfrocks-Api-XF-Transform-Thread_Xfrocks-Image-Xfrocks-Api-XF-Transform-Thread.json": {
+        "hash": "551d27f41978b21717b6d664182f5d20"
+    }
+}

@@ -1,0 +1,74 @@
+{
+    "option.bdImage_allAttachments.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "3f6eba66b35da5d3706a5987a3ce2eae"
+    },
+    "option.bdImage_fileTtlDays.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "29018ea11acf96a2512a5b2aaf3a349d"
+    },
+    "option.bdImage_googleApiKey.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "cfa4f36bb6dd35bf435e69bfffa88df5"
+    },
+    "option.bdImage_threadAuto.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "fe9ab0258e2f2c13c594114709c29cda"
+    },
+    "option.bdImage_threadAutoCover.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "bb95fe2102b62478b5960d8cedfe139b"
+    },
+    "option_explain.bdImage_allAttachments.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "0a7bca04a9d0f6e678f8fff6c6f5992f"
+    },
+    "option_explain.bdImage_fileTtlDays.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "3ecc2e8229f0f94eca12ba7fb1450897"
+    },
+    "option_explain.bdImage_googleApiKey.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "32ad1be4faea6758abfbe74223196d25"
+    },
+    "option_explain.bdImage_threadAuto.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "option_explain.bdImage_threadAutoCover.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "4057944160d9688efc31a34f640973d0"
+    },
+    "option_group.bdImage.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "b65adb986c995ec18316bf58de72c524"
+    },
+    "option_group_description.bdImage.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+}

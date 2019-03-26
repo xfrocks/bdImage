@@ -1,0 +1,6 @@
+{
+    "from_class": "Xfrocks\\Api\\XF\\Transform\\Thread",
+    "to_class": "Xfrocks\\Image\\Xfrocks\\Api\\XF\\Transform\\Thread",
+    "execute_order": 10,
+    "active": true
+}

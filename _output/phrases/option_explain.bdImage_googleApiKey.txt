@@ -1,0 +1,1 @@
+Enter Google API key, it will be used for accurate YouTube thumbnail fetching (instead of guessing).

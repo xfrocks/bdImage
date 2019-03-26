@@ -1,0 +1,5 @@
+Enter requirements to set an image as the thread cover automatically. Each requirement must be in its own line, available keys:<br />
+<span style="font-family: monospace">prefix</span>: filename must starts with this (e.g. prefix=cover_).<br />
+<span style="font-family: monospace">ratio</span>: image must have this width:height ratio (e.g. ratio=16:9).<br />
+<span style="font-family: monospace">width</span>: image width must be equal to or greater than the specified value (in pixel, e.g. width=1024).<br />
+<span style="font-family: monospace">height</span>: image height must be equal to or greater than the specified value (in pixel, e.g. height=300).<br />

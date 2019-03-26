@@ -1,0 +1,17 @@
+{
+    "bdImage_allAttachments.json": {
+        "hash": "22c1c0415af7ec7f61de671454b1a0cb"
+    },
+    "bdImage_fileTtlDays.json": {
+        "hash": "882a52d4da39aeb17361eeff613bfa85"
+    },
+    "bdImage_googleApiKey.json": {
+        "hash": "5977fb5382978a62acfac2aa3053d31d"
+    },
+    "bdImage_threadAuto.json": {
+        "hash": "1762ef72f1b166961d832999d42980ff"
+    },
+    "bdImage_threadAutoCover.json": {
+        "hash": "94c30c6dffef932bbb7e4dd1129ed39c"
+    }
+}

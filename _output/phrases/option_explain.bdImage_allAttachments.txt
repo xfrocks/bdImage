@@ -1,0 +1,1 @@
+By default, only attachments that are included in the message are considered to be the feature image of a piece of content. Enable this option to check for all attachments.

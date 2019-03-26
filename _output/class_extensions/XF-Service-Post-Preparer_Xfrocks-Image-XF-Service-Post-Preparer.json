@@ -1,0 +1,6 @@
+{
+    "from_class": "XF\\Service\\Post\\Preparer",
+    "to_class": "Xfrocks\\Image\\XF\\Service\\Post\\Preparer",
+    "execute_order": 10,
+    "active": true
+}

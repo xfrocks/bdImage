@@ -2,6 +2,9 @@
     "bdImage_allAttachments.json": {
         "hash": "22c1c0415af7ec7f61de671454b1a0cb"
     },
+    "bdImage_fallbackImages.json": {
+        "hash": "5c3a50182d9a6dcae108a8336078f80c"
+    },
     "bdImage_fileTtlDays.json": {
         "hash": "882a52d4da39aeb17361eeff613bfa85"
     },

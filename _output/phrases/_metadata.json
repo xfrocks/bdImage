@@ -5,6 +5,12 @@
         "version_string": "2.0.0",
         "hash": "3f6eba66b35da5d3706a5987a3ce2eae"
     },
+    "option.bdImage_fallbackImages.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "03ebe797af9b5d66b510c02c9068ef2e"
+    },
     "option.bdImage_fileTtlDays.txt": {
         "global_cache": false,
         "version_id": 2000000,
@@ -34,6 +40,12 @@
         "version_id": 2000000,
         "version_string": "2.0.0",
         "hash": "0a7bca04a9d0f6e678f8fff6c6f5992f"
+    },
+    "option_explain.bdImage_fallbackImages.txt": {
+        "global_cache": false,
+        "version_id": 2000000,
+        "version_string": "2.0.0",
+        "hash": "17dbec30b09402317ef4da3f9505ab72"
     },
     "option_explain.bdImage_fileTtlDays.txt": {
         "global_cache": false,

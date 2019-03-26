@@ -23,11 +23,11 @@ class WithImage extends \Exception
         }
 
         header('Content-Type: image/jpeg');
-        /** @noinspection PhpParamsInspection */
-        $imageObj->output(IMAGETYPE_JPEG, null, Listener::$imageQuality);
+        $imageObj->output(IMAGETYPE_JPEG, Listener::$imageQuality);
 
-        if (is_callable(array($imageObj, 'bdImage_cleanUp'))) {
-            call_user_func(array($imageObj, 'bdImage_cleanUp'));
+        $callable = array($imageObj, 'bdImage_cleanUp');
+        if (is_callable($callable)) {
+            call_user_func($callable);
         }
     }
 }

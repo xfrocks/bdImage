@@ -185,8 +185,13 @@ class BbCode
             return null;
         }
 
-        $rules = array();
-        foreach (preg_split('#\s#', $input) as $ruleLine) {
+        $rules = [];
+        $ruleLines = preg_split('#\s#', $input);
+        if (!is_array($ruleLines)) {
+            throw new \InvalidArgumentException('Bad rules input');
+        }
+
+        foreach ($ruleLines as $ruleLine) {
             if (empty($ruleLine)) {
                 continue;
             }

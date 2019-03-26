@@ -2,7 +2,9 @@
 
 namespace Xfrocks\Image\Util;
 
+use Xfrocks\Image\Integration;
 use Xfrocks\Image\Listener;
+use Xfrocks\Image\Uti\Thumbnail;
 
 class ThumbnailRules
 {
@@ -11,22 +13,24 @@ class ThumbnailRules
         $hash = Data::computeHash($imageUrl, $size, $mode);
 
         if (!Listener::$skipCacheCheck) {
-            $cachePath = bdImage_Helper_File::getCachePath($imageUrl, $size, $mode, $hash);
-            list(, , $cacheFileHash) = bdImage_Helper_File::getCacheFileHash($cachePath);
+            $cachePath = File::getCachePath($imageUrl, $size, $mode, $hash);
+            list(, , $cacheFileHash) = File::getCacheFileHash($cachePath);
             if ($cacheFileHash) {
                 $thumbnailUrl = sprintf(
                     '%s?%s',
-                    bdImage_Helper_File::getCacheUrl($imageUrl, $size, $mode, $hash),
+                    File::getCacheUrl($imageUrl, $size, $mode, $hash),
                     $cacheFileHash
                 );
             }
         }
 
+        $thumbnailUrl = null;
         if (empty($thumbnailUrl)) {
-            $thumbnailUrl = bdImage_Helper_Thumbnail::buildPhpLink($imageUrl, $size, $mode);
+//            $thumbnailUrl = Thumbnail::buildPhpLink($imageUrl, $size, $mode);
         }
 
-        return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
+//        return XenForo_Link::convertUriToAbsoluteUri($thumbnailUrl, true);
+        return $thumbnailUrl;
     }
 
     public static function check($matcher, array $kvPairs, $imageUrl, $size, $mode)
@@ -56,13 +60,13 @@ class ThumbnailRules
                 }
 
                 switch ($mode) {
-                    case bdImage_Integration::MODE_STRETCH_WIDTH:
+                    case Integration::MODE_STRETCH_WIDTH:
                         $options = sprintf('x%d', $size);
                         break;
-                    case bdImage_Integration::MODE_STRETCH_HEIGHT:
+                    case Integration::MODE_STRETCH_HEIGHT:
                         $options = sprintf('%dx', $size);
                         break;
-                    case bdImage_Integration::MODE_CROP_EQUAL:
+                    case Integration::MODE_CROP_EQUAL:
                         $options = sprintf('%d', $size);
                         break;
                     default:
@@ -84,13 +88,13 @@ class ThumbnailRules
                 }
 
                 switch ($mode) {
-                    case bdImage_Integration::MODE_STRETCH_WIDTH:
+                    case Integration::MODE_STRETCH_WIDTH:
                         $options = sprintf('h:%d', $size);
                         break;
-                    case bdImage_Integration::MODE_STRETCH_HEIGHT:
+                    case Integration::MODE_STRETCH_HEIGHT:
                         $options = sprintf('w:%d', $size);
                         break;
-                    case bdImage_Integration::MODE_CROP_EQUAL:
+                    case Integration::MODE_CROP_EQUAL:
                         $options = sprintf('rs:fill:%1$d:%1$d:0', $size);
                         break;
                     default:
@@ -140,6 +144,38 @@ class ThumbnailRules
         ));
 
         return sprintf('%s/%s%s', $root, $signature, $path);
+    }
+
+    public static function getThumbnailRules()
+    {
+        static $parsedRules = null;
+
+        if ($parsedRules === null) {
+            $parsedRules = array();
+            $lines = \XF::app()->options()->bdImage_thumbnailRules;
+
+            foreach (explode("\n", $lines) as $line) {
+                $parts = explode(' ', $line);
+                $matcher = array_shift($parts);
+                $kvPairs = array();
+
+                foreach ($parts as $part) {
+                    $keyAndValue = explode('=', $part, 2);
+                    if (count($keyAndValue) === 2) {
+                        list($key, $value) = $keyAndValue;
+                        $kvPairs[$key] = $value;
+                    }
+                }
+
+                if (count($kvPairs) === 0) {
+                    continue;
+                }
+
+                $parsedRules[$matcher] = $kvPairs;
+            }
+        }
+
+        return $parsedRules;
     }
 
     protected static function _imgproxyBase64($str)

@@ -1,13 +1,11 @@
 <?php
 
-namespace Xfrocks\Image\Uti;
+namespace Xfrocks\Image\Util;
 
 use XF\Entity\Attachment;
 use Xfrocks\Image\Exception\WithImage;
 use Xfrocks\Image\Integration;
 use Xfrocks\Image\Listener;
-use Xfrocks\Image\Util\Data;
-use Xfrocks\Image\Util\File;
 
 class Thumbnail
 {
@@ -282,8 +280,9 @@ class Thumbnail
             $imageObj = \XF::app()->imageManager()->createImage($size, $size);
         }
 
-        if (is_callable(array($imageObj, 'bdImage_optimizeOutput'))) {
-            call_user_func(array($imageObj, 'bdImage_optimizeOutput'), true);
+        $callable = [$imageObj, 'bdImage_optimizeOutput'];
+        if (is_callable($callable)) {
+            call_user_func($callable, true);
         }
 
         switch ($mode) {
@@ -295,10 +294,11 @@ class Thumbnail
                 break;
             default:
                 if (is_numeric($mode)) {
-                    self::_cropExact($imageObj, $size, $mode);
+                    self::_cropExact($imageObj, $size, (int) $mode);
                 } else {
                     self::_cropSquare($imageObj, $size);
                 }
+
                 break;
         }
 
@@ -327,24 +327,24 @@ class Thumbnail
             Listener::$imageQuality
         );
 
-        try {
-            // TODO: Convert `XenForo_Helper_File::safeRename(...) to XF2
-//            $renamed = \XF\Util\File::safeRename($tempFile, $cachePath);
-            $renamed = false;
-            if (!$renamed) {
-                @unlink($tempFile);
-                throw new WithImage(
-                    sprintf('Cannot rename %s to %s', $tempFile, $cachePath),
-                    $imageObj
-                );
-            }
-        } catch (\Exception $e) {
-            @unlink($tempFile);
-            throw new WithImage($e->getMessage(), $imageObj, $e);
-        }
+//        try {
+//            // TODO: Convert `XenForo_Helper_File::safeRename(...) to XF2
+////            $renamed = \XF\Util\File::safeRename($tempFile, $cachePath);
+//            if (!$renamed) {
+//                @unlink($tempFile);
+//                throw new WithImage(
+//                    sprintf('Cannot rename %s to %s', $tempFile, $cachePath),
+//                    $imageObj
+//                );
+//            }
+//        } catch (\Exception $e) {
+//            @unlink($tempFile);
+//            throw new WithImage($e->getMessage(), $imageObj, $e);
+//        }
 
-        if (is_callable(array($imageObj, 'bdImage_cleanUp'))) {
-            call_user_func(array($imageObj, 'bdImage_cleanUp'));
+        $callable = [$imageObj, 'bdImage_cleanUp'];
+        if (is_callable($callable)) {
+            call_user_func($callable);
         }
         unset($imageObj);
 
@@ -448,7 +448,11 @@ class Thumbnail
     {
         $bestFallbackImage = null;
         $bestRatio = null;
-        $fallbackImages = preg_split('#\s#', \XF::app()->options()->fallbackImages, -1, PREG_SPLIT_NO_EMPTY);
+        $fallbackImages = preg_split('#\s#', \XF::app()->options()->bdImage_fallbackImages, -1, PREG_SPLIT_NO_EMPTY);
+        if (!is_array($fallbackImages)) {
+            throw new \InvalidArgumentException('Bad fallback images rules');
+        }
+
         foreach ($fallbackImages as $fallbackImage) {
             if (substr($fallbackImage, 0, 1) !== '/') {
                 $fallbackImage = sprintf('%s/%s', rtrim(\XF::getRootDirectory(), '/'), $fallbackImage);
@@ -501,7 +505,6 @@ class Thumbnail
 
     /**
      * @param string $path
-     * @param int $type
      * @return null|\XF\Image\AbstractDriver
      *
      * @see XenForo_Image_Gd::createFromFileDirect

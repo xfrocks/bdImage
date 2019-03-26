@@ -4,6 +4,7 @@ namespace Xfrocks\Image\Util;
 
 use XF\Template\Templater;
 use Xfrocks\Image\Integration;
+use Xfrocks\Image\Uti\Thumbnail;
 
 class Template
 {
@@ -48,7 +49,7 @@ class Template
             if (!empty($container[$_key])) {
                 if ($_key === 'tinhte_thumbnail_url') {
                     if (!empty($container['tinhte_thumbnail_cover'])) {
-                        return bdImage_Helper_Data::pack($container[$_key], 0, 0, [
+                        return Data::pack($container[$_key], 0, 0, [
                             'cover_color' => self::getCoverColorFromTinhteThreadThumbnail($container['tinhte_thumbnail_cover']),
                             'is_cover' => true
                         ]);
@@ -69,7 +70,7 @@ class Template
      */
     public static function getImageDataIfTemplateOption($templateOptionSubKey, array $container)
     {
-        if (!bdImage_Option::get('template', $templateOptionSubKey)) {
+        if (!\XF::app()->options()->bdImage_template[$templateOptionSubKey]) {
             return '';
         }
 
@@ -85,7 +86,8 @@ class Template
         $url = Integration::getOriginalUrl($imageData);
         $size = \XF::app()->options()->attachmentThumbnailDimensions * 2;
         $mode = Integration::MODE_STRETCH_WIDTH;
-        return bdImage_Helper_Thumbnail::buildPhpLink($url, $size, $mode, array('_xfNoRedirect' => true));
+//        return Thumbnail::buildPhpLink($url, $size, $mode, array('_xfNoRedirect' => true));
+        return '';
     }
 
     /**
@@ -195,7 +197,7 @@ class Template
             return '';
         }
 
-        $template->setParams($params);
+        $template->addDefaultParams($params);
 
         return $template;
     }

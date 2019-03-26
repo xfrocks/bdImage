@@ -153,7 +153,7 @@ class Data
             return utf8_trim($data[self::IMAGE_URL]);
         }
 
-        return json_encode($data);
+        return strval(json_encode($data));
     }
 
     /**

@@ -125,7 +125,12 @@ class File
 
         $path = \XF::getRootDirectory() . '/' . $url;
         if (self::existsAndNotEmpty($path)) {
-            return realpath($path);
+            $path = realpath($path);
+            if (!$path) {
+                return '';
+            }
+
+            return $path;
         }
 
         $originalCachePath = self::getOriginalCachePath($url);
@@ -215,6 +220,10 @@ class File
         $bytes = fread($fh, self::THUMBNAIL_ERROR_FILE_LENGTH);
         fclose($fh);
 
+        if ($bytes === false) {
+            throw new \InvalidArgumentException('Cannot read thumbnail data. Bytes are false.');
+        }
+
         if (strlen($bytes) < self::THUMBNAIL_ERROR_FILE_LENGTH
             || substr($bytes, 0, 3) !== self::THUMBNAIL_ERROR_MAGIC_BYTES
         ) {
@@ -241,7 +250,7 @@ class File
     /**
      * @param string $path
      * @param array $data
-     * @return int
+     * @return int|false
      */
     public static function saveThumbnailError($path, array $data = array())
     {

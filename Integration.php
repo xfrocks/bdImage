@@ -69,7 +69,7 @@ class Integration
             }
         }
 
-        $rules = bdImage_Option::getThumbnailRules();
+        $rules = ThumbnailRules::getThumbnailRules();
         if (count($rules) > 0) {
             foreach ($rules as $matcher => $kvPairs) {
                 $ruleUrl = null;
@@ -86,7 +86,9 @@ class Integration
             }
         }
 
-        if (Listener::$customBuildThumbnailLink !== null) {
+        if (Listener::$customBuildThumbnailLink !== null
+            && is_callable(Listener::$customBuildThumbnailLink)
+        ) {
             $customUrl = null;
             try {
                 $customUrl = call_user_func(Listener::$customBuildThumbnailLink, $imageUrl, $size, $mode);
@@ -181,7 +183,6 @@ class Integration
     }
 
     /**
-     * @param \XF\Mvc\Controller $controller
      * @param string $sizeHeader
      * @param string|null $modeHeader
      * @return array|bool
@@ -197,6 +198,7 @@ class Integration
 //            return false;
 //        }
 
+        $request = \XF::app()->request();
         $size = self::_parseApiThumbnailRequestHeaderOrParam($request, $sizeHeader);
         if ($size === false) {
             return false;

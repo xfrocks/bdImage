@@ -118,9 +118,9 @@ class bdImage_Helper_ThumbnailRules
 
     public static function imgproxy($root, $key, $salt, $imageUrl, $options)
     {
-        # https://tools.ietf.org/html/rfc3986#section-2.2: gen-delims
+        # https://tools.ietf.org/html/rfc3986#section-2.2: gen-delims (without ?, # and @)
         # https://tools.ietf.org/html/rfc3986#section-2.3: unreserved
-        if (preg_match('#^[:/\[\]@A-Za-z0-9\-\._~]+$#', $imageUrl)) {
+        if (preg_match('#^[:/\[\]A-Za-z0-9\-\._~]+$#', $imageUrl)) {
             $path = "/$options/plain/$imageUrl";
         } else {
             $imageUrlB64 = self::_imgproxyBase64($imageUrl);

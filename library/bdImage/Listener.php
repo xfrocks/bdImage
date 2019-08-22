@@ -110,7 +110,7 @@ class bdImage_Listener
             if (!empty($_FILES)) {
                 require(__DIR__ . '/XenForo/Patch/Upload.php');
             }
-            if (!empty($_POST)) {
+            if (!empty($_POST) || !empty($_FILES)) {
                 require(__DIR__ . '/XenForo/Patch/Image/Abstract.php');
             }
             self::$maxImageResizePixelCountEq1 = true;

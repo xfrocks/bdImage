@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="bdImage" title="[bd] Image" version_string="2.2.5" version_id="2020500" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="bdImage" title="[bd] Image" version_string="2.2.5" version_id="2020501" url="" install_callback_class="bdImage_Installer" install_callback_method="install" uninstall_callback_class="bdImage_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -675,7 +675,7 @@ html.bdImage_hasCover .titleBar {
 	'0=is_cover'}">{xen:raw $bdImage_imageData}</xen:callback></xen:set><xen:if
 	is="{$bdImage_locked} || {$bdImage_isCover}"> bdImage_threadViewHiddenAttachment<xen:require css="bdimage.css"
 	/></xen:if></xen:if></xen:if>]]></template>
-    <template title="bdimage_bb_code_tag_attach_full" version_id="2020102" version_string="2.2.1"><![CDATA[<xen:if is="{$attachment.width} && {$attachment.height}"><xen:set
+    <template title="bdimage_bb_code_tag_attach_full" version_id="2020500" version_string="2.2.5"><![CDATA[<xen:if is="{$attachment.width} && {$attachment.height}"><xen:set
 	var="$bdImage_bbCodeTagAttachFull"><xen:callback class="bdImage_Option" method="get"
 	params="{xen:array '0=bb_code_tag_attach_full'}">template</xen:callback></xen:set><xen:if
 	is="{$bdImage_bbCodeTagAttachFull}"><xen:require css="bdimage.css" /><xen:set
@@ -684,8 +684,8 @@ html.bdImage_hasCover .titleBar {
 	class="bdImage_Helper_Template" method="renderAttachImageStyleAttribute"
 	params="{$attachment}">inner</xen:callback></xen:set><span class="bdImage_attachImage" style="{$styleAttr}">
 	<span class="inner" style="{$innerStyleAttr}">
-		<img src="{xen:link full:attachments, $attachment}" alt="{xen:phrase
-			loading} {$attachment.filename}…" title="{$attachment.filename}" data-width="{$attachment.width}" data-height="{$attachment.height}" />
+		<xen:if is="{$img}">{xen:raw $img}<xen:else /><img src="{xen:link full:attachments, $attachment}" alt="{xen:phrase
+			loading} {$attachment.filename}…" title="{$attachment.filename}" data-width="{$attachment.width}" data-height="{$attachment.height}" /></xen:if>
 	</span>
 </span></xen:if></xen:if><xen:comment>Do NOT use <img /> width and height attributes directly
 	or it will mess up rendering when our CSS rules are missing (e.g. via api etc.)</xen:comment>
@@ -2798,6 +2798,13 @@ $1{$bdImageExtraClass}$2]]></replace>
       <replace><![CDATA[<xen:if hascontent="true"><xen:contentcheck><xen:include
 	template="bdimage_bb_code_tag_attach_full" /></xen:contentcheck><xen:else
 />$0</xen:if>]]></replace>
+    </modification>
+    <modification template="bb_code_tag_attach" modification_key="bdimage_bb_code_tag_attach_full_api" description="Replace full attach rendering for api." execution_order="4294967295" enabled="1" action="preg_replace">
+      <find><![CDATA[#(\n)\s+(<img src="{xen:helper api_buildLink, attachments/data, \$attachment}"[^/]+/>)\n#]]></find>
+      <replace><![CDATA[$1$1<xen:set var="$bdImageBbCodeTagAttachFullApi">$1$0$1</xen:set><xen:if hascontent="true"><xen:contentcheck><xen:include
+template="bdimage_bb_code_tag_attach_full"><xen:set var="$img">{xen:raw
+$bdImageBbCodeTagAttachFullApi}</xen:set></xen:include></xen:contentcheck><xen:else
+/>{xen:raw $bdImageBbCodeTagAttachFullApi}</xen:if>$1$1]]></replace>
     </modification>
     <modification template="PAGE_CONTAINER" modification_key="bdimage_cover_ad_below_top_breadcrumb" description="Render cover at &quot;ad_below_top_breadcrumb&quot;." execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:include template="ad_below_top_breadcrumb" />]]></find>

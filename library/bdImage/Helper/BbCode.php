@@ -100,7 +100,7 @@ class bdImage_Helper_BbCode
         }
 
         $apiUrl = sprintf(
-            'https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet',
+            'https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=player,snippet',
             $youtubeId,
             $apiKey
         );
@@ -114,10 +114,19 @@ class bdImage_Helper_BbCode
             return self::prepareDefaultYouTubeThumbnails($youtubeId);
         }
 
-        $snippetRef =& $apiJson['items'][0]['snippet'];
+        $itemRef =& $apiJson['items'][0];
+        $snippetRef =& $itemRef['snippet'];
         $filename = 'youtube_' . $youtubeId;
         if (!empty($snippetRef['title'])) {
             $filename = $snippetRef['title'];
+        }
+
+        $videoRatio = null;
+        if (!empty($itemRef['player']['embedHtml'])) {
+            $embedHtml = $itemRef['player']['embedHtml'];
+            if (preg_match('/width="(\d+)" height="(\d+)"/', $embedHtml, $embedMatches)) {
+                $videoRatio = $embedMatches[1] / $embedMatches[2];
+            }
         }
 
         $imageDataMany = array();
@@ -125,6 +134,10 @@ class bdImage_Helper_BbCode
             if (empty($thumbnail['width'])
                 || empty($thumbnail['height'])
             ) {
+                continue;
+            }
+
+            if ($videoRatio !== null && $thumbnail['width'] / $thumbnail['height'] !== $videoRatio) {
                 continue;
             }
 
@@ -137,6 +150,10 @@ class bdImage_Helper_BbCode
                     'filename' => $filename,
                 )
             );
+        }
+
+        if (count($imageDataMany) === 0) {
+            return self::prepareDefaultYouTubeThumbnails($youtubeId);
         }
 
         return $imageDataMany;

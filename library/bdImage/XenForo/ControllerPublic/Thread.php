@@ -33,12 +33,7 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
         if (!$this->_getThreadModel()->canEditThread($thread, $forum, $errorPhraseKey)) {
             throw $this->getErrorOrNoPermissionResponseException($errorPhraseKey);
         }
-
         $post = $ftpHelper->getPostOrError($thread['first_post_id']);
-        $postModel = $this->_getPostModel();
-        if (!$postModel->canViewPost($post, $thread, $forum, $errorPhraseKey)) {
-            throw $this->getErrorOrNoPermissionResponseException($errorPhraseKey);
-        }
 
         if ($this->isConfirmedPost()) {
             /** @var bdImage_ControllerHelper_Picker $picker */

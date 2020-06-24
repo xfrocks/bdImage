@@ -31,8 +31,7 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
         list($thread, $forum) = $ftpHelper->assertThreadValidAndViewable($threadId);
 
         $post = $ftpHelper->getPostOrError($thread['first_post_id']);
-        $postModel = $this->_getPostModel();
-        if (!$postModel->canViewPost($post, $thread, $forum, $errorPhraseKey)) {
+        if (!$this->_getPostModel()->canEditPost($post, $thread, $forum, $errorPhraseKey)) {
             throw $this->getErrorOrNoPermissionResponseException($errorPhraseKey);
         }
 

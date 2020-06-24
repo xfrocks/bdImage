@@ -30,10 +30,10 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
         $ftpHelper = $this->getHelper('ForumThreadPost');
         list($thread, $forum) = $ftpHelper->assertThreadValidAndViewable($threadId);
 
-        if (!$this->_getThreadModel()->canEditThread($thread, $forum, $errorPhraseKey)) {
+        $post = $ftpHelper->getPostOrError($thread['first_post_id']);
+        if (!$this->_getPostModel()->canEditPost($post, $thread, $forum, $errorPhraseKey)) {
             throw $this->getErrorOrNoPermissionResponseException($errorPhraseKey);
         }
-        $post = $ftpHelper->getPostOrError($thread['first_post_id']);
 
         if ($this->isConfirmedPost()) {
             /** @var bdImage_ControllerHelper_Picker $picker */

@@ -2,15 +2,18 @@
 
 class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
 {
+    const EMPTY_PREFIX = '';
+
     /**
+     * @param string $prefix
      * @return null|string
      * @throws XenForo_Exception
      */
-    public function getPickedData()
+    public function getPickedData($prefix = 'bdimage_')
     {
         $visitor = XenForo_Visitor::getInstance();
 
-        $pickedImage = $this->getPickedImage();
+        $pickedImage = $this->getPickedImage($prefix);
         if (!is_string($pickedImage)) {
             return null;
         }
@@ -40,17 +43,23 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
             }
         }
 
-        $extraDataInput = new XenForo_Input($this->_controller->getInput()->filterSingle(
-            'bdimage_extra_data',
-            XenForo_Input::ARRAY_SIMPLE
+        $input = $this->_controller->getInput();
+        if ($prefix !== bdImage_ControllerHelper_Picker::EMPTY_PREFIX) {
+            $input = new XenForo_Input($input->filterSingle(
+                $prefix . 'extra_data',
+                XenForo_Input::ARRAY_SIMPLE
+            ));
+        }
+        $extraDataInput = $input->filter(array(
+            'is_cover' => XenForo_Input::BOOLEAN,
+            'cover_color' => XenForo_Input::STRING,
+            'is_cover_included' => XenForo_Input::BOOLEAN,
         ));
 
-        if ($visitor->hasPermission('general', 'bdImage_setCover')
-            && $extraDataInput->filterSingle('is_cover_included', XenForo_Input::BOOLEAN)) {
-            $extraData += $extraDataInput->filter(array(
-                'is_cover' => XenForo_Input::BOOLEAN,
-                'cover_color' => XenForo_Input::STRING,
-            ));
+        if ($visitor->hasPermission('general', 'bdImage_setCover') &&
+            ($prefix == bdImage_ControllerHelper_Picker::EMPTY_PREFIX || $extraDataInput['is_cover_included'])) {
+            $extraData['is_cover'] = $extraDataInput['is_cover'];
+            $extraData['cover_color'] = $extraDataInput['cover_color'];
         }
 
         if (empty($imageUrl)) {
@@ -59,27 +68,30 @@ class bdImage_ControllerHelper_Picker extends XenForo_ControllerHelper_Abstract
         }
 
         $extraData['_locked'] = true;
-
         return bdImage_Helper_Data::pack($imageUrl, $imageWidth, $imageHeight, $extraData);
     }
 
     /**
+     * @param string $prefix
      * @return null|string
+     * @throws XenForo_Exception
      */
-    public function getPickedImage()
+    public function getPickedImage($prefix = 'bdimage_')
     {
-        if (!$this->_controller->getInput()->filterSingle('bdimage_included', XenForo_Input::BOOLEAN)) {
+        if ($prefix !== bdImage_ControllerHelper_Picker::EMPTY_PREFIX &&
+            !$this->_controller->getInput()->filterSingle($prefix . 'included', XenForo_Input::BOOLEAN)) {
             return null;
         }
 
         $input = $this->_controller->getInput()->filter(array(
-            'bdimage_image' => XenForo_Input::STRING,
-            'bdimage_other' => XenForo_Input::STRING,
+            $prefix . 'image' => XenForo_Input::STRING,
+            $prefix . 'other' => XenForo_Input::STRING,
         ));
-        if ($input['bdimage_image'] === 'other') {
-            return $input['bdimage_other'];
-        } elseif (!empty($input['bdimage_image'])) {
-            return $input['bdimage_image'];
+
+        if ($input[$prefix . 'image'] === 'other') {
+            return $input[$prefix . 'other'];
+        } elseif (!empty($input[$prefix . 'image'])) {
+            return $input[$prefix . 'image'];
         } else {
             return '';
         }

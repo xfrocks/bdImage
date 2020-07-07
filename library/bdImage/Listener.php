@@ -242,4 +242,11 @@ class bdImage_Listener
             $extend[] = 'bdImage_XenForo_Model_Avatar';
         }
     }
+
+    public static function load_class_bdApi_ControllerApi_Post($class, array &$extend)
+    {
+        if ($class === 'bdApi_ControllerApi_Post') {
+            $extend[] = 'bdImage_bdApi_ControllerApi_Post';
+        }
+    }
 }

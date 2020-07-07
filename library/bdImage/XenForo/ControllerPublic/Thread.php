@@ -41,28 +41,7 @@ class bdImage_XenForo_ControllerPublic_Thread extends XFCP_bdImage_XenForo_Contr
             $pickedImage = $picker->getPickedData();
 
             if (is_string($pickedImage)) {
-                /** @var bdImage_XenForo_DataWriter_Discussion_Thread $threadDw */
-                $threadDw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread');
-                $threadDw->setExistingData($thread, true);
-
-                $threadDw->bdImage_setThreadImage($pickedImage);
-                $threadDw->save();
-
-                $pickedImageUnpacked = bdImage_Helper_Data::unpack($pickedImage);
-                // new XenForo_Phrase('moderator_log_thread_bdImage_set')
-                $logAction = 'bdImage_set';
-                $logParams = array();
-                if (!empty($pickedImageUnpacked[bdImage_Helper_Data::IMAGE_URL])) {
-                    $logParams = bdImage_Helper_Data::unpack($pickedImage);
-                    if (!empty($pickedImageUnpacked['is_cover'])) {
-                        // new XenForo_Phrase('moderator_log_thread_bdImage_setCover')
-                        $logAction = 'bdImage_setCover';
-                    }
-                } else {
-                    // new XenForo_Phrase('moderator_log_thread_bdImage_remove')
-                    $logAction = 'bdImage_remove';
-                }
-                XenForo_Model_Log::logModeratorAction('thread', $thread, $logAction, $logParams);
+                bdImage_Helper_Thread::saveThreadImage($thread, $pickedImage);
             }
 
             return $this->responseRedirect(

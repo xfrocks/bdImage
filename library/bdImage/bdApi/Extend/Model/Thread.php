@@ -73,7 +73,7 @@ class bdImage_bdApi_Extend_Model_Thread extends XFCP_bdImage_bdApi_Extend_Model_
             $data['links']['image'] = $data['thread_image']['link'];
         }
 
-        $data['permissions']['edit_image'] = $this->_getPostModel()->canEditPost($firstPost, $thread, $forum);
+        $data['permissions']['edit_image'] = !empty($firstPost) ? $this->_getPostModel()->canEditPost($firstPost, $thread, $forum) : false;
         if ($data['permissions']['edit_image']) {
             $data['permissions']['set_image_cover'] = XenForo_Visitor::getInstance()->hasPermission('general', 'bdImage_setCover');
             $data['links']['edit_image'] = bdApi_Data_Helper_Core::safeBuildApiLink('threads/image', $thread);

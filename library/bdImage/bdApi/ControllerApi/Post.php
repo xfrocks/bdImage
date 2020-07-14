@@ -22,8 +22,11 @@ class bdImage_bdApi_ControllerApi_Post extends XFCP_bdImage_bdApi_ControllerApi_
                 $postBodyImages[] = array(
                     'image_url' => $data[bdImage_Helper_Data::IMAGE_URL],
                     'data' => $imageData,
-                    'image_is_thread_image' => $data[bdImage_Helper_Data::IMAGE_URL] === $threadImageData[bdImage_Helper_Data::IMAGE_URL] ? true : false,
-                    'image_is_cover' => ($data[bdImage_Helper_Data::IMAGE_URL] === $threadImageData[bdImage_Helper_Data::IMAGE_URL] && $threadImageData['is_cover']) ? true : false
+                    'image_is_thread_image' =>
+                        $data[bdImage_Helper_Data::IMAGE_URL] === $threadImageData[bdImage_Helper_Data::IMAGE_URL] ? true : false,
+                    'image_is_cover' =>
+                        ($data[bdImage_Helper_Data::IMAGE_URL] === $threadImageData[bdImage_Helper_Data::IMAGE_URL]
+                            & $threadImageData['is_cover']) ? true : false
                 );
             }
             $response->params['post_images'] = $postBodyImages;

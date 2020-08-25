@@ -87,9 +87,9 @@ class bdImage_Helper_Data
     /**
      * @param array|string $rawData
      * @param string $secondaryKey
-     * @return array|string
+     * @return string
      */
-    public static function unpackSecondaryOrDefault($rawData, $secondaryKey)
+    public static function unpackSecondary($rawData, $secondaryKey)
     {
         $data = self::unpack($rawData);
         if (!empty($data[self::SECONDARY_IMAGES][$secondaryKey])) {

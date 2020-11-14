@@ -44,14 +44,24 @@ class bdImage_bdApi_Extend_Model_Thread extends XFCP_bdImage_bdApi_Extend_Model_
         }
 
         if ($secondaryUnpacked !== null) {
+            $primaryKeyPrefix = 'thread_primary_';
+            if (empty($data['thread_image'])) {
+                // for some reason, the secondary image cannot be prepared
+                // let's fallback to primary
+                $primaryKeyPrefix = 'thread_';
+            }
+
             $primaryData = $this->prepareApiDataForThreadImage(
                 $primaryUnpacked,
                 $thumbnailSize,
                 $thumbnailMode,
-                'thread_primary_'
+                $primaryKeyPrefix
             );
-            if (isset($primaryData['thread_primary_image'])
-                && $primaryData['thread_primary_image']['link'] !== $data['thread_image']['link']
+            if (isset($primaryData["{$primaryKeyPrefix}image"])
+                && (
+                    empty($data['thread_image'])
+                    || $primaryData["{$primaryKeyPrefix}image"]['link'] !== $data['thread_image']['link']
+                )
             ) {
                 $data += $primaryData;
             }
